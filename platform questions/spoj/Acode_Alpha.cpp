@@ -17,6 +17,29 @@ int f(string & str, int i){
     }
     return dp[i] = ans;
 }
+
+int fbu(string &str, int i ){
+    dp.resize(5005, 0);
+    dp[0] = 1;
+    if(str.size() > 1){
+        if(str[1] != '0') dp[1] += dp[0];
+        if(((str[0] - '0') * 10) + (str[1] -'0') <= 26) dp[1]++;
+    }
+
+    for(int i = 2; i< str.size(); i++){
+        ll ans = 0;
+        if(str[i] - '0' > 0){
+        ans += dp[i-1];
+        }
+        if((str[i-1] - '0') > 0 and ((str[i-1] - '0') * 10 + (str[i] - '0')) <= 26){
+            ans += dp[i-2];
+        }
+        dp[i] = ans;
+
+    }
+
+    return dp[str.size() -1 ];
+}
 int main(){
     string n;
     cin>>n;
