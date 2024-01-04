@@ -20,10 +20,10 @@ int f(string & str, int i){
 
 int fbu(string &str, int i ){
     dp.resize(5005, 0);
-    dp[0] = 1;
+    dp[0] = (str[0] != '0');  // if first character is 0 then 0 else 1
     if(str.size() > 1){
         if(str[1] != '0') dp[1] += dp[0];
-        if(((str[0] - '0') * 10) + (str[1] -'0') <= 26) dp[1]++;
+        if((str[0] - '0')>0 and (((str[0] - '0') * 10) + (str[1] -'0')) <= 26) dp[1]++;
     }
 
     for(int i = 2; i< str.size(); i++){
