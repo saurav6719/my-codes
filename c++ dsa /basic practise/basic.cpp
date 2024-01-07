@@ -5,7 +5,7 @@
 #include<cmath>
 #include<algorithm>
 #define endl "\n"
-#define ll long long int
+#define int long long int
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c));
 #define mx(a,b,c) max(a,max(b,c));
@@ -13,12 +13,12 @@ using namespace std;
 void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
     
 }
-int main(){
+int32_t main(){
     int t;
-    cin>>t;
+    //cin>>t;
     t = 1;
     while(t--){
-    solve();
+        solve();
     }
 return 0;
 }
