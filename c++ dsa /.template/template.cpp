@@ -4,6 +4,7 @@
 #include<climits>
 #include<cmath>
 #include<algorithm>
+#define endl "\n"
 #define ll long long int
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c));
