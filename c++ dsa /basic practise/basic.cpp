@@ -15,7 +15,7 @@ void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
 }
 int32_t main(){
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();
