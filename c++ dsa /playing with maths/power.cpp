@@ -10,25 +10,26 @@
 #define mn(a,b,c) min(a,min(b,c));
 #define mx(a,b,c) max(a,max(b,c));
 using namespace std;
-int power(int a, int x){ios_base::sync_with_stdio(false);cin.tie(NULL);
+int power(int a, int x, int p = mod){ios_base::sync_with_stdio(false);cin.tie(NULL);
     //finding a to the power x
+    int res = 1;
+    a = a % p;
+    while(x>0){
+        if(x & 1){                          
+            res = (res * a) % p;
+        }
+        x = x >> 1;
+        a = (a * a) % p;
+    }
+    return res;
 
-    if(x == 0) return 1;
-    if(x%2 ==0) {
-        int res = power(a,x/2);
-        return res * res;
-    }
-    else{
-        int res = power(a, (x-1) / 2);
-        return res * res * a;
-    }
 }
 int main(){
     int t;
     //cin>>t;
     t = 1;
     while(t--){
-        cout<<power(2,10);
+        cout<<power(2,0);
     }
 return 0;
 }
