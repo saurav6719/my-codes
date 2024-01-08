@@ -23,6 +23,19 @@ int f(int i, int j, vector<int> & arr){
     return dp[i][j] = ans;
 
 }
+
+int fbu(int i,int j, vector<int> & arr, int n){
+    for(int len = 3; len<=n;len++){
+        for(int i = 0; i + len -1 <n; i++){
+            int j = i+len-1;
+            dp[i][j] = INT_MAX;
+            for(int k = i+1;k<j;k++){
+                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j] + arr[i]*arr[j]*arr[k]);
+            }
+        }
+    }
+    return dp[i][j];
+}
 void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
     int n;
     cin>>n;
@@ -32,8 +45,8 @@ void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
     }
 
     dp.clear();
-    dp.resize(1005,vector<int> (1005,-1));
-    cout<<f(0,n-1,arr);
+    dp.resize(1005,vector<int> (1005,0));
+    cout<<fbu(0,n-1,arr,n);
 }
 int32_t main(){
     int t;
