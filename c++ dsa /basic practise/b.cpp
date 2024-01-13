@@ -1,19 +1,13 @@
 #include<iostream>
 #include<vector>
-#include<string>
-#include<climits>
-#include<cmath>
 #include<algorithm>
-#define endl "\n"
-#define int long long int
-#define mod 1000000007
-#define mn(a,b,c) min(a,min(b,c));
-#define mx(a,b,c) max(a,max(b,c));
+#include<climits>
 using namespace std;
-
-
-void solve(){//ios_base::sync_with_stdio(false);cin.tie(NULL);
-    int n,k,x;
+ int main(){
+    int t;
+    cin>>t;
+    while(t--){
+        int n,k,x;
     cin>>n>>k>>x;
     vector<int> input(n);
     for(int i=0;i<n;i++){
@@ -47,14 +41,7 @@ void solve(){//ios_base::sync_with_stdio(false);cin.tie(NULL);
         }
         i++;
     }
-    cout<<ans<<endl;    
-}
-int32_t main(){
-    int t;
-    cin>>t;
-    //t = 1;
-    while(t--){
-        solve();
+    cout<<ans<<endl;
     }
-return 0;
-}
+    return 0;
+ }
