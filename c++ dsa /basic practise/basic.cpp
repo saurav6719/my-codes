@@ -1,21 +1,44 @@
 #include<iostream>
+#include<vector>
+#include<string>
+#include<climits>
+#include<cmath>
+#include<algorithm>
+#include<unordered_map>
+#define endl "\n"
+#define int long long int
+#define mod 1000000007
+#define mn(a,b,c) min(a,min(b,c));
+#define mx(a,b,c) max(a,max(b,c));
 using namespace std;
-int main(){
-    int m;
-    //cout<<"Enter row : ";
-    cin>>m;
-    int n;
-    //cout<<"Enter column : ";
-    cin>>n;
-    for(int i=1;i<=m;i++){
-        for(int j=1;j<=n;j++){
-            if(i!=1 and  i!=m and j>2 ){
-            cout<<" ";
-            }
-            else
-            cout<<"*";
-        }
-       cout<<endl;
+void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
+    string s;
+    cin>>s;
+    unordered_map<char,int> mp;
+    for(int i = 0; i<s.size(); i++){
+        mp[s[i]]++;
     }
-    return 0;
+    int ans = 0;
+    bool flag = false;
+    for(auto ele: mp){
+        if(ele.second % 2 == 0){ // even number of characters
+            ans += ele.second;
+        }
+        else{
+            ans += ele.second-1;
+            flag = true;
+        }
+    }
+    if(flag) ans++;
+    cout<<ans<<endl;
+
+}
+int32_t main(){
+    int t;
+    cin>>t;
+    //t = 1;
+    while(t--){
+        solve();
+    }
+return 0;
 }
