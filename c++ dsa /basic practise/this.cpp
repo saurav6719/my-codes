@@ -32,13 +32,18 @@ int main(){
         suffix[i] = suffix[i+1] + input[i];
     }
 
-    ll ans = LLONG_MIN;
+    ll ans = INT_MIN;
     if(k>=n) {
         ans = 0;
     }
     int i = 0;
     while(i<=k){
         if(n-x-i < 0 ){
+            if(n-i-1 < 0 ) {
+                ll a= 0;
+                ans = max(ans,a);;
+                break;
+            }
             ans = max(ans,(prefix[n-i-1] - 2*(suffix[0] - suffix[n-i])));
             break;
         }
