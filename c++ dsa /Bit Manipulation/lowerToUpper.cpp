@@ -11,9 +11,9 @@
 #define mx(a,b,c) max(a,max(b,c));
 using namespace std;
 void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
-    char ch = 'A';
+    char ch = 'a';
     // ch = ch | 32;
-    ch = ch ^ 32;
+    ch = ch & 95;
     cout<<ch;
 }
 int32_t main(){
