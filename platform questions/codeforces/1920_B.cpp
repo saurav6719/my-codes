@@ -28,17 +28,10 @@ void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
         sum += input[i];
     }
     for(int i = 0; i<=k ; i++){
-        int n_copy = n;
-        n_copy -= i;
-        int sum_copy = sum;
-        sum_copy -= prefix[i];
-        int remaining = min(n_copy , x);
-        sum_copy -= 2 *  (prefix[i+remaining] - prefix[i]);
-        ans = max(ans,sum_copy);
+        ans = max(ans, sum - 2 * (prefix[min(n,i+x)] - prefix[i]));
+        if(i<n) sum -= input[i];
     }
     cout<<ans<<endl;
-
-
 }
 int32_t main(){
     int t;
