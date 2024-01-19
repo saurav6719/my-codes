@@ -11,7 +11,6 @@
 #define mn(a,b,c) min(a,min(b,c));
 #define mx(a,b,c) max(a,max(b,c));
 using namespace std;
-
 void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
     int x;
     cin>>x;
