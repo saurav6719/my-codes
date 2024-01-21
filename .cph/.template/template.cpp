@@ -7,7 +7,7 @@
 #include<unordered_map>
 #include<unordered_set>
 #ifndef ONLINE_JUDGE
-#define debug(x) cout<< #x <<" " <<x<<endl
+#define debug(x) cout<< #x <<" " <<x<<endl 
 #else
 #define debug(x)
 #endif

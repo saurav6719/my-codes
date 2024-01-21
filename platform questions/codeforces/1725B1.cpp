@@ -11,13 +11,6 @@
 #else
 #define debug(x)
 #endif
-
-#ifndef ONLINE_JUDGE
-#define print(v) for(auto i:v) cout<<v[i]<<" "<<endl
-#else
-#define print(v)
-#endif
-
 #define endl "\n"
 #define int long long int
 #define mod 1000000007
