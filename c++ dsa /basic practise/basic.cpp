@@ -1,45 +1,40 @@
-#include<iostream>
-#include<vector>
-#include<string>
-#include<climits>
-#include<cmath>
-#include<algorithm>
-#include<unordered_map>
-#define endl "\n"
-#define int long long int
-#define mod 1000000007
-#define mn(a,b,c) min(a,min(b,c));
-#define mx(a,b,c) max(a,max(b,c));
-using namespace std;
-void solve(){//ios_base::sync_with_stdio(false);cin.tie(NULL);
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    unordered_map<int,int> mp;
-    for(int i = 0; i<n; i++){
-        int a;
-        cin>>a;
-        mp[a]++;
-        input[i] = a;
-    }
+#include <iostream>
+#include <vector>
 
-    int ans = 0;
-    int less = 0;
-    for(int i = 0; i<=n;i++){
-        //equilateral
-        ans += (mp[i] * (mp[i]-1) * (mp[i]-2) )/6;
-        //isosceles
-        ans += (mp[i] * (mp[i]-1) )/2 * less;
-        less += mp[i];
+using namespace std;
+
+void bubbleSort(vector<int>& arr) {
+    int n = arr.size();
+
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap them if they are in the wrong order
+                swap(arr[j], arr[j + 1]);
+            }
+        }
     }
-    cout<<ans<<endl;
 }
-int32_t main(){
-    int t;
-    cin>>t;
-    //t = 1;
-    while(t--){
-        solve();
+
+int main() {
+    // Example usage
+    vector<int> myArray = {64, 25, 12, 22, 11};
+
+    cout << "Original Array: ";
+    for (const int& num : myArray) {
+        cout << num << " ";
     }
-return 0;
+    cout << endl;
+
+    // Perform Bubble Sort
+    bubbleSort(myArray);
+
+    cout << "Sorted Array: ";
+    for (const int& num : myArray) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    return 0;
 }
