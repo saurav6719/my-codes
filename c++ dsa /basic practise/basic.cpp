@@ -1,40 +1,37 @@
-#include <iostream>
-#include <vector>
-
+#include<iostream>
+#include<vector>
+#include<string>
+#include<climits>
+#include<cmath>
+#include<algorithm>
+#include<unordered_map>
+#include<unordered_set>
+#ifndef ONLINE_JUDGE
+#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
+#else
+#define debug(x)
+#endif
+#define endl "\n"
+#define int long long int
+#define mod 1000000007
+#define mn(a,b,c) min(a,min(b,c))
+#define mx(a,b,c) max(a,max(b,c))
 using namespace std;
-
-void bubbleSort(vector<int>& arr) {
-    int n = arr.size();
-
-    for (int i = 0; i < n - 1; ++i) {
-        for (int j = 0; j < n - i - 1; ++j) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap them if they are in the wrong order
-                swap(arr[j], arr[j + 1]);
-            }
-        }
-    }
+void solve(){
+    int x = 9;
+    debug(x);
 }
-
-int main() {
-    // Example usage
-    vector<int> myArray = {64, 25, 12, 22, 11};
-
-    cout << "Original Array: ";
-    for (const int& num : myArray) {
-        cout << num << " ";
+int32_t main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    #ifndef ONLINE_JUDGE
+        freopen("Error.txt" , "w" , stderr);
+    #endif
+    int t;
+    //cin>>t;
+    t = 1;
+    while(t--){
+        solve();
     }
-    cout << endl;
-
-    // Perform Bubble Sort
-    bubbleSort(myArray);
-
-    cout << "Sorted Array: ";
-    for (const int& num : myArray) {
-        cout << num << " ";
-    }
-    cout << endl;
-
-    return 0;
+return 0;
 }
