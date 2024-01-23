@@ -12,7 +12,7 @@
 #define debug(x)
 #endif
 #define endl "\n"
-#define int long long int
+//#define int long long int
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
@@ -24,7 +24,7 @@ public:
 int result = INT_MIN;
 void f(vector<string> &arr , string output, int n,int i, unordered_set<char> st, bool flag ){
     if(i>=n) {
-        result = max(result , int(output.size()));
+        result = max(int(result) , int(output.size()));
         return; 
     }
 
