@@ -27,10 +27,10 @@ int binarySearch(vector<int> &arr, int l, int r, int x)
         // Check if x is present at mid
         if (arr[m] == x)
             return m;
-        // If x greater, ignore left half
+        // If x greater, ignore right half
         if (arr[m] > x)
             l = m + 1;
-        // If x is smaller, ignore right half
+        // If x is smaller, ignore left half
         else
             r = m - 1;
     }
