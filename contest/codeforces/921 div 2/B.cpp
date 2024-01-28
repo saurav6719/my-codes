@@ -21,14 +21,22 @@ void solve(){
     int x,n;
     cin>>x>>n;
     int ans = x/n;
-    while(ans){
-        debug(ans);
-        if(x%ans == 0){
-            cout<<ans<<endl;
+    int lo = 1;
+    int hi = ans;
+    int result;
+    while(lo<=hi){
+        int mid = (lo+hi)/2;
+        if(x%hi == 0){
+            cout<<hi<<endl;
             return;
         }
-        ans--;
+        if(x%mid==0){
+            result = mid;
+            lo = mid+1;
+        }
+        hi--;
     }
+    cout<<result<<endl;
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
