@@ -3,7 +3,7 @@ using namespace std;
 int main(){
     int n;
     cin>>n;
-    vector<bool> sieve(n+5, 0); // 0 represnets composite
+    vector<bool> sieve(n+5, 1); // 1 represents prime
     sieve[0] = 0;
     sieve[1] = 0;
 
@@ -14,8 +14,10 @@ int main(){
         }
     }
     
-    if(sieve[n] == 0) cout<<"not prime";  
-    else cout<<"prime";
-    return 0;
+    for(int i = 0; i<=n;i++){
+        cout<<i<<": ";
+        if(sieve[i] == 0) cout<<"not prime"<<endl;
+        else cout<<"prime"<<endl;
+    }
 
 }
