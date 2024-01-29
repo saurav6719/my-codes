@@ -22,55 +22,65 @@ void solve(){
     cin>>n>>k>>m;
     string str;
     cin>>str;
-    vector<vector<int> > index(26);
-
-    for(int i = 0; i<str.size();i++){
-        char ch = str[i];
-        int ascc = int32_t(ch);
-        index[ascc - 97].push_back(i);
-    }
-
+    unordered_set<char> st;
     for(int i = 0; i<k; i++){
-        // if(index[i].size()==0){
-        //     cout<<"NO"<<endl;
-        //     cout<<char(i+97)<<endl;
-        //     return;
-        // }
-        if(index[i].size() <=i){
-            string ans = "";
-            for(int l = 0 ; l<=i;l++){
-                ans += char(i+97);
-            }
-            cout<<"NO"<<endl;
-            cout<<ans<<endl;
-            return;
+        st.insert(char(i+97));
+    }
+    unordered_set<char> st1 = st;
+    int i = 0;
+    int j = 0; 
+    vector<string> parts;
+    string last ="";
+    while(j<m){
+        if(st.size() == 0){
+            parts.push_back(str.substr(i,j-i));
+            i=j;
+            st = st1;
+            last.clear();
         }
-        int lastOcc = index[i][index[i].size() - 1];
-        for(int j = 0; j<k; j++){
-            if(j==i) continue;
-            int number = 0;
-            for(int x = 0; x<index[j].size();x++){
-                if(index[j][x] > lastOcc)number++;   
-                debug(number);             
-            }
-            if(number < k-1){
-                debug(k-1);
-                string ans = "";
-                ans += char(i+97);
-                
-                for(int l = 0;l<(k-1); l++){
-                    debug(l);
-                    debug(k-1);
-                    ans+= char(j+97);
-                    
-                }
-                cout<<"NO"<<endl;
-                cout<<ans<<endl;
-                return;
-            }
+        if(st.count(str[j])!=0){
+            last += str[j];;
+            st.erase(str[j]);
+        }
+        j++;
+    }
+    if(st.size() == 0){
+            parts.push_back(str.substr(i,j-i));
+            i=j;
+            st = st1;
+            last.clear();
+    }
+    if(parts.size() >=n){
+        cout<<"YES"<<endl;
+        return;
+    }
+    string ans = "";
+    for(int i = 0; i<last.size();i++){
+        if(st1.count(last[i]) != 0){
+            st1.erase(last[i]);
         }
     }
-    cout<<"YES"<<endl;
+    char ch ;
+    for(auto ele : st1){
+        ch = ele;
+        break;
+    }
+    for(int i = 0; i<parts.size(); i++){
+        ans += parts[i][parts[i].size() -1];
+    }
+
+    int o = ans.size();
+
+    int remain = n-o;
+    for(int a = 0; a<remain; a++){
+        ans += ch;
+    }
+
+    cout<<"NO"<<endl;
+    cout<<ans<<endl;
+    return;
+    
+
 
 }
 int32_t main(){
