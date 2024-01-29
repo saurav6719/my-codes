@@ -13,7 +13,6 @@ int main(){
             sieve[j] = 0;
         }
     }
-    
     for(int i = 0; i<=n;i++){
         cout<<i<<": ";
         if(sieve[i] == 0) cout<<"not prime"<<endl;
