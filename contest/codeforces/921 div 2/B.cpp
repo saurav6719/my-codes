@@ -20,23 +20,20 @@ using namespace std;
 void solve(){
     int x,n;
     cin>>x>>n;
-    int ans = x/n;
-    int lo = 1;
-    int hi = ans;
-    int result;
-    while(lo<=hi){
-        int mid = (lo+hi)/2;
-        if(x%hi == 0){
-            cout<<hi<<endl;
-            return;
-        }
-        if(x%mid==0){
-            result = mid;
-            lo = mid+1;
-        }
-        hi--;
+    int ans = 1;
+    int maxposs = x/n;
+    if(n==1) {
+        cout<<x<<endl;
+        return;
     }
-    cout<<result<<endl;
+    for(int i = 2; i*i<=x;i++){
+        if(x%i ==0){
+            if(i <= maxposs) ans = max(ans,i);
+            if(x/i <= maxposs) ans = max(ans, x/i);
+        } 
+    }
+
+    cout<<ans<<endl;
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
