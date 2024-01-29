@@ -19,18 +19,22 @@
 using namespace std;
 void solve(){
     int n;
-    cin>>n;
-    int count=0;
-    while(n>0){
-        if(n% 10 == 4 or n%10 == 7) count++;
-        n/=10;
+    cin>>n; // total input
+
+    int k; // given k
+    cin>>k;
+
+    //1<=k<=n<=50;
+
+    int arr[n]; // array of size n
+    cin>>arr[n];
+
+    int count=0;  // to count the number who qualify next round
+  
+    for(int i=0;i<n;i++){
+        if(arr[i]>=arr[k-1] and arr[i] > 0) count++;
     }
-    if(count==7 or count==4){
-        cout<<"YES"<<endl;
-    }
-    else{
-        cout<<"NO"<<endl;
-    }
+    cout<<count<<endl;
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
