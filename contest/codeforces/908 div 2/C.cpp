@@ -17,23 +17,7 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
-
-void right_shift(vector<int> &b , bool flag ){
-    int n = b.size();
-    int x = b[n-1];
-    if(x > n) {
-        cout<<"No"<<endl;
-        flag = false;
-        return ;
-    }
-    x = x % n;
-    reverse(b.begin(), b.end());
-    reverse(b.begin(), b.begin()+x );
-    reverse(b.begin() + x, b.end());
-    return;
-}
 void solve(){
-    bool flag = true;
     int n;
     cin>>n;
     int k;
@@ -42,24 +26,21 @@ void solve(){
     for(int i = 0; i<n; i++){
         cin>>b[i];
     }
-    if(b[b.size() - 1] >n){
-        cout<<"No"<<endl;
-        return;
-    }
-    if(n==1) {
-        cout<<"Yes"<<endl;
-        return;
-    }
-
+    int last = n-1;
+    k = min(n,k);
     while(k--){
-        if(flag == false) return;
-        right_shift(b, flag );
-        k--;
+        if(b[last] > n){
+            cout<<"No"<<endl;
+            return;
+        }
+        else if(b[last] == n) {
+            cout<<"Yes"<<endl;
+            return;
+        }
+        last =last - b[last];
+        if(last < 0) last += n;
     }
-
     cout<<"Yes"<<endl;
-
-
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
