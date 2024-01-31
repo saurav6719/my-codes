@@ -5,6 +5,8 @@
 #include<cmath>
 #include<algorithm>
 #include<unordered_map>
+#include<queue>
+
 #include<unordered_set>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
