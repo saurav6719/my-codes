@@ -13,7 +13,7 @@ int btd(string &s){
     return result;
 }
 int main(){
-    string s = "0001110";
+    string s = "100001111";
     cout<<btd(s)<<endl;
     return 0;
 }

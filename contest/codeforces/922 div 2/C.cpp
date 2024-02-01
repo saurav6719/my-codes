@@ -18,12 +18,19 @@
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 void solve(){
-    int a,b,c;
-    cin>>a>>b>>c;
-    if(a+b==c) cout<<"YES"<<endl;
-    else if(b+c==a) cout<<"YES"<<endl;
-    else if(a+c==b) cout<<"YES"<<endl;
-    else cout<<"NO"<<endl;
+    int a,b,r;
+    cin>>a>>b>>r;
+    int xora = 1;
+    int ans = INT_MAX;
+    while(xora<r){
+        ans = min(ans , abs((a^xora) - (b^xora)));
+        xora *= 2;
+    }
+    if(r==0){
+        cout<<abs(a-b)<<endl;
+        return;
+    }
+    cout<<ans<<endl;
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);

@@ -11,11 +11,11 @@
 #define mx(a,b,c) max(a,max(b,c));
 using namespace std;
 string getbinary(int x){
-    bitset<8> b(x);
+    bitset<32> b(x);
     return b.to_string();
 }
 void solve(){ios_base::sync_with_stdio(false);cin.tie(NULL);
-    cout<<getbinary(8)<<endl;
+    cout<<getbinary(256)<<endl;
 }
 int32_t main(){
     int t;
