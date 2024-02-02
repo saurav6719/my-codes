@@ -12,7 +12,6 @@ void buildTree(int arr[], int i, int lo, int hi){
     buildTree(arr,2*i+2,mid+1,hi);
     st[i] = min(st[2*i+1], st[2*i+2]);
 }
-
 int getMin(int i, int lo, int hi, int l, int r){ // we are finding max in l to r
     // out of range 
     if(l>hi or r<lo) return INT_MAX;
@@ -23,8 +22,6 @@ int getMin(int i, int lo, int hi, int l, int r){ // we are finding max in l to r
     int right = getMin(2*i+2,mid+1,hi,l,r);
     return min(left,right);
 }
-
-
 int main(){
     int arr[] = {1,4,2,8,6,4,9,3};
     int n = sizeof(arr)/4;
