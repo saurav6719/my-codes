@@ -23,7 +23,7 @@ int getSum(int i, int lo, int hi, int l, int r){ // we are finding max in l to r
     return left+right;
 }
 int main(){
-    int arr[] = {1,4,2,8,6,4,9,3};
+    int arr[] = {1,3,5};
     int n = sizeof(arr)/4;
     st.resize(4*n);
     buildTree(arr,0,0,n-1);
