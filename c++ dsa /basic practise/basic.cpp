@@ -5,8 +5,8 @@ using namespace std;
 
 
 int main(){
-    int n,k;
-    cin>>n>>k;
+    cout<<((2^256) - (2^92));
+    
     
     
 
