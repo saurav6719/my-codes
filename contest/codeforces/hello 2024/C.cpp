@@ -17,8 +17,35 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
-void solve(){
-    
+void solve () {
+    int n;
+    cin >> n;
+    vector<int> V(n);
+    for (int i = 0; i < n; i++) {
+        cin >> V[i];
+    }
+    int a = numeric_limits<int>::max();
+    int b = numeric_limits<int>::max();
+    int cnt = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (a > b) {
+            swap(a, b);
+        }
+        if (V[i] <= a) {
+            a = V[i];
+        } 
+        else if (V[i] <= b) {
+            b = V[i];
+        } 
+        else {
+            a = V[i];
+            cnt++;
+        }
+    }
+
+    cout << cnt << "\n";
+
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
@@ -27,8 +54,8 @@ int32_t main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
