@@ -4,21 +4,17 @@
 #include<unordered_set>
 #include<vector>
 #include<queue>
-
 using namespace std;
 vector<vector<int> > graph;
 queue<int> q;
 int v; // number of vertices
 unordered_set<int> visited;
-
-
 void add_edge(int src, int dest, bool undirected = true) {
     graph[src].push_back(dest);
     if (undirected) {
         graph[dest].push_back(src);
     }
 }
-
 void topobfs(){
     vector<int> indegree(v,0);
     queue<int> qu;
@@ -27,14 +23,12 @@ void topobfs(){
             indegree[neigh]++;
         }
     }
-    
     for(int i =0; i<v; i++){
         if(indegree[i] == 0) {
             qu.push(i);
             visited.insert(i);
         }
     }
-
     while(not qu.empty()){
         auto cell = qu.front();
         cout<<cell<<" ";
@@ -47,12 +41,9 @@ void topobfs(){
                     visited.insert(neighbour);
                 }
             }
-        }
-        
+        }   
     }
-
 }
-
 int main() {
     cin >> v;
     graph.resize(v, vector<int>());
