@@ -54,9 +54,9 @@ void topobfs(){
 }
 
 int main() {
-    cin >> v; 
+    cin >> v;
     graph.resize(v, vector<int>());
-    int e;
+int e;
     cin >> e; // no of edges
     visited.clear();
     while (e--) {
