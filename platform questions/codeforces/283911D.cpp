@@ -21,7 +21,7 @@ using namespace std;
 int binarySearch(vector<int> &input,int x){
     int lo = 0; 
     int hi = input.size() - 1;
-    int result = input.size()-1;
+    int result = -1;
     while(lo<=hi){
         int mid = lo + (hi-lo)/2;
         if(input[mid] >= x){
@@ -36,16 +36,16 @@ int binarySearch(vector<int> &input,int x){
 int binarySearch2(vector<int> &input,int x){
     int lo = 0; 
     int hi = input.size() - 1;
-    int result = input.size();
+    int result = -1;
     while(lo<=hi){
         int mid = lo + (hi-lo)/2;
-        if(input[mid] >= x){
+        if(input[mid] <= x){
             result = mid;
-            hi = mid -1;
+            lo = mid +1;
         }
-        else lo = mid +1;
+        else hi = mid -1;
     }
-    return result + 1;
+    return result;
 
 }
 
@@ -57,7 +57,7 @@ void solve(){
     cin>>n;
     vector<int> input(n);
     for(int i = 0 ; i<n; i++){
-        cin>>input[i];
+        cin>>input[i];   // 1 3 4 10 10
     }
 
     sort(input.begin(), input.end());
@@ -68,9 +68,16 @@ void solve(){
         cin>>l;
         int r;
         cin>>r;
-        int a = binarySearch(input,l);
-        cout<<a;
-
+        int a = lower_bound(input.begin(), input.end(), l) - input.begin();
+        // cout<<a<<endl;
+        if(a==n) {
+            cout<<"0"<<endl;
+            return;
+        }
+        debug(a);
+        int b = upper_bound(input.begin(),input.end(), r) - input.begin();
+        debug(b);
+        cout<<b-a<<" ";
     }
 }
 int32_t main(){
