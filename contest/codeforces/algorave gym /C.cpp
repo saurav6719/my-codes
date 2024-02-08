@@ -32,6 +32,7 @@ void solve(){
     }
     //debug(i);
     if(i==n){
+        swap(str[n-1],str[n-2]);
         cout<<str<<endl;
         return;
     }
