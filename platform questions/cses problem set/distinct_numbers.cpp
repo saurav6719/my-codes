@@ -20,7 +20,6 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    
     set<int> st;
     int ele;
     for(int i = 0; i<n; i++){
@@ -28,7 +27,6 @@ void solve(){
         st.insert(ele);
     }
     cout<<st.size();
-
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
