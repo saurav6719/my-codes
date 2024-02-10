@@ -16,20 +16,34 @@
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
+//link -> https://leetcode.com/problems/palindromic-substrings/?envType=daily-question&envId=2024-02-10
 using namespace std;
 void solve(){
-    string input;
-    cin>>input;
-    if(input.size() <= 10) {
-        cout<<input<<endl;
-        return;
+    class Solution {
+public:
+
+bool isPalindrome (string &s, int i, int j){
+    while(i<=j){
+        if(s[i] != s[j]){
+            return false;
+        }
+        i++;
+        j--;
     }
-    string output = "";
-    output += input[0];
-    int lenght = input.size() - 2;
-    output += to_string(lenght);
-    output+= input[input.size() - 1];
-    cout<<output<<endl;
+    return true;
+}
+
+    int countSubstrings(string s) {
+        int n = s.size();
+        int ans = 0;
+        for(int i = 0; i<n; i++){
+            for(int j = i; j<n; j++){
+                if(isPalindrome(s,i,j)) ans++;
+            }
+        }
+        return ans;
+    }
+};
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
@@ -38,8 +52,8 @@ int32_t main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    // t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
