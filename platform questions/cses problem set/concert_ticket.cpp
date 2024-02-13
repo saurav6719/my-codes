@@ -32,16 +32,15 @@ void solve(){
     for(int i = 0; i<m; i++){
         int a;
         cin>>a;
-        int b = upper_bound(st.begin(), st.end() , a) - st.begin();
-        if(b== 0){
-            cout<<-1<<endl;
-            continue;
+        auto b = st.upper_bound(a);
+        if(b== st.begin()){
+             cout<<-1<<endl;
         }
-        else {
-            cout<<endl;
-
+        else{
+            b--;
+            cout<<*b<<endl;
+            st.erase(b);
         }
-
     }
 }
 int32_t main(){
