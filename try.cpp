@@ -19,40 +19,75 @@
 using namespace std;
 void solve(){
     int n;
-    cin>>n;
+    int x;
+    int y;
+    cin>>n>>x>>y;
     vector<int> input(n);
     for(int i = 0; i<n; i++){
         cin>>input[i];
     }
-    int i = 0;
-    int j = n-1;
-    while(i<n-1 and input[i] == input[i+1]) i++; // i last tak aa gya
-    int c1 = i - 0 + 1; //itne barabar hais atrt me 
-    int num1 = input[i]; // ye h number 1 hai 
-    while(j > 0 and input[j] == input[j-1]) j--;
-    int c2 = n-j;
-    int num2 = input[j];
-    if(i>=j) {
-        cout<<0<<endl;
-        return;
+    
+    vector<vector<int> > modx(x, vector<int> ());
+    vector<vector<int> > mody(y, vector<int> ());
+    for(int i = 0; i<n; i++){
+        int a = input[i] % x;
+        //debug(a);
+        modx[a].push_back(i);
+
+        int b = input[i] % y;
+        //debug(b);
+        mody[b].push_back(i);
     }
+
+    
     int ans = 0;
-    if(num1 == num2){
-        ans += j-i-1;
-        cout<<ans<<endl;
-        return;
+    for(int i = 0; i<n; i++){
+        unordered_set<int> st;
+        // cout<<endl;
+        // cout<<endl;
+        // debug(i);
+        int d = input[i] % x;
+        //debug(d);
+        int c = x - d;
+        if(c == x) c = 0;
+        //debug(c);
+        // for(int i = 0; i<modx[c].size(); i++){
+        //     cout<<modx[c][i]<<" ";
+        // }
+        // cout<<endl;
+        for(int j = 0; j<modx[c].size(); j++){
+            if(modx[c][j] != i) {
+                st.insert(modx[c][j]);
+                //debug(modx[c][j]);
+            }
+        }
+
+        int size = modx.size();
+        
+        // for(auto ele: st){
+        //     cout<<"st"<<ele<<" ";
+        // }
+        // cout<<endl;
+
+        int e = input[i] % y;
+        //debug(e);
+        int f = e;
+        if(f==y) f=0;
+        //debug(f);
+        // for(int i = 0; i<mody[f].size(); i++){
+        //     cout<<mody[f][i]<<" ";
+        // }
+        // cout<<endl;
+        for(int k = 0;k<mody[f].size();k++){
+            if(mody[f][k] > i and  st.count(mody[f][k])) {
+                //cout<<mody[f][k]<<endl;
+                ans ++;
+                //debug(ans);
+            }
+        }
     }
-    int count = 0;
-    if(c1 > c2){
-        ans = n-c1;
-    }
-    else ans = n-c2;
     cout<<ans<<endl;
-    return;
-
-
-
-
+    
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
