@@ -17,6 +17,7 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
+//link -> https://www.hackerrank.com/challenges/angry-children/problem
 void solve(){
     int n;
     cin>>n;
