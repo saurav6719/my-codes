@@ -18,32 +18,26 @@
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 void solve(){
-    int n;
-    cin>>n;
-    string input;
-    cin>>input;
-    int ans = 0;
-    int brak = 0;
-    bool check = false;
-    for(int i = 0; i<n-1; i++){
-        if(input[i] == '*' and input[i+1] == '*'){
-            brak = i;
-            check = true;
-            break;
-        }
+    int n,m;
+    cin>>n>>m;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
-    debug(brak);
-    if(check == false){
-        for(int i = 0; i<n; i++){
-        if(input[i] == '@') ans++;
-        }
+    string str;
+    cin>>str;
+    vector<int> ans;
+    int i = 0;
+    int j = n-1;
+    int product = 1;
+    for(int i = 0; i<n; i++){
+        product = ((product % m) * (input[i]%m))%m;
     }
-    else{
-        for(int i = 0; i<brak;i++){
-            if(input[i] == '@') ans++;
-        }
+    ans.push_back(product);
+    int count = 1;
+    while(count!=n){
+        
     }
-    cout<<ans<<endl;
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);

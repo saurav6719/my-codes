@@ -20,30 +20,24 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    string input;
-    cin>>input;
-    int ans = 0;
-    int brak = 0;
-    bool check = false;
-    for(int i = 0; i<n-1; i++){
-        if(input[i] == '*' and input[i+1] == '*'){
-            brak = i;
-            check = true;
-            break;
-        }
+    vector<int> input(n);
+    for(int i =0; i<n; i++){
+        cin>>input[i];
     }
-    debug(brak);
-    if(check == false){
-        for(int i = 0; i<n; i++){
-        if(input[i] == '@') ans++;
+    int ans = input[0];
+    for(int i = 1; i<n; i++){
+        int ele = input[i];
+        int rem = ans % ele;
+        if(rem == 0) {
+            ans += ele;
+            continue;
         }
-    }
-    else{
-        for(int i = 0; i<brak;i++){
-            if(input[i] == '@') ans++;
+        else{
+            ans += (ele - rem);
         }
     }
     cout<<ans<<endl;
+
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
