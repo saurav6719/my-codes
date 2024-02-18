@@ -52,6 +52,7 @@ void solve(){
     bool odds = false;
     bool oddh = false;
     bool oddd = false;
+    debug(ch);
     if(ch != 'C' ){
         if(C.size() % 2 == 1) oddc = true;
         for (auto it = C.begin(); it != C.end();) {
@@ -83,7 +84,8 @@ void solve(){
 
             string str = "";
             str += *it;
-            str += 'H';
+            str += 'D';
+            debug(str);
             ans.push_back(str);
 
             // Increment the iterator before erasing
