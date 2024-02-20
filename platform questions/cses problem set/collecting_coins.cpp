@@ -28,7 +28,6 @@ void solve(){
     for(int i = 0; i<n; i++){
         index[input[i]] = i+1;
     }
-    
     int count = 1;
     for(int i = 1; i<n;i++){
         if(index[i+1] < index[i]) count++;
