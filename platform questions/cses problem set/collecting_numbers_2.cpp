@@ -21,7 +21,6 @@ using namespace std;
 void solve(){
     int n,q;
     cin>>n>>q;
-
     vector<int> values(n+1);
     vector<int> position(n+1);
     for(int i = 1; i<=n; i++){
@@ -50,6 +49,8 @@ void solve(){
         if(values[r]-1 >=1){
             updatedPairs.insert({values[r]-1 , values[r]});
         }
+        //check krlo kya chota bala ka position jyada tha bda bala se
+        //agar jyada tha to swap k baad kam ho jayega so answer--
         for(auto pairs : updatedPairs){
             if(position[pairs.first] > position[pairs.second]){
                 answer--;
@@ -58,6 +59,8 @@ void solve(){
         swap(values[l], values[r]);
         position[values[l]] = l;
         position[values[r]] = r;
+        //swap hone k baad check krlo position 
+        //agar inversion hai tto answer++
         for(auto pairs : updatedPairs){
             if(position[pairs.first] > position[pairs.second]){
                 answer++;
