@@ -18,8 +18,7 @@
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 void solve(){
-    vector<vector<int> > input;
-    cout<<"lgkva";
+    
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
