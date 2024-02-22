@@ -39,7 +39,6 @@ void solve(){
         give[i] = integers[j];
         j--;
     }
- 
     for(int i = 0; i<k; i++){
         if(friends[i] == 0) happiness += 2*give[i];
         else{
