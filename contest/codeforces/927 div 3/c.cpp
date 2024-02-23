@@ -17,27 +17,29 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
+vector<int> ans;
+int f(vector<int> &input, string &s, int l, int r, int i, int m){
+    //base case
+    if(l==r) return ans[i] = input[l] % m;
+    if(s[i] == 'L') return ans[i] = (f(input,s,l+1,r,i+1,m) * input[l]) % m;
+    else return ans[i] = (f(input,s,l,r-1,i+1,m) * input[r])%m ;
+}
 void solve(){
     int n,m;
     cin>>n>>m;
+    ans.resize(n);
     vector<int> input(n);
     for(int i = 0; i<n; i++){
         cin>>input[i];
     }
     string str;
     cin>>str;
-    vector<int> ans;
-    int i = 0;
-    int j = n-1;
-    int product = 1;
+    f(input,str,0,n-1,0,m);
+    //reverse(ans.begin(), ans.end());
     for(int i = 0; i<n; i++){
-        product = ((product % m) * (input[i]%m))%m;
+        cout<<ans[i]<<" ";
     }
-    ans.push_back(product);
-    int count = 1;
-    while(count!=n){
-        
-    }
+    cout<<endl;
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
