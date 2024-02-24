@@ -18,52 +18,56 @@
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 int m,n;
-vector<int> t(n);
-vector<int> z(n);
-vector<int> y(n);
-vector<int> ans(n);
-bool poss(int mid){
-    int res = 0;
-    for(int i = 0; i<n; i++){
-        int ballon = mid / ((t[i] * z[i]) + y[i]);
-        int rem = mid - ballon * (((t[i] * z[i]) + y[i]));
-        ballon *= z[i];
-        if(rem >= t[i]){
-            if(rem/t[i] > z[i]){
-                ballon += z[i];
-            }
-            else{
-                ballon += rem/t[i];
-            }
 
-        }
-        ans[i] = ballon;
-        res += ans[i];
+struct helper{
+    int t,z,y;
+};
+
+int blown(helper x, int time){
+    int result = 0;
+    result += x.z * (time /( x.t * x.z + x.y));
+    int rem = time % ( x.t * x.z + x.y);
+    if(rem >= (x.t * x.z)) result += x.z;
+    else result += rem/x.t;
+    return result;
+}
+
+bool poss(int m, int time, vector<helper> &h){
+    int res = 0;
+    for(auto x : h){
+        res += blown(x,time);
     }
     return res >= m;
-    
 }
 
 void solve(){
     
     cin>>m>>n;
-    for(int i = 0; i<n; i++){
-        cin>>t[i];
-        cin>>z[i];
-        cin>>y[i];
+    vector<helper> h(n);
+    for (auto &x : h){
+        cin>>x.t>>x.z>>x.y;
     }
+
     int lo = 0;
     int hi = 1e9;
     int res = -1 ;
     while(lo<=hi){
         int mid = lo + (hi-lo)/2;
-        if (poss(mid)){
+        if (poss(m,mid,h)){
             res = mid;
             hi = mid -1;
         }
         else lo = mid +1;
     }
-    //cout<<res<<endl;
+    cout<<res<<endl;
+
+    for(int i = 0; i<n; i++){
+        if(i>0) cout<<" ";
+        int x = blown(h[i],res);
+        cout<<min(x,m);
+        m-= min(m,x);
+    }
+    cout<<endl;
     
 }
 int32_t main(){
