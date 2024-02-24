@@ -11,9 +11,16 @@
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 void solve(){
-    cout<<55<<endl;
+    int c;
+    cin>>c;
+    set<int> st;
+    st.insert(1);
+    for(int i = 0; i<st.size(); i++){
+            
+    }
+
 }
-int32_t main(){
+signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     #ifndef ONLINE_JUDGE
