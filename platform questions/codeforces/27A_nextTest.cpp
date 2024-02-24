@@ -1,9 +1,5 @@
-#include<iostream>
-#include<vector>
-#include<string>
-#include<climits>
-#include<cmath>
-#include<algorithm>
+#include<bits/stdc++.h>
+using namespace std;
 #define endl "\n"
 #define int long long int
 #define mod 1000000007

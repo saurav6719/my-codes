@@ -107,5 +107,6 @@
         "stdfloat": "cpp",
         "stop_token": "cpp",
         "syncstream": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabledIfIncludesResolve"
 }

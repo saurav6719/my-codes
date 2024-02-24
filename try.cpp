@@ -1,11 +1,4 @@
-#include<iostream>
-#include<vector>
-#include<string>
-#include<climits>
-#include<cmath>
-#include<algorithm>
-#include<unordered_map>
-#include<unordered_set>
+#include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #else
@@ -18,7 +11,7 @@
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 void solve(){
-    
+    cout<<55<<endl;
 }
 int32_t main(){
     ios_base::sync_with_stdio(false);
