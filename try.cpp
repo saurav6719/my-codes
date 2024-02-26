@@ -19,13 +19,7 @@
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 void solve(){
-    int n;
-    cin>>n;
-    string str;
-    cin>>str;
-   vector<int> v = {1,2,3,4,5};
-   print(v);
-   cout<<0;
+    
 }
 signed main(){
     ios_base::sync_with_stdio(false);
@@ -34,8 +28,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
