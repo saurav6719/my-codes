@@ -34,3 +34,8 @@ int32_t main(){
     }
 return 0;
 }
+
+
+//pbds runner 
+ //    /opt/homebrew/bin/gcc-13 -std=c++17 -I/opt/homebrew/include/c++/13.1.0/ -I/opt/homebrew/include/c++/13.1.0/x86_64-apple-darwin20/ -o my_program Joseph_problem_2.cpp -lstdc++
+//     ./my_program
