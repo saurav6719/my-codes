@@ -1,4 +1,6 @@
 #include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp> 
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #else
@@ -6,39 +8,32 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
+using namespace __gnu_pbds; 
+template<typename T>
+#define ordered_set_type tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>
+#define mod 1000000007
 void solve(){
     int n;
     cin>>n;
-    vector<int> now(n);
-    for(int i = 0; i<n; i++){
-        now[i] = i+1;
+    int k;
+    k = 1;
+    ordered_set_type now;
+    for(int i = 1; i<=n; i++){
+        now.insert(i);
     }
-    while(now.size() > 1){
-        vector<int> survivor;
-        for(int i = 0; i<now.size(); i++){
-            if(i%2 == 1){
-                cout<<now[i]<<" ";
-            }
-            else survivor.push_back(now[i]);
-        }
-        if(now.size()%2 == 0){
-            now = survivor;
-        }
-        else{
-            int x = survivor.back();
-            survivor.pop_back();
-            now.clear();
-            now.push_back(x);
-            for(int i = 0; i<survivor.size(); i++){
-                now.push_back(survivor[i]);
-            }
-        }
-    }
-    cout<<now[0];
+    int start = 0;
+    while(now.size() > 0){
+        start %= now.size();
+        int rem = (start + k) % now.size();
+        start = rem;
+        auto t = now.find_by_order(rem);
+        cout<<*t<<" ";
+        now.erase(t);
+    } 
 }
 signed main(){
     ios_base::sync_with_stdio(false);
@@ -50,7 +45,7 @@ signed main(){
     //cin>>t;
     t = 1;
     while(t--){
-        solve();
+        solve<int>();
     }
 return 0;
 }
