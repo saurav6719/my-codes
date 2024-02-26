@@ -10,7 +10,7 @@
            \  -----  /
              \_____/
   
-  Happy coding! 🚀
+  Happy coding! 
 */
 
 /* includes and all */
