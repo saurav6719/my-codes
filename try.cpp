@@ -1,3 +1,20 @@
+/*
+  ------------------------------------------
+ |                                        |
+ |      Code Crafted by Saurav     |
+ |                                        |
+  ------------------------------------------
+    \        ,     ,        /
+      \      |     |      /
+         \   \___/   /
+           \  -----  /
+             \_____/
+  
+  Happy coding! 🚀
+*/
+
+/* includes and all */
+
 #include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
@@ -18,9 +35,13 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
+
+/* write core logic here */
 void solve(){
     
 }
+/* logic ends */
+
 signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -35,3 +56,4 @@ signed main(){
     }
 return 0;
 }
+
