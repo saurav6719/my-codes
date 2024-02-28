@@ -45,19 +45,28 @@ template<class T> using ordered_multiset = tree<T, null_type, less_equal<T>, rb_
 
 /* write core logic here */
 
-
+int cal(int u , int sec){
+  int sum = 0;
+  int f = u*(u+1)/2;
+  int s = u-sec;
+  int f1 = s*(s+1)/2;
+  if(u>=sec){
+    sum = f-f1;
+  }
+  else{
+    int s1 = sec-u;
+    s1--;
+    int f2 = s1*(s1+1)/2;
+    sum = f-f2;
+  }
+  return sum;
+}
 
 void solve(){
-    ordered_multiset<int> st;
-    st.insert(1);
-    st.insert(2);
-    st.insert(2);
-    st.insert(2);
-    st.insert(5);
-    st.insert(5);
-    st.insert(6);
-    st.insert(6);
-    cout<<st.order_of_key(3)<<endl;
+    cout<<cal(8,8)<<endl;
+    cout<<cal(8,5)<<endl;
+    cout<<cal(8,9)<<endl;
+    cout<<cal(8,11)<<endl;
 }
 /* logic ends */
 
