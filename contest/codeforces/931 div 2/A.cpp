@@ -38,46 +38,6 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-        int n;
-        cin>>n;
-        string a1,a2;
-        cin>>a1>>a2;    
-        string ans = "";
-        int down = n-1;
-        int nod = -1;
-        int i = 1;
-        int j = 0;
-        ans += a1[0];
-        while(i<n and j<n){
-            if(a1[i] == a2[j]) {
-                ans += a1[i];
-                i++;
-                j++;
-            }
-            else if(a1[i] == '0' and a2[j] == '1'){
-                ans += a1[i];
-                i++;
-                j++;
-            }
-            else {
-                ans += a2[j];
-                down = j+1;
-                break;
-            }
-        }
-        int d = down;
-
-    
-        while(down <= n-1){
-        ans += a2[down];
-        down++;
-        }
-        cout<<ans<<endl;
-        int cnt = 0;
-        while(d>=0){
-            
-        }
-        
     
 }
 /* logic ends */
@@ -89,8 +49,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

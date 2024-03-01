@@ -37,48 +37,22 @@
 using namespace std;
 
 /* write core logic here */
+vector<int> dp;
+int f(int n){
+    dp[0] = 0;
+    for(int i = 1; i<=1e9+4; i++){
+        if(i>=1) dp[i] = min(dp[i], dp[i-1]);
+        if(i>=3) dp[i] = min(dp[i], dp[i-3]);
+        if(i>=6) dp[i] = min(dp[i], dp[i-6]);
+        if(i>=10) dp[i] = min(dp[i], dp[i-10]);
+        if(i>=15) dp[i] = min(dp[i], dp[i-15]);
+        dp[i]++;
+    }
+}
 void solve(){
-        int n;
-        cin>>n;
-        string a1,a2;
-        cin>>a1>>a2;    
-        string ans = "";
-        int down = n-1;
-        int nod = -1;
-        int i = 1;
-        int j = 0;
-        ans += a1[0];
-        while(i<n and j<n){
-            if(a1[i] == a2[j]) {
-                ans += a1[i];
-                i++;
-                j++;
-            }
-            else if(a1[i] == '0' and a2[j] == '1'){
-                ans += a1[i];
-                i++;
-                j++;
-            }
-            else {
-                ans += a2[j];
-                down = j+1;
-                break;
-            }
-        }
-        int d = down;
-
-    
-        while(down <= n-1){
-        ans += a2[down];
-        down++;
-        }
-        cout<<ans<<endl;
-        int cnt = 0;
-        while(d>=0){
-            
-        }
-        
-    
+    int n;
+    cin>>n;
+    cout<<dp[n]<<endl;
 }
 /* logic ends */
 
@@ -90,6 +64,9 @@ signed main(){
     #endif
     int t;
     cin>>t;
+    dp.clear();
+    dp.resize(1e9+5,INT_MAX);
+    f(1e9+5);
     //t = 1;
     while(t--){
         solve();
