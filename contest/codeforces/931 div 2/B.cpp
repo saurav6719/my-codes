@@ -37,22 +37,49 @@
 using namespace std;
 
 /* write core logic here */
-vector<int> dp;
-int f(int n){
-    dp[0] = 0;
-    for(int i = 1; i<=1e9+4; i++){
-        if(i>=1) dp[i] = min(dp[i], dp[i-1]);
-        if(i>=3) dp[i] = min(dp[i], dp[i-3]);
-        if(i>=6) dp[i] = min(dp[i], dp[i-6]);
-        if(i>=10) dp[i] = min(dp[i], dp[i-10]);
-        if(i>=15) dp[i] = min(dp[i], dp[i-15]);
-        dp[i]++;
-    }
-}
+
+
+
 void solve(){
     int n;
     cin>>n;
-    cout<<dp[n]<<endl;
+    vector<int> mp(15);
+
+    mp[0] = 0;
+    mp[1] = 1;
+    mp[2] = 2;
+    mp[3] = 1;
+    mp[4] = 2;
+    mp[5] = 3;
+    mp[6] = 1;
+    mp[7] = 2;
+    mp[8] = 3;
+    mp[9] = 2;
+    mp[10] = 1;
+    mp[11] = 2;
+    mp[12] = 2;
+    mp[13] = 2;
+    mp[14] = 3;
+    if(n<15){
+        cout<<mp[n]<<endl;
+        return;
+    }
+
+    int fifteen = n/15;
+    n%=15;
+    int ans = 0;
+    ans += fifteen;
+    //debug(ans);
+    int x = INT_MAX;
+    
+    if(n>=5) x =  mn(x,mp[n], 1+mp[n-5]);//debug(x);// 1 10 
+    if(n>=3) x =  mn(x,mp[n], 2+mp[n-3]); //debug(x);
+    x =  mn(x,mp[n], 5+mp[n]);
+    x = mn(x,mp[n],15+mp[n]);
+    ans+=x;
+    
+   
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -64,9 +91,6 @@ signed main(){
     #endif
     int t;
     cin>>t;
-    dp.clear();
-    dp.resize(1e9+5,INT_MAX);
-    f(1e9+5);
     //t = 1;
     while(t--){
         solve();
