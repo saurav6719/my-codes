@@ -38,26 +38,21 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n ; 
-    cin>> n ;
-    vector<int> arr(n);
-    for(int i = 0; i<n; i++){
-        cin>>arr[i];
- 
+    int n;
+    cin>>n;
+    vector<pair<int,int> > input(n);
+    for(int i = 0 ; i<n; i++){
+        cin>>input[i].first>>input[i].second;
     }
-    sort(arr.begin(),arr.end());
-    int i = arr[n-1];
-    int j = arr[0];
-    int k = arr[n-2];
-    int l = arr[1];
- 
+    sort(input.begin(), input.end());
+    for(int i = 1; i<n; i++){
+        input[i].first += input[i-1].first; 
+    }
     int ans = 0;
-    ans += abs(i-j);
-    ans += abs(j-k);
-    ans += abs(k-l);
-    ans += abs(l-i);
- 
-    cout<<ans<<endl;
+    for(int i = 0; i<n; i++){
+        ans += input[i].second - input[i].first;
+    }
+    cout<<ans;
 }
 /* logic ends */
 
@@ -68,8 +63,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
