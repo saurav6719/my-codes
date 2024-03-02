@@ -62,22 +62,38 @@ void solve(){
             else {
                 ans += a2[j];
                 down = j+1;
+                nod = 1;
                 break;
             }
         }
-        int d = down;
+        int d ;
+        if(nod == 1){
+            d = down - 1;
+        }
+        else d = n-1;
+        debug(d);
 
     
-        while(down <= n-1){
-        ans += a2[down];
-        down++;
+        if(nod == 1){
+            while(down <= n-1){
+            ans += a2[down];
+            down++;
+            }
         }
+        else ans+= a2[n-1];
+
         cout<<ans<<endl;
-        int cnt = 0;
-        while(d>=0){
-            
+        int cnt = 1;
+        
+        while(d>0){
+            if(a1[d] == a2[d-1]) {
+                cnt++;
+                d--;
+            }
+            else break;
         }
         
+        cout<<cnt<<endl;
     
 }
 /* logic ends */
