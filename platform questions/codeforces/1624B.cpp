@@ -39,8 +39,7 @@ using namespace std;
 /* write core logic here */
 void solve(){
     int a , b, c;
-    cin>>a>>b>>c;
-    
+    cin>>a>>b>>c;   
     // choosing a
     int reqc;
     int reqb;
@@ -49,7 +48,6 @@ void solve(){
     int d = c - b;
     reqa = b-d;
     if(reqa % a == 0 and reqa / a > 0) ansa = true;
-
     //choosing b
     bool ansb = false;
     d = (c-a);
@@ -59,7 +57,6 @@ void solve(){
     d/=2;
     reqb = a+d;
     if(reqb % b == 0 and reqb / b > 0 ) ansb = true;
-
     gotto: 
     //choosing c
     bool ansc = false;
