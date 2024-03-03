@@ -21,7 +21,7 @@ void helper(int n){
     if(n==1) {
         cout<<"1";
         return;
-    }
+    }  
     if(n&1){
         cout<<n<<" ";
         helper(3*n+1);
