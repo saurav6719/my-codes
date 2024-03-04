@@ -35,11 +35,6 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
-
-bool comparePairs(const pair<int, int>& a, const pair<int, int>& b) {
-    return a.first < b.first;
-}
-
 /* write core logic here */
 void solve(){
     int n;
@@ -47,46 +42,32 @@ void solve(){
     cin>>n;
     cin>>x;
     vector<pair<int,int> >input(n);
-    vector<int> index(n);
     for(int i = 0 ; i<n; i++){
         cin>>input[i].first;
         input[i].second = i+1;
     }
-    
+    sort(input.begin(), input.end());
 
-    sort(input.begin(), input.end(), comparePairs);
     for(int i = 0; i<n; i++){
-        for(int j = 0; j<n; j++){
-            
-            if(i==j) continue;
-            debug(i);
-            debug(j);
-            int sum = input[i].first + input[j].first;
-            debug(sum);
-            int target = x - sum;
-            if(target < 0 ) break;
-            int idx = lower_bound(input.begin(), input.end(), make_pair(target,0), comparePairs) - input.begin();
-            debug(idx);
-            if(input[idx].first == target and input[idx].second != input[i].second and input[idx].second != input[j].second){
-                
-                cout<<input[i].second<<" "<<input[j].second<<" "<<input[idx].second<<endl;
-                return;
+        int l = 0; 
+        int r = n-1;
+        int target = x - input[i].first;
+
+        while(l!=r and l<n and r>=0){
+            if((input[l].first + input[r].first) == target){
+                if(((input[l].second) != (input[i].second)) and ((input[r].second) != (input[i].second))){
+                    cout<<input[i].second<<" "<<input[l].second<<" "<<input[r].second;
+                    return;
+                }
+                l++;
             }
-            if(input[idx+1].first == target and input[idx+1].second != input[i].second  and input[idx+1].second != input[j].second){
-                
-                cout<<input[i].second<<" "<<input[j].second<<" "<<input[idx+1].second<<endl;
-                return; 
+            else if((input[l].first + input[r].first) < target){
+                l++;
             }
-            if(input[idx+2].first == target and input[idx+2].second != input[i].second and input[idx+2].second != input[j].second){
-                debug(input[idx+2].second);
-                cout<<input[i].second<<" "<<input[j].second<<" "<<input[idx+2].second<<endl;
-                return;
-            }
+            else r--;
         }
     }
-    cout<<"IMPOSSIBLE"<<endl;
-    
-
+    cout<<"IMPOSSIBLE";
 }
 /* logic ends */
 
