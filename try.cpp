@@ -1,69 +1,64 @@
-#include<iostream>
-#include<cmath>
-#include<algorithm>
-#include<vector>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include<numeric>
+
 using namespace std;
 
-int main(){
-    int t;
-    cin>>t;
+struct Process {
+    int id;
+    int arrival_time;
+    int burst_time;
+    int priority;
+};
 
-    while(t--){
-        int n;
-        cin>>n;
+bool compare(Process p1, Process p2) {
+    return p1.priority < p2.priority;
+}
 
-        // take 2 binary strings as input 
-        string a1,a2;
-        cin>>a1>>a2;    
+void priorityScheduling(vector<Process>& processes) {
+    int n = processes.size();
+    vector<int> waiting_time(n, 0);
+    vector<int> turnaround_time(n, 0);
 
-        string ans="";
-        ans+=a1[0];
+    sort(processes.begin(), processes.end(), compare);
 
-        bool f=false;
-        int i=1,j=0;
-        while(i<n && j<n){
-            if(a1[i]=='1' && a2[j]=='0'){
-                f=true;
-                break;
-            }
-            if(!f){
-                ans+=a1[i];
-                i++;
-                j++;
-            }
+    int current_time = 0;
+    for (int i = 0; i < n; ++i) {
+        if (current_time < processes[i].arrival_time) {
+            current_time = processes[i].arrival_time;
         }
 
-        if(f)
-            ans+=a2.substr(j,n-j);
-            debug(ans);
-        
-        vector<string>v(n,"");
+        waiting_time[i] = current_time - processes[i].arrival_time;
+        turnaround_time[i] = waiting_time[i] + processes[i].burst_time;
 
-        for(int k=n-2;k>=0;k--){
-            string s="";
-            s+=a2[k+1];
-            s+=v[k+1];
-            v[k]+=s;
-        }
-
-        vector<string>v1(n,"");
-
-        for(int k=n-2;k>=0;k--){
-            string s="";
-            s+=ans[k+1];
-            s+=v1[k+1];
-            v1[k]+=s;
-        } 
-
-        int count=0;
-        for(int i=0;i<n;i++){
-            if(a1[i+1]==a2[i]){
-                if(v1[i+1]==v[i])
-                    count++;
-            }
-        }
-        cout<<ans<<endl;
-        cout<<count<<endl;
-        
+        current_time += processes[i].burst_time;
     }
+
+    double avg_waiting_time = accumulate(waiting_time.begin(), waiting_time.end(), 0.0) / n;
+    double avg_turnaround_time = accumulate(turnaround_time.begin(), turnaround_time.end(), 0.0) / n;
+
+    cout << "Process\t Arrival Time\t Burst Time\t Priority\t Waiting Time\t Turnaround Time" << endl;
+    for (int i = 0; i < n; ++i) {
+        cout << "P" << processes[i].id << "\t " << processes[i].arrival_time << "\t\t "
+             << processes[i].burst_time << "\t\t " << processes[i].priority << "\t\t "
+             << waiting_time[i] << "\t\t " << turnaround_time[i] << endl;
+    }
+
+    cout << "\nAverage Waiting Time: " << avg_waiting_time << endl;
+    cout << "Average Turnaround Time: " << avg_turnaround_time << endl;
+}
+
+int main() {
+    vector<Process> processes = {
+        {1, 0, 11, 2},
+        {2, 5, 28, 0},
+        {3, 12, 2, 3},
+        {4, 2, 10, 1},
+        {5, 9, 16, 4}
+    };
+
+    priorityScheduling(processes);
+
+    return 0;
 }
