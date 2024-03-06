@@ -44,9 +44,33 @@ void solve(){
     for(int i = 0 ; i<n; i++){
         cin>>input[i];
     }
+    stack<int> st;
+    st.push(1);
     vector<int> ans(n);
     ans[0] = 0;
-    
+    for(int i = 1; i<n; i++){
+        debug(input[i]);
+        debug(st.top());
+        while((!st.empty() and input[i] <= input[st.top()-1])){
+            st.pop();
+        }
+
+        if(st.empty()) {
+            ans[i] = 0;
+            st.push(i+1);
+            continue;
+        }
+
+        if(input[i] > input[st.top()-1]){
+            ans[i] = st.top();
+            st.push(i+1);
+        }
+    }
+    for(int i = 0; i<n; i++){
+        cout<<ans[i]<<" ";
+    }
+
+
 }
 /* logic ends */
 
