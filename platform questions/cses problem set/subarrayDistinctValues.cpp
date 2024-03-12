@@ -38,7 +38,7 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+ .   
 }
 /* logic ends */
 
