@@ -22,7 +22,31 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
+    int cnt = 0;
+    set<int> st;
+    int a = 0;
+    int b = 0;
+    while(b<n){
+        st.insert(input[b]);
+        if(st.size() > k){
+            st.erase(input[a]);
+            int ele = input[a];
+            while(input[a] == ele) a++;
+        }
+        
+        b++;
+        cnt+= b-a; 
+    }
+    cout<<cnt;
+
 }
 /* logic ends */
 
