@@ -1,19 +1,3 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
-
-/* includes and all */
 
 #include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
@@ -38,7 +22,7 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
- .   
+    
 }
 /* logic ends */
 
