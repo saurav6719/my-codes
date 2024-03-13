@@ -31,22 +31,23 @@ void solve(){
         cin>>input[i];
     }
     int cnt = 0;
-    set<int> st;
-    int a = 0;
-    int b = 0;
-    while(b<n){
-        st.insert(input[b]);
-        if(st.size() > k){
-            st.erase(input[a]);
-            int ele = input[a];
-            while(input[a] == ele) a++;
+    map<int,int> mp;
+    int j = 0;
+    for(int i = 0 ;i<n; i++){
+        while(j<n and(mp.size() < k or mp.count(input[j]) > 0)){
+            mp[input[j]]++;
+            j++;
         }
-        
-        b++;
-        cnt+= b-a; 
+        cnt += j - i;
+        debug(cnt);
+        mp[input[i]]--;
+        debug(mp[input[i]]);
+        if(mp[input[i]] == 0){
+            mp.erase(input[i]);
+        }
     }
-    cout<<cnt;
 
+    cout<<cnt;
 }
 /* logic ends */
 
