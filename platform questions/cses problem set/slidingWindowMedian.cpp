@@ -66,7 +66,6 @@ void solve(){
             median = *(st.find_by_order((k/2) - 1));
         }
         cout<<median<<" ";
-        st[input[a]]--;
         // debug(input[a]);
         a++;
         b++;
