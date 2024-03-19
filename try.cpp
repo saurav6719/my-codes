@@ -38,8 +38,24 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-	
-}
+	int a,b,c;
+	cin>>a>>b>>c;
+	int ans = 0;
+	ans += a;
+	int md = b%3;
+	if(md+c <3 and md!= 0){
+		cout<<-1<<endl;
+		return;
+	}
+	int quo = b/3;
+	ans += quo;
+	int rem = md + c;
+	debug(md);
+	debug(rem);
+	ans+= rem/3;
+	if(rem%3!= 0) ans++;
+	cout<<ans<<endl;
+}	
 /* logic ends */
 
 signed main(){
@@ -49,8 +65,8 @@ signed main(){
 		freopen("Error.txt" , "w" , stderr);
 	#endif
 	int t;
-	//cin>>t;
-	t = 1;
+	cin>>t;
+	//t = 1;
 	while(t--){
 		solve();
 	}
