@@ -57,17 +57,44 @@ int power(int a, int x, int p = mod){
 
 void solve(){
     int n,q;
-    cin>>n,q;
+    cin>>n>>q;
     set<int> st;
     vector<int> input1(n);
     vector<int> input2(q);
+    vector<int> ff;
     for(int i = 0; i<n; i++){
         cin>> input1[i];
     }
+    
     for(int i= 0; i<q; i++){
         cin>>input2[i];
+        if(!st.count(input2[i])){
+            ff.push_back(input2[i]);
+        }
+        st.insert(input2[i]);
     }
-    
+    print(input1);
+    print(input2);
+    print(ff);
+
+    for(int i = 0; i<n; i++){
+        int ele = input1[i];
+        //debug(ele);
+        for(int i = 0; i<ff.size(); i++){
+            int pow = twopower[ff[i]];
+            if(ele % pow == 0){
+                ele += twopower[ff[i]-1];
+                debug(ele);
+            }
+        }
+        input1[i] = ele;
+    }
+
+    for(int i = 0; i<n; i++){
+        cout<<input1[i]<<" ";
+    }
+    cout<<endl;
+
 }
 /* logic ends */
 
