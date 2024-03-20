@@ -37,25 +37,77 @@
 using namespace std;
 
 /* write core logic here */
+int round(int n){
+	if(n&1) return n/2 + 1;
+	return n/2;
+}
 void solve(){
-	int a,b,c;
-	cin>>a>>b>>c;
-	int ans = 0;
-	ans += a;
-	int md = b%3;
-	if(md+c <3 and md!= 0){
-		cout<<-1<<endl;
-		return;
+	int n;
+	cin>>n;
+	string str;
+	cin>>str;
+	int one = 0;
+	for(int i = 0; i<n; i++){
+		if(str[i] == '1') one ++;
 	}
-	int quo = b/3;
-	ans += quo;
-	int rem = md + c;
-	debug(md);
-	debug(rem);
-	ans+= rem/3;
-	if(rem%3!= 0) ans++;
-	cout<<ans<<endl;
-}	
+	int zero = n - one;
+	debug(zero);
+	debug(round(zero));
+	debug(round(one));
+	vector<int> cnt0(n,0);
+	vector<int> cnt1(n,0);
+	if(str[0] == '0') cnt0[0] = 1;
+	else cnt1[0] = 1;
+	for(int i = 1; i<n; i++){
+		if(str[i] == '0'){
+			cnt0[i] = cnt0[i-1] + 1;
+			cnt1[i] = cnt1[i-1];
+		}
+		else{
+			cnt0[i] = cnt0[i-1];
+			cnt1[i] = cnt1[i-1] + 1;
+		}
+	}
+
+	reverse(cnt1.begin(), cnt1.end());
+
+	// print(cnt0);
+	// print(cnt1);
+	int ans ;
+	int ans2;
+	int mid;
+	if(n%2 == 0) mid = n/2 -1;
+	else mid = n/2;
+	int mid2 = mid;
+	
+	while(mid >0){
+		if(cnt0[mid] >= round(zero) and cnt1[mid] >= round(one)){
+			ans = mid;
+			break;
+		}
+		mid--;
+	}
+	debug(ans);
+	while(mid2 <n){
+		if(cnt0[mid2] >= round(zero) and cnt1[mid2] >= round(one)){
+			ans2 = mid2;
+			break;
+		}
+		mid2++;
+	}
+	//debug(ans2);
+	int xx = abs(n/2-mid2);
+	//debug(xx);
+	int yy = abs(n/2 - mid);
+	//debug(yy);
+	if(xx<yy){
+		ans = ans2;
+	}
+	cout<<ans+1<<endl;
+
+
+
+}
 /* logic ends */
 
 signed main(){
