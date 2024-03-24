@@ -51,27 +51,66 @@ void solve(){
     for(int i =  0; i<n; i++){
         cin>>input[i];
     }
-    ordered_map st;
-    for(int i = 0; i<k; i++){
-        st[input[i]]++;
-    } 
-    int a = 0;
-    int b = k-1;
-    while(b<n){
-        int median;
-        if(k&1){
-            median = *(st.find_by_order(k/2));
+    if(k==1){
+        for(int i = 0; i<n; i++){
+            cout<<input[i]<<" ";
+
         }
-        else{
-            median = *(st.find_by_order((k/2) - 1));
-        }
-        cout<<median<<" ";
-        // debug(input[a]);
-        a++;
-        b++;
-        st[input[a]]++;
-        st[input[b]]++;
+        return;
+
     }
+    if(k==2){
+        for(int i = 1 ; i<n; i++){
+            cout<<min(input[i-1], input[i])<<" ";
+            
+        }
+        return;
+    }
+    set<pair<int,int> > left;
+    set<pair<int,int> > right;
+    vector<pair<int,int> > sorted;
+    for(int i = 0; i<k; i++){
+        sorted.push_back({input[i],i});
+    }
+    sort(sorted.begin(), sorted.end());
+    for(int i = 0; i<(k/2) + (k%2); i++){
+        left.insert(sorted[i]);
+    }
+    for(int i = k/2 + (k%2) ; i<k; i++){
+        right.insert(sorted[i]);
+    }
+
+    auto t = left.rbegin();
+    cout<<t->first<<" ";
+    for(int i = 1; i<n-k+1; i++){
+        
+        if(left.count({input[i-1], i-1})){
+            left.erase({input[i-1], i-1});
+        }
+        
+        
+        else right.erase({input[i-1], i-1});
+        
+        if(*(left.rbegin()) < make_pair(input[k-1+i], k-1+i)) right.insert({input[k-1+i], k-1+i});
+        else left.insert({input[k-1+i], k-1+i});
+        while(left.size() < k/2 + (k%2)){
+            pair<int,int> z = (*(right.begin()));
+            left.insert(z);
+            right.erase(z);
+
+        }
+        while(left.size() > k/2 + (k%2)){
+            pair<int,int> z = (*(left.rbegin()));
+            right.insert(z);
+            left.erase(z);
+            
+        }
+        cout<<left.rbegin()->first<<" ";
+    }
+
+
+
+
 }
 /* logic ends */
 
