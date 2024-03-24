@@ -41,13 +41,32 @@ void solve(){
     int n;
     cin>>n;
     vector<int> input(n);
+    int cnt = 0;
+    int sum = 0;
     for(int i = 0; i<n; i++){
         cin>>input[i];
+        if(input[i] < 0) cnt++;
+        
     }
-    vector<int> input_copy = input;
-    for(int i = 1;i<n; i++){
-        int curr = 
+    if(cnt % 2 == 0) {
+        for(int i = 0; i<n; i++){
+            sum += abs(input[i]);
+        }
+        cout<<sum<<endl;
+        return;
     }
+    int miin = INT_MAX;
+    for(int i = 0; i<n; i++){
+        if(abs(input[i]) < miin) miin = abs(input[i]);
+    }
+    int ans = 0;
+    for(int i = 0; i<n; i++){
+        ans+= abs(input[i]);
+    }
+
+    ans -= 2*miin;
+    cout<<ans<<endl;
+    
 }
 /* logic ends */
 
