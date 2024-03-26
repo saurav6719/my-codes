@@ -41,40 +41,18 @@ void solve(){
     string str;
     cin>>str;
     int n = str.size();
-    map<char,int> st;
-    map<char,int> fre;
-    for(int i = 0; i<n; i++){
-        if(st[str[i]] == 0){
-            st[str[i]] = i;  
-            fre[str[i]]++;
-        }
-        else{
-            int mini = INT_MAX;
-                int maxi = INT_MIN;
-            for(auto ele : st){
-                if(ele.second < st[str[i]] and ele.first != str[i]){
-                    debug(i);
-                    cout<<"NO"<<endl;
-                    return;
-                }
-                
-
-                
-            }
-        st[str[i]] = i;
-        fre[str[i]]++;
-        for(auto ele : fre){
-            if(ele.second > maxi ) maxi = ele.second;
-            if(ele.second < mini) mini = ele.second;
-        }
-        if(maxi - mini > 1){
+    set<char> st;
+    for(int i = 0 ; i<n; i++){
+        st.insert(str[i]);
+    }
+    int m = st.size();
+    for(int i = m; i<n; i++){
+        if(str[i-m] != str[i]){
             cout<<"NO"<<endl;
             return;
         }
-        }
     }
     cout<<"YES"<<endl;
-    return;
 }
 /* logic ends */
 
