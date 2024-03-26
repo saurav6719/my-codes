@@ -37,6 +37,30 @@
 using namespace std;
 
 /* write core logic here */
+int binarySearch(const vector<int>& arr, int target) {
+    int left = 0;
+    int right = arr.size() - 1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        // Check if target is present at mid
+        if (arr[mid] == target)
+            return mid;
+        
+        // If target greater, ignore left half
+        if (arr[mid] < target)
+            left = mid + 1;
+        // If target is smaller, ignore right half
+        else
+            right = mid - 1;
+    }
+    
+    // If target is not present in the array
+    return -1;
+}
+
+
 void solve(){
     int n;
     cin>>n;
@@ -46,13 +70,20 @@ void solve(){
     }
     vector<int> input_copy = input;
     sort(input_copy.begin(), input_copy.end());
+
     int ans;
+    vector<int> aa;
     for(int i = 0; i<n; i++){
-        if(input[i] != input_copy[i]) {
-            ans = input_copy[i] & input[i];
-            break;
+        if(input[i] != input_copy[i]){
+            aa.push_back(input[i]);
         }
     }
+    ans = aa[0];
+    for(int i = 1; i<aa.size(); i++){
+        ans &= aa[i];
+    }
+    print(aa);
+
     cout<<ans<<endl;
 }
 /* logic ends */
