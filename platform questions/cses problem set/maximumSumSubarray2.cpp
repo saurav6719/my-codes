@@ -34,82 +34,48 @@
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
+#define INF 1e18
 using namespace std;
 
 /* write core logic here */
+
+struct DescendingOrder {
+    bool operator() (const int& a, const int& b) const {
+        return a > b; // Compare in descending order
+    }
+};
+
 void solve(){
     int n,a,b;
     cin>>n>>a>>b;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-    }
-    int aa = 0;
-    int maxi ;
-    int sum = 0;
-    while(aa<a){
-        sum += input[aa];
-        aa++;
-    }
-    maxi = sum;
-    int bb= 0;
-    int start = 0;
-    int d= a;
-    int curr = d;
-    while(aa<b){
-        sum += input[aa];
-        if(sum > maxi){
-            maxi = sum;
-            d = aa;
-        }
-        aa++;
-    }
-    curr = b;
-    debug(curr);
-    debug(start);
-    debug(maxi);
-    while(curr < n){
-        // if(curr > d){
-        //     sum = 0;
-        //     int end = curr + a - 1;
-        //     while(curr < end and curr < n){
-        //         sum += input[curr];
-        //         curr++;
-        //     }
-        //     if(sum > maxi){
-        //         maxi = sum;
-        //         start = end - a + 1;
-        //     }
-        //     while(end < b and end<n){
-        //         sum += input[end];
-        //         if(sum > maxi){
-        //             maxi = sum;
-        //             d= end;
-        //         }
-        //         end++;
-        //     }
-        //     continue;
-        // }
-        debug(curr);
-        debug(b);
-        sum -= input[start];
-        bb++;
-        debug(sum);
-        if(sum > maxi){
-            maxi = sum;
-            start = curr - 1;
-        }
-        debug(start);
-        sum += input[curr];
-        if(sum > maxi){
-            maxi = sum;
-            d = curr;
-        }
-        debug(d);
-        curr++;
-    }
-     cout<<maxi<<endl;
+    vector<int> prf(n+1);
 
+    for(int i = 1; i<=n; i++){
+        cin>>prf[i];
+    }
+
+    
+    prf[0] = 0;
+    for(int i = 1; i<=n; i++){
+        prf[i] += prf[i-1];
+    }
+
+    print(prf);
+    set<pair<int,int> > st;
+
+    int ans = -INF;
+    for(int i = a; i<=b; i++){
+        st.insert({prf[i], i});
+    }
+    for(int i = 1; i<= n-a+1; i++){
+        ans = max(ans , st.rbegin() -> first - prf[i-1]);
+        st.erase({prf[i + a-1], i+a-1});
+        if(i+b <=n ) st.insert({prf[i+b], i+b});
+    }
+    cout<<ans<<endl;
+    
+
+    
 }
 /* logic ends */
 
