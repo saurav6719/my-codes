@@ -74,22 +74,22 @@ void solve(){
     int n;
     cin>>n;
     vector<int> input(n);
-    set<pair<int,int> > st;
+    map<int,int> mp;
     for(int i= 0; i<n; i++){
         cin>>input[i];
-        st.insert({input[i] , i+1});
+        mp[input[i]] = i+1;
     }
     int ans = INT_MIN;
     for(int i = 1; i<=1000; i++){
         for(int j = 1; j<=1000; j++){
-            if(st.count(i) and st.count(j) and gcd(i,j) == 1){
-                debug(i);
-                debug(j);
-                ans = max(ans, binarySearch(input,i) +1 + binarySearch(input,j) + 1);
-                
+            if(mp.count(i) and mp.count(j) and gcd(i,j) == 1){
+                // debug(i);
+                // debug(j);
+                ans = max(ans, mp[i]+mp[j]);
             }
         }
     }
+    if(ans == INT_MIN) ans = -1;
     cout<<ans<<endl;
     
 
