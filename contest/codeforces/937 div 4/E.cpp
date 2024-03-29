@@ -12,9 +12,9 @@
   
   Happy coding! 
 */
-
+ 
 /* includes and all */
-
+ 
 #include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
@@ -34,11 +34,10 @@
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
-#define ll long long int
 using namespace std;
-
+ 
 /* write core logic here */
-
+ 
 vector<int> findDivisors(int n) {
     vector<int> divisors;
     for (int i = 1; i * i <= n; ++i) {
@@ -54,62 +53,50 @@ vector<int> findDivisors(int n) {
     }
     return divisors;
 }
-bool isPossible(int k, string s){
-    unordered_set<string> st;
-    int len = s.length();
-
-    int l = 0;
-    int r = k;
-  string str = s.substr(l, r-l+1);
-    while(r < len){
-        
-        st.insert(str);
-        l=r+1;
-        r+=k;
+ 
+bool poss(int i, string &str) {
+  
+    string ff = str.substr(0, i);
+    string ss = str.substr(i, i);
+    while (ff.length() < str.length()) {
+        ff += ff;
     }
-
-    if(st.size() == 1){
-        return true;
+    while (ss.length() < str.length()) {
+        ss += ss;
     }
-    if(st.size() > 2) return false;
-    if(st.size() == 2){
-      string res = "";
-    int rep = len / str.size();
-    while(rep--){
-      res += str;
+    int cntf = 0;
+    int cnts = 0;
+    for (int i = 0; i < str.size(); i++) {
+        if (ff[i] != str[i]) cntf++;
+        if (ss[i] != str[i]) cnts++;
     }
-    int cnt  =0;
-    for(int i = 0; i<len; i++){
-      if(res[i] != s[i]) cnt++;
-    }
-
-    if(cnt <= 1)return true;
-    
+    if (cntf <= 1 || cnts <= 1) return true;
     return false;
-    }
 }
-
-
 void solve(){
-    int n; cin >> n;
-    string s; cin >> s;
-
-    vector<int>  divs = findDivisors(n);
-    sort(divs.begin(), divs.end());
-    int len = divs.size();
-    int ans = s.length();
-
-    for(int i=0; i<len; i++){
-        if(isPossible(divs[i], s)){
-            ans = divs[i];
-            break;
-        }
+    int n;
+    cin>>n;
+    string str;
+    cin>>str;
+ 
+    vector<int> div = findDivisors(n);
+    int ans = n;
+    for(int i = 0; i<div.size(); i++){
+      if(div[i] == n) {
+        ans = min(ans , div[i]);
+        continue;
+      }
+      if(poss(div[i],str)){
+        debug(div[i]);
+        ans = min(ans,div[i]);
+      }
     }
-
-    cout << ans << endl;
+    cout<<ans<<endl;
+ 
+ 
 }
 /* logic ends */
-
+ 
 signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -124,4 +111,4 @@ signed main(){
     }
 return 0;
 }
-
+ 
