@@ -38,7 +38,67 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    vector<char> line1;
+    vector<char> line2;
+    vector<char> line3;
+    vector<char> line4;
+    int cnt = 0;
+    for(int i = 0; i<2*n; i+=2){
+        if(!cnt){
+          line1.push_back('#');
+          line1.push_back('#');
+          cnt = !cnt;
+        }
+        else{
+          line1.push_back('.');
+          line1.push_back('.');
+          cnt = !cnt;
+        }
+    }
+    //print(line1);
+    line2 = line1;
+    int cnt2 = 0;
+    for(int i = 0; i<2*n; i+=2){
+        if(!cnt2){
+          line3.push_back('.');
+          line3.push_back('.');
+          cnt2 = !cnt2;   
+        }
+        else{
+          line3.push_back('#');
+          line3.push_back('#');
+          cnt2 = !cnt2;
+        }
+    }
+    //print(line3);
+    int cnt3 = 0;
+    for(int i = 0; i<2*n; i+=2){
+      if(!cnt3){
+        for(int j = 0; j<line1.size(); j++){
+          cout<<line1[j];
+        }
+        cout<<endl;
+        for(int j = 0; j<line1.size(); j++){
+          cout<<line1[j];
+        }
+        cout<<endl;
+        cnt3 = !cnt3;
+      }
+      else{
+        for(int j = 0; j<line1.size(); j++){
+          cout<<line3[j];
+        }
+        cout<<endl;
+        for(int j = 0; j<line1.size(); j++){
+          cout<<line3[j];
+        }
+        cout<<endl;
+        cnt3 = !cnt3;
+      }
+    }
+
 }
 /* logic ends */
 
@@ -49,8 +109,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }

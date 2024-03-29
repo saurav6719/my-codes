@@ -37,8 +37,24 @@
 using namespace std;
 
 /* write core logic here */
+bool binarydecimal(int n){
+  while(n>0){
+    int md = n%10;
+    n/=10;
+    if(md != 0 and md != 1) return false;
+  }
+  return true;
+}
+vector<bool> dp(1e5+5);
 void solve(){
-    
+    int n;
+    cin>>n;
+    if(dp[n] == true){
+      cout<<"YES"<<endl;
+      return;
+    }
+    cout<<"NO"<<endl;
+
 }
 /* logic ends */
 
@@ -49,8 +65,29 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
+
+    
+    dp[1] = true;
+    for(int i = 2; i<=1e5; i++){
+      if(binarydecimal(i)){
+        dp[i] = true;
+        continue;
+      }
+      int sqrt_n = sqrt(i);
+      //debug(sqrt(i));
+      for (int j = 1; j <= sqrt_n; j++) {
+        // If i divides n evenly, it's a factor
+        if (i % j == 0) {
+            if(dp[j]== true and dp[i/j] == true){
+              dp[i] = true;
+              break;
+            }
+        }
+      }
+    }
+
     while(t--){
         solve();
     }
