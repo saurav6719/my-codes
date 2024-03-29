@@ -35,29 +35,19 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
-int dp[101][1000005];
+vector<int> dp;
 /* write core logic here */
-int  f(int n, int x,vector<int> &nums, int i){
+int  f(int n, int x,vector<int> &nums){
     //base case
-	dp[i][0] = 1;
-    if(x<0) {
-        dp[i][x] = 0;
-        return 0;
-    }
-    if(x==0) return 1;
-    if(i==n) return 0;
-    if(dp[i][x] != -1) return dp[i][x];
-    
-    int sum = 0;
-    for(int j = 1; j<=x; j++){
-        if(j-nums[i] < 0) {
-            dp[i][j] = 0;
-            continue;
+	dp[0] = 1;
+    for(int i = 0 ;i<n; i++){
+        for(int j = 1; j<=x; j++){
+            if(j-nums[i] < 0 ) continue;
+            dp[j] += (dp[j-nums[i]] % mod);
         }
-        sum += f(n,j-nums[i] , nums , i); 
-        if( j - nums[i] >0 )sum += f(n,j-nums[i], nums, i+1);
     }
-	return dp[i][x] = sum;
+ 
+	return dp[x];
 }
 void solve(){
     int n;
@@ -68,8 +58,9 @@ void solve(){
     for(int i = 0; i<n; i++){
         cin>>nums[i];
     }
-    memset(dp, -1 , sizeof dp);
-    cout<<f(n,x,nums, 0) % mod;
+    dp.clear();
+    dp.resize(x+5);
+    cout<<f(n,x,nums) % mod;
 }
 /* logic ends */
  
@@ -86,4 +77,3 @@ signed main(){
         solve();
     }
 return 0;
-}
