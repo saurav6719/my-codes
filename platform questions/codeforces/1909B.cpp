@@ -53,6 +53,7 @@ void solve(){
         //even odd dono 
         k = 2;
     }
+    
     else{
         int ans = 4;
         set<int> mods;
