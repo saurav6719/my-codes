@@ -42,10 +42,10 @@ bool poss(int mid , vector<int> &input){
     int start  =  - 1;
     while ((start + mid + 1) < input.size()){
         start += (mid + 1);
-        debug(input[start]);
+        //debug(input[start]);
         curr[input[start]]++;
     }
-    debug(curr.size());
+    //debug(curr.size());
     if(curr.size() < 2) return true;
     if(curr.size() > 2) return false;
     else{
@@ -57,22 +57,45 @@ bool poss(int mid , vector<int> &input){
         return true;
     }
 }
+
+bool poss2(int mid , vector<int> &input, map<int, vector<int> > &index){
+    for(auto ele : index){
+        debug(ele.first);
+        vector<int> indixes = ele.second;
+        print(indixes);
+        int start = -1;
+        int cnt = 0;
+        for(int i = 0; i<indixes.size(); i++){
+            if((indixes[i] - start - 1) > mid){
+                int llee = 
+                cnt+=(indixes[i] - start - 1) / (mid+1);
+            }
+            start = indixes[i];
+        }
+        if((input.size() - start - 1) > mid) cnt+= (input.size() - start - 1) / (mid+1);
+        if(cnt <= 1)return true; 
+    }
+    return false;
+}
 void solve(){
     int n,k;
     cin>>n>>k;
     vector<int> input(n);
+    map<int, vector<int> > index;
     for(int i = 0; i<n; i++){
         cin>>input[i];
+        index[input[i]].push_back(i);
     }
+    
     int lo = 0;
     int hi = n;
     int result = -1;
     while(lo <= hi){
-        debug(lo);
-        debug(hi);
+        // debug(lo);
+        // debug(hi);
         int mid = lo + (hi - lo)/2;
-        if(poss(mid, input)) {
-            debug(mid);
+        if(poss(mid, input) or poss2(mid,input,index)) {
+            //debug(mid);
             result = mid;
             hi = mid - 1;
         }
