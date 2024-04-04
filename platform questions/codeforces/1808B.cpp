@@ -80,8 +80,8 @@ void solve(){
     }
     int ans = 0;
     for(int i = 0; i<m; i++){
-        //sort(transpose[i].begin(), transpose[i].end());
-        print(transpose[i]);
+        sort(transpose[i].begin(), transpose[i].end());
+        //print(transpose[i]);
         ans += sumAbsoluteDifferences(transpose[i]);
     }
 
