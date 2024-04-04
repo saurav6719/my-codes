@@ -38,37 +38,68 @@ using namespace std;
 
 /* write core logic here */
 
-unsigned int nearestPowerOf2Smaller(unsigned int num) {
-    // If num is already a power of 2, return the number itself
-    if (num && !(num & (num - 1)))
-        return num;
-    
-    // Right shift the number until it becomes 0
-    while (num > 0) {
-        num = num >> 1;
-        if (num == 1) // If num becomes 1, return 1
-            return 1;
-    }
-    
-    // Initialize nearest with 2 and left shift it until it's greater than the original number
-    unsigned int nearest = 2;
-    while (nearest <= num)
-        nearest = nearest << 1;
-    
-    // Right shift nearest once to get the nearest power of 2 smaller than the original number
-    nearest = nearest >> 1;
+int highestPowerof2(int n) {
+    // If n is a power of 2, return n
+    if (n && !(n & (n - 1)))
+        return n;
 
-    return nearest;
+    // Set the leftmost bit of n to 0
+    while (n & (n - 1)) {
+        n = n & (n - 1);
+    }
+
+    return n;
 }
-int f(int n, int k){
+
+int idx(int n){
+    int cnt = 0;
+    while(n!=0){
+        cnt++;
+        n/=2;
+    }
+    return cnt-1;
+}
+
+int power(int a, int x, int p = mod){
+    //finding a to the power x
+    int res = 1;
+    a = a % p;
+    while(x>0){
+        if(x & 1){
+            res = (res * a) % p;
+        }
+        x = x >> 1;
+        a = (a * a) % p;
+    }
+    return res;
+
+}
+
+
+int f(int n, int k, int cnt){
     //base case 
+    //debug(n);
     if(n==1) return 2;
     if(n==0) return 1;
-    int near = 
+    int near = highestPowerof2(n);
+
+    int pow = idx(near);
+    //debug(pow);
+
+    if(k<=pow){
+        return power(2,k);
+    }
+
+    int sum = 0;
+    sum = power(2,pow) + f(n-near, k, cnt);
+    cnt += sum;
+    return cnt;
 }
 void solve(){
     int n,k;
     cin>>n>>k;
+    cout<<f(n,k, 0)<<endl;
+
 }
 /* logic ends */
 
