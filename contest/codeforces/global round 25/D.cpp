@@ -25,6 +25,7 @@
                     } \
                     cout << " ]" << endl; \
                 } while(0)
+#define check() cout<<"check ---1000"<<endl;
 #else
 #define debug(x)
 #define print(v)
@@ -72,6 +73,7 @@ void solve(){
     debug(div);
 
     if(div == k){
+        
         ans.push_back(cost);
         ans.push_back(cost+1);
         cout<<"YES"<<endl;
@@ -84,6 +86,7 @@ void solve(){
     }
 
     if(div > k){
+        check();
         int kminus1 = k-1;
         int n_copy = n;
         n_copy --;
@@ -97,6 +100,7 @@ void solve(){
             cout<<"NO"<<endl;
             return;
         }
+        
         else{
             ans.push_back(n_copy / (k -1));
             if(n/ (n_copy / (k-1)) >= k){
