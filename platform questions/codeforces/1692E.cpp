@@ -1,20 +1,3 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
-
-/* includes and all */
-
 #include<bits/stdc++.h>
 
 #ifndef ONLINE_JUDGE
@@ -37,63 +20,85 @@
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 
-/* write core logic here */
-vector<vector<int> > dp;
-int f(vector<int> &input, int s, int sum, int cnt, bool poss, int i, int j){
+#define int long long
+#define INF LLONG_MAX
 
-    if(i>=input.size()) return dp[i][j] = INT_MAX;
-    if(j<0) return dp[i][j] = INT_MAX;
-    // debug(s);
-    // debug(sum);
-    if(dp[i][j] != -1) return dp[i][j];
-    if(poss){
-        return dp[i][j] = cnt;
-    }  
-    if(sum == s) {
-        poss = true;
-        return dp[i][j] = cnt;
-    }
-    if(sum < s) return INT_MAX;
-    return dp[i][j] = min(f(input,s,sum - input[i], cnt + 1, poss, i+1, j) ,  f(input,s,sum - input[j], 1+cnt, poss, i, j-1));
-}
-void solve(){
 
-    dp.clear();
-    
-    
-    int n,s;
-    cin>>n>>s;
-    dp.resize(n+5, vector<int> (n+5, -1));
-   // debug(dp[0][0]);
+void solve() {
+    int n, s;
+    cin >> n >> s;
     vector<int> input(n);
     int t_sum = 0;
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    for (int i = 0; i < n; i++) {
+        cin >> input[i];
         t_sum += input[i];
     }
-    int cnt = 0;
-    int ans = f(input,s,t_sum,0,false,0,n-1);
-    if(ans >= INT_MAX - 1000000) ans = -1;
-    cout<<ans<<endl;
+    int  s_copy = t_sum- s;
+    if(s_copy==0){
+        cout<<0<<endl;
+        return;
+    }
+    set<int> st1;
+    set<int> st2;
+    vector<int> prfl(n);
+    vector<int> prfr(n);
+    prfl[0] = input[0];
+    st1.insert(input[0]);
+    prfr[n-1] = input[n-1];
+    st2.insert(input[n-1]);
+    for(int i = 1; i<n; i++){
+        prfl[i] = prfl[i-1]+input[i];
+        st1.insert(prfl[i]);
+    }
+    print(prfl);
+    for(int i = n-2; i>=0; i--){
+        prfr[i] = prfr[i+1] + input[i];
+        st2.insert(prfr[i]);
+    }
+    if(!st1.count(s) and !st2.count(s)) {
+        cout<<-1<<endl;
+        return;
+    }
+    reverse(prfr.begin(), prfr.end());
+    print(prfr);
+
+    int ans = min(lower_bound(prfl.begin(), prfl.end(), s_copy) - prfl.begin() + 1, lower_bound(prfr.begin(), prfr.end(), s_copy) - prfr.begin() + 1);
+    debug(ans);
     
+    for(int i  =0; i<n; i++){
+        
+        int ele = prfl[i];
+        if(ele >= s_copy) break;
+        int req = s_copy - ele;
+        int ss = lower_bound(prfr.begin(), prfr.end(), req) - prfr.begin();
+        debug(ss);
+        debug(i+1);
+        ans = min(ans , i+1+ss+1);
+    }
 
+    for(int i  =0; i<n; i++){
+        
+        int ele = prfr[i];
+        if(ele >= s_copy) break;
+        int req = s_copy - ele;
+        int ss = lower_bound(prfl.begin(), prfl.end(), req) - prfl.begin();
+        debug(ss);
+        debug(i+1);
+        ans = min(ans , i+1+ss+1);
+    }
+    
+    cout<<ans<<endl;
 
-
+    
 }
-/* logic ends */
 
-signed main(){
+signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
     int t;
-    cin>>t;
-    //t = 1;
-    while(t--){
+    cin >> t;
+    while (t--) {
         solve();
     }
-return 0;
+    return 0;
 }
-
