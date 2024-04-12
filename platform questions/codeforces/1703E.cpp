@@ -56,16 +56,17 @@ void solve(){
     int cnt = 0;
     int rep = n;
     int a = 0;
-    int b = 0;
+    int b = n-1;
     int c = n-1;
-    int d = n-1;
+    int d = 0;
     for(int i = 0; i<n/2; i++){
         int aa = a;
         int bb = n-1-b;
         int cc = c;
         int dd = n-1-d;
         int rep_copy = rep;
-        while(rep_copy >=1){
+        int beech = b-a;
+        while(beech>0){
             debug(a);
             debug(aa);
             debug(b);
@@ -84,18 +85,19 @@ void solve(){
             if(input[bb][b] == 1) cnt1++;
             if(input[c][cc] == 1) cnt1++;
             if(input[dd][d] == 1) cnt1++;
-            cnt += abs(cnt0-cnt1);
+            debug(cnt1);
+            debug(cnt0);
+            cnt += min(cnt0,cnt1);
             aa++;
             bb++;
             cc--;
             dd--;
-            rep_copy--;
+            beech--;
         }
-        rep -= 2;
         a++;
-        b++;
+        b--;
         c--;
-        d--;
+        d++;
     } 
     cout<<cnt<<endl;
     
