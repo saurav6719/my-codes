@@ -35,32 +35,36 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
-vector<int> dp;
 /* write core logic here */
-int  f(int n, int x,vector<int> &nums){
-    //base case
-	dp[0] = 1;
-    for(int i = 0 ;i<n; i++){
-        for(int j = 1; j<=x; j++){
-            if(j-nums[i] < 0 ) continue;
-            dp[j] += (dp[j-nums[i]] % mod);
-        }
-    }
- 
-	return dp[x];
-}
 void solve(){
     int n;
     cin>>n;
     int x; 
     cin>>x;
     vector<int> nums(n);
+
+    vector<int> next(x+1,0);
+
     for(int i = 0; i<n; i++){
         cin>>nums[i];
     }
-    dp.clear();
-    dp.resize(x+5);
-    cout<<f(n,x,nums) % mod;
+    //base case
+    next[x] = 1;
+    for(int i = n-1; i>=0;i--){
+        vector<int> current(x+1,0);
+        for(int j = x; j>=0;j--){
+            int pick = 0;
+            int skip = next[j];
+            if(j+nums[i] <= x){
+                //pick kr skte hai
+                pick = current[j+nums[i]];
+            }
+            current[j] = (skip % mod + pick %mod)%mod;
+        }
+        next = current;
+    }
+    cout<<next[0];
+    
 }
 /* logic ends */
  
@@ -77,3 +81,4 @@ signed main(){
         solve();
     }
 return 0;
+}
