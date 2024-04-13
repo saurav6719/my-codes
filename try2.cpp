@@ -38,50 +38,27 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    set<int> st;
-    map<int,int> freq;
-    for(int i =0; i<n; i++){
-        cin>>input[i];
-        st.insert(input[i]);
-        freq[input[i]]++;
-    }
-    if(st.size()==1){
-        cout<<-1<<endl;
-        return;
-    }
-    debug(st.size());
-    
-    int startse = 1;
-    int lastse = 1;
-    int cnt = 0;
-
-    for(auto ele : freq){
-        if(ele.second > 1) cnt++;
-    }
-
-    debug(cnt);
-    if(cnt >=2){
-        cout<<1<<endl;
-        return;
-    }
-
-    for(int i = 1; i<n; i++){
-        if(input[i] == input[0]){
-            startse++;
+    string str1;
+    cin>>str1;
+    string str2;
+    cin>>str2;
+    int n = str1.size();
+    bool swapp = false;
+    for(int i = 0; i<n; i++){
+        if(str1[i] == str2[i]) continue;
+        if(swapp == true) {
+            swapp = false;
+            continue;
         }
-        else break;
+        if(!swapp){
+            char temp = str1[i];
+            str1[i] = str2[i];
+            str2[i] = temp;
+            swapp = true;
+        }
     }
-
-    for(int i = n-2; i>=0;i--){
-        if(input[i] == input[n-1]) lastse++;
-        else break;
-    }
-    debug(startse);
-    debug(lastse);
-    cout<<min(startse,lastse)<<endl;
+    cout<<str1<<endl;
+    cout<<str2<<endl;
 }
 /* logic ends */
 
