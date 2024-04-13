@@ -72,9 +72,6 @@ void solve(){
     for(int i = 1; i<=m; i++){
         ans = ((ans %mod) + (prev[i]%mod)) % mod;
     }
-    // print(dp[0]);
-    // print(dp[1]);
-    // print(dp[2]);
     cout<<ans;
 
 }
