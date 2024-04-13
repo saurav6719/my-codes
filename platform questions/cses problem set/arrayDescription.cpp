@@ -46,33 +46,31 @@ void solve(){
     for(int i = 0; i<n; i++){
         cin>>input[i];
     }
-
-    vector<vector<int> >dp;
-    dp.resize(n+1, vector<int> (m+1, 0));
-    //bse case
-
+    vector<int> prev(m+5,0);
     for(int i = 1; i<=m; i++){
         if(input[0] != 0 and input[0] != i){
-            dp[0][i] = 0;
+            prev[i] = 0;
         }
         else{
-            dp[0][i] = 1;
+            prev[i] = 1;
         }
     }
 
     for(int i = 1; i<n; i++){
+        vector<int> curr(m+5,0);
         for(int j = 1; j<=m; j++){
             if(input[i] != 0 and input[i] != j){
-                dp[i][j] = 0;
+                curr[j] = 0;
                 continue;
             }
-            dp[i][j] = (((dp[i-1][j] % mod) + (dp[i-1][j-1]%mod)) % mod + (dp[i-1][j+1]%mod)) % mod;
+            curr[j] = (((prev[j] % mod) + (prev[j-1]%mod)) % mod + (prev[j+1]%mod)) % mod;
         }
+        prev = curr;
     }
 
     int ans = 0;
     for(int i = 1; i<=m; i++){
-        ans = ((ans %mod) + (dp[n-1][i]%mod)) % mod;
+        ans = ((ans %mod) + (prev[i]%mod)) % mod;
     }
     // print(dp[0]);
     // print(dp[1]);
