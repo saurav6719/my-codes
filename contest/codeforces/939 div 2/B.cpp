@@ -38,22 +38,32 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    int cnt = 0;
-    set<int> st;
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    int k;
+    cin>>k;
+    int q;
+    cin>>q;
+    vector<int> hatao(k);
+    for(int i = 0; i<k; i++){
+        cin>>hatao[i];
     }
-    for(int i = 0; i<n; i++){
-        if(st.count(input[i])){
-            cnt++;
+    sort(hatao.begin(), hatao.end());
+    while(q--){
+        int ele;
+        cin>>ele;
+        if(ele < hatao[0]){
+            cout<<ele<<" ";
+            continue;
         }
-        else st.insert(input[i]);
+        if(ele == hatao[0]){
+            cout<<ele-1<<" ";
+            continue;;
+        }
+        if(ele > hatao[0]){
+            cout<<hatao[0]-1<<" ";
+            continue;
+        }
     }
-    cout<<cnt<<endl;
-
+    cout<<endl;
 }
 /* logic ends */
 
@@ -71,4 +81,6 @@ signed main(){
     }
 return 0;
 }
+
+
 
