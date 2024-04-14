@@ -37,6 +37,10 @@
 using namespace std;
 
 /* write core logic here */
+
+//link -> https://codeforces.com/gym/302977/problem/B
+
+
 void solve(){
     int n,k;
     cin>>n>>k;
@@ -51,7 +55,24 @@ void solve(){
 
     vector<int> dp(n+5);
 
-    
+    if(st.count(str[n-1])){
+        dp[n-1] = 1;
+    }
+    else dp[n-1] = 0;
+
+    for(int i = n-2; i>=0;i--){
+        if(st.count(str[i]) == 0){
+            dp[i] = 0;
+            continue;
+        }
+        dp[i] = 1+dp[i+1];
+    }
+    int ans = 0;
+
+    for(int i = 0; i<n; i++){
+        ans += dp[i];
+    }
+    cout<<ans<<endl;
 }
 /* logic ends */
 
