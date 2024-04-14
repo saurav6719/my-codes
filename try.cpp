@@ -1,102 +1,35 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
+#include <thread>
+#include <mutex>
+#include <iostream>
 
-/* includes and all */
+std::mutex fork_mutex[5];
 
-#include<bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#endif
-#define endl "\n"
-#define int long long int
-#define mod 1000000007
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-using namespace std;
+void philosopher(int id) {
+    while (true) {
+        std::cout << "Philosopher " << id << " is thinking.\n";
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-/* write core logic here */
-void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    set<int> st;
-    map<int,int> freq;
-    for(int i =0; i<n; i++){
-        cin>>input[i];
-        st.insert(input[i]);
-        freq[input[i]]++;
+        fork_mutex[id].lock();
+        fork_mutex[(id + 1) % 5].lock();
+
+        std::cout << "Philosopher " << id << " is eating.\n";
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        fork_mutex[id].unlock();
+        fork_mutex[(id + 1) % 5].unlock();
     }
-    if(st.size()==1){
-        cout<<-1<<endl;
-        return;
-    }
-    debug(st.size());
-    
-    int startse = 1;
-    int lastse = 1;
-    int cnt = 0;
-
-    for(auto ele : freq){
-        if(ele.second > 1) cnt++;
-    }
-
-    debug(cnt);
-    if(cnt >=2){
-        cout<<1<<endl;
-        return;
-    }
-
-    for(int i = 1; i<n; i++){
-        if(input[i] == input[0]){
-            startse++;
-        }
-        else break;
-    }
-
-    for(int i = n-2; i>=0;i--){
-        if(input[i] == input[n-1]) lastse++;
-        else break;
-    }
-    debug(startse);
-    debug(lastse);
-    cout<<min(startse,lastse)<<endl;
-}
-/* logic ends */
-
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
-    int t;
-    cin>>t;
-    //t = 1;
-    while(t--){
-        solve();
-    }
-return 0;
 }
 
+int main() {
+    std::thread philosophers[5];
+
+    for (int i = 0; i < 5; ++i) {
+        philosophers[i] = std::thread(philosopher, i);
+    }
+
+    for (int i = 0; i < 5; ++i) {
+        philosophers[i].join();
+    }
+
+    return 0;
+} 
