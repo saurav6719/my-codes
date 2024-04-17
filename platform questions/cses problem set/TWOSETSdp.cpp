@@ -38,7 +38,31 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    int sum = n*(n+1)/2;
+    if(sum&1){
+        cout<<0;
+        return;
+    }
+    //cout<<dp[0]<<endl;
+
+    vector<vector<int> > dp(n+5, vector<int> (sum+5, 0));
+
+    dp[0][0] = 1;
+    for(int i = 1; i<=n ;i++){
+        dp[i][0] = 0;
+    }
+    for(int j = 1; j<=sum/2; j++){
+        for(int i = 1; i<=n; i++){
+            dp[i][j] = dp[i-1][j];
+            if(j-i >= 0){
+                dp[i][j] += dp[i-1][j-i];
+            }
+            dp[i][j] %= mod;
+        }
+    }
+    cout<<dp[n][sum/2];
 }
 /* logic ends */
 
