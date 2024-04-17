@@ -1,14 +1,14 @@
 /*
   ------------------------------------------
  |                                        |
- |      Code Crafted by Saurav     |
+ |      Code Crafted by Shivam     |
  |                                        |
   ------------------------------------------
     \        ,     ,        /
       \      |     |      /
-         \   \___/   /
+         \   \_/   /
            \  -----  /
-             \_____/
+             \_/
   
   Happy coding! 
 */
@@ -35,30 +35,31 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
+int f(vector<int>&v,int n,int tar){
+    unordered_map<int,int>mp;
+    int ans=0; // count no of subarrays 
+    int currsum=0;   // currsum
+    for(int i=0;i<n;i++){
+        currsum+=v[i]; // currsum
+
+        if(currsum==tar) ans++;  // one subarray found
+
+        if(mp.find(currsum-tar)!=mp.end())   // it means other subarray found
+        ans+=mp[currsum-tar];     // (currsum-tar) ka freq hai usko add karenge 
+        mp[currsum]++;            // and finally usko  aage badha do
+    }
+    return ans;
+}
 
 /* write core logic here */
 void solve(){
-    string str1;
-    cin>>str1;
-    string str2;
-    cin>>str2;
-    int n = str1.size();
-    bool swapp = false;
-    for(int i = 0; i<n; i++){
-        if(str1[i] == str2[i]) continue;
-        if(swapp == true) {
-            swapp = false;
-            continue;
-        }
-        if(!swapp){
-            char temp = str1[i];
-            str1[i] = str2[i];
-            str2[i] = temp;
-            swapp = true;
-        }
-    }
-    cout<<str1<<endl;
-    cout<<str2<<endl;
+
+    int n,tar;
+    cin>>n>>tar;
+    vector<int> v(n);
+    for(int i=0;i<n;i++) cin>>v[i];
+    
+    cout << f(v, n, tar)<<endl;
 }
 /* logic ends */
 
@@ -69,11 +70,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
 return 0;
 }
-
