@@ -56,9 +56,10 @@ int power(int a, int x, int p = mod){
 void solve(){
     int a,b,c;
     cin>>a>>b>>c;
-    int one = power(b,c);
-    int two = power(a,one);
-    cout<<two<<endl;
+    int r = power(b,c,mod-1);
+    debug(r);
+    int ans = power(a,r);
+    cout<<ans<<endl;
 }
 /* logic ends */
 
