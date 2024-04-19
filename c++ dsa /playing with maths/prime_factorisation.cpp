@@ -47,7 +47,7 @@ void solve(){
             n /= i;
         }
     }
-    pf.push_back(n);
+    if(n>1) pf.push_back(n);
     for(auto ele : pf){
         cout<<ele<<" ";
     }

@@ -45,9 +45,16 @@ void solve(){
         cin>>input[i];
     }
 
+
     map<int,int> pf;
 
-    for()
+    for(int i = 2; i * i<=n ; i++){
+        if(n%i == 0){
+            mp[i]++;
+            n/=i;
+        }
+    }
+    
 }
 /* logic ends */
 
