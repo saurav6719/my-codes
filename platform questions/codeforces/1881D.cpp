@@ -39,7 +39,7 @@ using namespace std;
 /* write core logic here */
 void solve(){
     int n;
-    cin>>;
+    cin>> n ;
     vector<int> input(n);
     for(int i = 0; i<n; i++){
         cin>>input[i];
@@ -48,13 +48,35 @@ void solve(){
 
     map<int,int> pf;
 
-    for(int i = 2; i * i<=n ; i++){
-        if(n%i == 0){
-            mp[i]++;
-            n/=i;
+    for(int i = 0; i<n; i++){
+        int ele = input[i];
+        for(int i = 2; i * i<=ele ; i++){
+            while(ele%i == 0){
+                //debug(i);
+                pf[i]++;
+                ele/=i;
+            }
+        }
+
+        if(ele>1) {
+            //debug(ele);
+            pf[ele]++;
         }
     }
-    
+
+    // for(auto ele : pf){
+    //     cout<<ele.first<<" "<<ele.second<<endl;
+
+    // }
+    for(auto ele: pf){
+        if(ele.second % n != 0){
+            cout<<"NO"<<endl;
+            return;
+        }
+
+    }
+    cout<<"YES"<<endl;
+
 }
 /* logic ends */
 
