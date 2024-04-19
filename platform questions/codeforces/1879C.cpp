@@ -31,14 +31,12 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+#define MOD 998244353
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 
 /* write core logic here */
-
-const int MOD = 1e9 + 7;
 
 // Function to calculate power in modular arithmetic
 long long power(long long x, long long y) {
@@ -69,20 +67,52 @@ long long nCr(int n, int r) {
     long long denominator = (factorial(r) * factorial(n - r)) % MOD;
     return (numerator * power(denominator, MOD - 2)) % MOD;
 }
+
 void solve(){
+    string str;
+    cin>>str;
+    int n = str.size();
+    int op = 0;
+    int total = 0;
+    int i = 1;
+    vector<int> num;
+    while(i<n){
+        int cnt = 1;
+        while(str[i] == str[i-1]){
+            cnt++;
+            i++;
+        }
+        if(cnt>1) num.push_back(cnt);
+        op += cnt - 1;
+        total += cnt;
+        i++;
+    }
+    print(num);
+    int m = num.size();
+    
+    int ans = 1;
+    for(int i = 0; i<m; i++){
+        debug(nCr(num[i], num[i] - 1));
+        ans = (ans % MOD * nCr(num[i], num[i] - 1) % MOD) % MOD;
+    }
+    debug(ans);
+    
+    ans = (ans % MOD * factorial(op) % MOD) % MOD;
+    if(op == 0) ans = 1;
+    cout<<op<<" "<<ans<<endl;
     
 }
 /* logic ends */
 
-signed main(){
+signed main(){  
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     #ifndef ONLINE_JUDGE
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
