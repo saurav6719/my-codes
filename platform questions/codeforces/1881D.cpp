@@ -39,18 +39,15 @@ using namespace std;
 /* write core logic here */
 void solve(){
     int n;
-    cin>>n;
-    vector<int> pf;
-    for(int i = 2; i * i <= n ; i++){
-        while(n % i == 0){
-            pf.push_back(i);
-            n /= i;
-        }
+    cin>>;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
-    pf.push_back(n);
-    for(auto ele : pf){
-        cout<<ele<<" ";
-    }
+
+    map<int,int> pf;
+
+    for()
 }
 /* logic ends */
 
@@ -61,8 +58,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
