@@ -41,31 +41,24 @@ using namespace std;
 int n;
 string str;
 
-bool poss(int i, set<int> zeroidx, set<int> &firstidx){
-    debug(i);
-    while(zeroidx.size() > 0){
-        int ff = *zeroidx.begin();
-        debug(ff);
-        
-        int checked = ff+i-1;
-        debug(checked);
-        if(checked >= n) return false;
-        zeroidx.erase(ff);
-        for(int j = ff+1; j<=checked; j++){
-            if(j>=n) break;
-            if(zeroidx.count(j)){
-                debug(j);
-                zeroidx.erase(j);
-            }
-            else{
-                //debug(j);
-                zeroidx.insert(j);
-            }
+bool poss(int k, string &str){
+    int i = 0;
+    while(str[i] == '1') i++;
+    int cnt = 0;
+    set<int> st;
+    for(; i<n; i++){
+        if(st.count(i)) cnt --;
+        if(str[i] == '1' and cnt % 2 == 0){
+            continue;
         }
-        if(checked >=n and zeroidx.size() == 0) return true;
-        if(checked >=n and zeroidx.size() > 0) return false;
-
+        if(str[i] == '0' and cnt % 2 == 1){
+            continue;
+        }
+        if(i + k - 1 >= n) return false;
+        st.insert(i+k);
+        cnt++;
     }
+
     return true;
 }
 void solve(){
@@ -74,19 +67,8 @@ void solve(){
     
     cin>>str;
     int ans = 1;
-    set<int> zeroidx;
-    set<int> firstidx;
-    for(int i = 0; i<n; i++){
-        if(str[i] == '0'){
-            zeroidx.insert(i);
-        }
-        else{
-            firstidx.insert(i);
-        }
-    }
     for(int i = n ; i>1; i--){
-        if(poss(i,zeroidx, firstidx)) {
-            //cout<<"gfwsgse"<<i<<endl;
+        if(poss(i,str)) {
             ans = i;
             break;
         }
