@@ -38,7 +38,19 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    map<int,int> mp;
+    for(int i = 0;i<n; i++){
+        cin>>input[i];
+        mp[input[i]]++;
+    }
+    int ans = 0;
+    for(auto ele: mp){
+        ans += (ele.second / 3);
+    }
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -49,8 +61,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
