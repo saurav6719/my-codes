@@ -1,0 +1,1 @@
+{"name":"Local: 1498B","url":"/Users/saurav/Desktop/programming/platform questions/codeforces/1498B.cpp","tests":[{"id":1713783652340,"input":"2\n5 16\n1 2 8 4 8\n6 10\n2 8 8 2 2 8","output":"2\n3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/platform questions/codeforces/1498B.cpp","group":"local","local":true}

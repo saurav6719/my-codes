@@ -37,10 +37,39 @@
 using namespace std;
 
 /* write core logic here */
-
-
+vector<int> dp(1e6+5,-1);
 void solve(){
+    int x;
+    cin>>x;
+    int x_copy = x;
+    vector<int> powers;
+    if(dp[x_copy] != -1) {
+        cout<<dp[x]<<endl;
+        return;
+    }
 
+    for(int i = 2; i * i <= x ; i++){
+        if(x % i ==0){
+            int alpha = 0;
+            while(x % i==0){
+                alpha++;
+                x /= i;
+            }
+            powers.push_back(alpha);
+        }
+    }
+
+
+    if(x > 1){
+        powers.push_back(1);
+    }
+
+    int ans = 1;
+    for(auto ele : powers){
+        ans *= (ele+1);
+    }
+    dp[x_copy] = ans;
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -53,24 +82,8 @@ signed main(){
     int t;
     cin>>t;
     //t = 1;
-    vector<int> answer(1e6+1,-1);
-    for(int i = 1; i<=1e6; i++){
-        int ans = 0;
-        for(int j = 1; j * j <=i; j++){
-        if(i%j == 0){
-            ans++;
-            if(j*j != i){
-                ans++;
-            }
-        } 
-        answer[i] = ans;  
-        }
-    }
-    
     while(t--){
-        int x;
-        cin>>x;
-        cout<<answer[x]<<endl;
+        solve();
     }
 return 0;
 }

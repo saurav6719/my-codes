@@ -39,6 +39,8 @@ using namespace std;
 /* write core logic here */
 void solve(){
     
+    debug(left);
+    
 }
 /* logic ends */
 
@@ -49,10 +51,32 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
+    vector<int> dp(3e5+5,0);
+    dp[0] = 1;
+    dp[1] = 1;
+    dp[2] = 3;
+
+    for(int i = 3; i<=3e5+5; i++){
+      dp[i] = ((dp[i-1]%mod) + ((((i-1)%mod * dp[i-2]%mod) % mod * 2 % mod)%mod) %mod) %mod;
+    }
+
+    
     while(t--){
-        solve();
+        int n;
+        cin>>n;
+        int k;
+        cin>>k;
+        set<int> st;
+        for(int i = 0; i<k; i++){
+          int ri,ci;
+          cin>>ri>>ci;
+          st.insert(ri);
+          st.insert(ci);
+        }
+        int left = n - st.size();
+        cout<<dp[left]<<endl;
     }
 return 0;
 }
