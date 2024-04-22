@@ -38,66 +38,61 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-    int w;
-    cin>>w;
-    vector<int> input(n);
-    map<int,int> mp;
-    map<int,int> mp2;
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-        mp[input[i]]++;
-        mp2[input[i]]++;
-    }
-
-    print(input);
-    for(auto ele: mp){
-        if(ele.first * 2 <= w){
-            mp[ele.first * 2] += ele.second / 2;
-            mp[ele.first] = ele.second % 2;
+    int n,k,x;
+    cin>>n>>k>>x;
+    if(x != 1){
+        // always possible
+        cout<<"YES"<<endl;
+        cout<<n<<endl;
+        for(int i = 0; i<n; i++){
+            cout<<1<<" ";
         }
-    }
-
-    for(auto ele : mp){
-        cout<<ele.first<<" "<<ele.second<<endl;
-    }
-
-    auto highest = mp.rbegin();
-    auto high = *highest;
-    int hh = high.first;
-    debug(hh);
-    int cnt = high.second;
-    int maxextra = w-hh;
-    int extra = (w-hh) * cnt;
-    int sum  = 0;
-    bool plus = false;
-    for(auto ele : mp2){
-        if(ele.first <hh and ele.first > maxextra){
-            plus = true;
-        }
-    }
-
-
-    debug(plus);
-    if(plus) {
-        cout<<cnt+1<<endl;
+        cout<<endl;
         return;
     }
 
-    for(auto ele:mp){
-        if(ele.first < hh and ele.second > 0){
-            sum += ele.first;
-        }
-    }
-    debug(sum);
-    if(sum<=extra) {
-        cout<<cnt<<endl;
+
+
+    if(k==1 and x==1){
+        cout<<"NO"<<endl;
         return;
     }
 
-    cout<<cnt+1<<endl;
+
+
+    if(k==2 and x == 1){
+        if(n%2 == 0){
+            cout<<"YES"<<endl;
+            cout<<n/2<<endl;
+            for(int i = 0; i<n/2; i++){
+                cout<<2<<" ";
+            }
+            cout<<endl;
+            return;
+        }
+        else {
+            cout<<"NO"<<endl;
+            return;
+        }
+    }
+
     
+    cout<<"YES"<<endl;
+    if(n%2 == 0){
+        cout<<n/2<<endl;
+        for(int i  = 0; i<n/2; i++){
+            cout<<2<<" ";
+        }
+        cout<<endl;
+        return;
+    }
+    int n_copy = n-3;
+    cout<<n_copy/2 + 1<<endl;
+    for(int i = 0; i<n_copy/2; i++){
+        cout<<2<<" ";
+    }
+    cout<<3;
+    cout<<endl;
     
 }
 /* logic ends */
