@@ -1,4 +1,3 @@
-
 /*
   ------------------------------------------
  |                                        |
@@ -41,71 +40,22 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    vector<int> rowsum(n+1,0);
-    vector<int> colsum(n+1,0);
-    int persum = n*(n+1)/2;
-    //debug(persum);
-    vector<int> permutation;
-    for(int i = n ;i>=1; i--){
-        permutation.push_back(i);
-    }
-    vector<vector<int> > ans(n+1, vector<int> (n+1));
-    int s= 0;
-    int m = 0;
-    vector<vector<int> >output;
-    int n_copy = n;
-
-    while(n_copy >= 1){
-        //debug(n_copy);
-        for(int i = n; i>=n - n_copy + 1; i--){
-            output.push_back({1,i});
-            for(int j = 1; j<=n; j++){
-                ans[i][j] = permutation[j-1];
-            }
-        }
-
-        n_copy = n_copy/2 ;
-
-        if(n_copy < 1) break;
-        for(int i = n; i>=n - n_copy + 1; i--){
-            output.push_back({2,i});
-            for(int j = 1; j<=n; j++){
-                ans[j][i] = permutation[j-1];
-            }
-        }
-        n_copy = n_copy/2 ;
-    }
-
+    int m = 2 * n;
+    int s = 0;
     for(int i = 1; i<=n; i++){
-        for(int j = 1; j<=n; j++){
-            s+= ans[i][j];
-        }
+        s += i * (2*i-1);
     }
-
-    m = output.size();
-
-    cout<<s<<" "<<m<<endl;
-    for(int i = 0; i<output.size(); i++){
-        for(int j = 0; j<output[i].size(); j++){
-            cout<<output[i][j]<<" ";
-        }
-        for(int k = 0 ;k<n; k++){
-            cout<<permutation[k]<<" ";
-        }
-        cout<<endl;
-    }
-
-
-
-
-
-
-
-
     
-
-
-
+    cout<<s<<" "<<m<<endl;
+    for(int i = n-1; i>=0;i--){
+        for(int j = 1; j<=2; j++){
+            cout<<j<<" "<<i+1<<" ";
+            for(int k = 1; k<=n; k++){
+                cout<<k<<" ";
+            }
+            cout<<endl;
+        }
+    }
 }
 /* logic ends */
 
@@ -123,6 +73,4 @@ signed main(){
     }
 return 0;
 }
-
-
 
