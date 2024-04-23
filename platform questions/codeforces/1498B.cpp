@@ -37,68 +37,50 @@
 using namespace std;
 
 /* write core logic here */
+
 void solve(){
-    int n;
-    cin>>n;
-    int w;
-    cin>>w;
+    int n,w;
+    cin>>n>>w;
     vector<int> input(n);
-    map<int,int> mp;
-    map<int,int> mp2;
-    for(int i = 0; i<n; i++){
+    multiset<int> ms;
+    for(int i= 0; i<n; i++){
         cin>>input[i];
-        mp[input[i]]++;
-        mp2[input[i]]++;
+        ms.insert(input[i]);
     }
+    // for(auto ele: ms){
+    //     cout<<ele<<" ";
+    // }
+    int cnt = 1;
+    int left = w;
+    while(left >= 0){
+        debug(left);
+        if(ms.empty()) break;
+        auto it = ms.upper_bound(left);
 
-    print(input);
-    for(auto ele: mp){
-        if(ele.first * 2 <= w){
-            mp[ele.first * 2] += ele.second / 2;
-            mp[ele.first] = ele.second % 2;
+        if(it== ms.end()){
+            // cout<<"YES"<<endl;
+            
+            it--;
+            debug(*it);
+            left -= *it;
+            debug(left);
+            ms.erase(it);
+        }
+
+        else if(it == ms.begin()){ // no one can fit in the gap
+            //cout<<"YEAh"<<endl;
+            left = w;
+            cnt++;
+        }
+
+        else{
+            //something can be fit in multiset
+            --it;
+            left -= *it;
+            ms.erase(it);
         }
     }
-
-    for(auto ele : mp){
-        cout<<ele.first<<" "<<ele.second<<endl;
-    }
-
-    auto highest = mp.rbegin();
-    auto high = *highest;
-    int hh = high.first;
-    debug(hh);
-    int cnt = high.second;
-    int maxextra = w-hh;
-    int extra = (w-hh) * cnt;
-    int sum  = 0;
-    bool plus = false;
-    for(auto ele : mp2){
-        if(ele.first <hh and ele.first > maxextra){
-            plus = true;
-        }
-    }
-
-
-    debug(plus);
-    if(plus) {
-        cout<<cnt+1<<endl;
-        return;
-    }
-
-    for(auto ele:mp){
-        if(ele.first < hh and ele.second > 0){
-            sum += ele.first;
-        }
-    }
-    debug(sum);
-    if(sum<=extra) {
-        cout<<cnt<<endl;
-        return;
-    }
-
-    cout<<cnt+1<<endl;
-    
-    
+    cout<<cnt<<endl;
 }
 /* logic ends */
 
