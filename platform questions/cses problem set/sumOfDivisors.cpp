@@ -31,21 +31,41 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 
 /* write core logic here */
+const int mod = 1e9 + 7;
+// Function to calculate power in modular arithmetic
+long long power(long long a, long long b) {
+    if (b == 0)
+        return 1;
+    long long res = power(a, b / 2);
+    if (b % 2)
+        return ((res * res)%mod * a)%mod;
+    else
+        return (res * res)%mod;
+}
+
 void solve(){
     int n;
     cin>>n;
     int sum = 0;
-    int i = n;
-    while(i>1){
-        sum += i * (n/i);
-        
+    int i = 1;
+    int j;
+    while(i<=n){
+        int q = n/i;
+        j = n/q+1;
+        int ff = ((((j%mod)*((j-1)%mod))%mod) * power(2,mod-2))%mod;
+        int xx = ((((i%mod)*((i-1)%mod))%mod) * power(2,mod-2))%mod;
+        int aa = (ff-xx+mod)%mod;
+        sum = (sum + (q%mod) * aa) % mod;
+        i=j;
     }
+
+    cout<<sum;
 }
 /* logic ends */
 
