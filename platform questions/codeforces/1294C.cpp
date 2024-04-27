@@ -37,73 +37,64 @@
 using namespace std;
 
 /* write core logic here */
+void prf(vector<int> &pf, int n, multiset<int> &ms){
+    for(int i = 2; i * i <= n ; i++){
+        while(n % i == 0){
+            pf.push_back(i);
+            ms.insert(i);
+            n /= i;
+        }
+    }
+    if(n>1) {
+        pf.push_back(n);
+        ms.insert(n);
+    } 
+}
 void solve(){
     int n;
-    int m;
-    cin>>n>>m;
-    vector<vector<char> > input(n, vector<char> (m));
-    for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            cin>>input[i][j];
+    cin>>n;
+    vector<int> pf;
+    multiset<int> ms;
+    prf(pf,n, ms);
+    // for(auto ele : ms){
+    //     cout<<ele<<" ";
+    // }
+    // cout<<endl;
+    set<int> st;
+    int x = 1;
+    for(auto ele : ms){
+        x *= ele;
+        if(st.count(x) == 0){
+            st.insert(x);
+            x= 1;
         }
     }
 
-    if(input[0][0] == input[n-1][m-1]){
-        cout<<"YES"<<endl;
+    if(st.size() <3){
+        cout<<"NO"<<endl;
         return;
     }
-
-    bool one = false;
-    bool two = false;
-
-    char chlow = input[n-1][m-1];
-
-    for(int i = n-2; i>=0; i-- ){
-        if(input[i][m-1] != chlow){
-            one = true;
-            break;
-        }
+    cout<<"YES"<<endl;
+    int cnt = 0;
+    vector<int> v;
+    for(auto ele : st){
+        cout<<ele<<" ";
+        cnt++;
+        v.push_back(ele);
+        if(cnt==2) break;
     }
 
-    for(int i = m-2; i>=0; i--){
-        if(input[n-1][i] != chlow){
-            two = true;
-            break;
-        }
+    for(auto ele : v){
+        st.erase(ele);
     }
 
-    if(one==true and two==true){
-        cout<<"YES"<<endl;
-        return;
+    int last = 1;
+    
+    for(auto ele:v){
+        last*=ele;
     }
-
-    bool three = false;
-    bool four = false;
-
-    char chup = input[0][0];
-
-    for(int i = 1; i<n; i++ ){
-        if(input[i][0] != chup){
-            three = true;
-            break;
-        }
-    }
-
-    for(int i = 1; i<m; i++){
-        if(input[0][i] != chup){
-            four = true;
-            break;
-        }
-    }
-
-    if(three==true and four==true){
-        cout<<"YES"<<endl;
-        return;
-    }
-
-    cout<<"NO"<<endl;
-
-
+    last = n/last;
+    cout<<last<<endl;
 }
 /* logic ends */
 

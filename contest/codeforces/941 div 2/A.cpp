@@ -38,7 +38,26 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    vector<int> input(n);
+    map<int,int> mp;
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+        mp[input[i]]++;
+    }
+
+    int most = INT_MIN;
+    for(auto ele : mp){
+        most = max(most, ele.second);
+    }
+
+    if(most>=k){
+        cout<<k-1<<endl;
+    }
+    else cout<<n<<endl;
 }
 /* logic ends */
 
@@ -49,8 +68,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
