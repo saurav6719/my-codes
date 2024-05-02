@@ -38,7 +38,49 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    int pb;
+    cin>>pb;
+    int ps;
+    cin>>ps;
+    vector<int> perm(n+1);
+    for(int i = 1; i<=n; i++){
+        cin>>perm[i];
+    }
+    vector<int> score(n+1);
+    for(int i = 1; i<=n; i++){
+        cin>>score[i];
+    }
+
+    int scores = 0;
+    int scoreb = 0;
     
+    int fs = -1;
+    int fb = -1;
+
+    for(int i = 1; i<=min(n,k); i++){
+        scores += score[ps];
+        fs = max(fs, scores + (score[ps]*(k-i)));
+        ps = perm[ps];
+
+        scoreb += score[pb];
+        fb = max(fb, scoreb + (score[pb]*(k-i)));
+        pb = perm[pb];
+    }
+
+    if(fs > fb){
+        cout<<"Sasha"<<endl;
+        return;
+    }
+    if(fs == fb){
+        cout<<"Draw"<<endl;
+        return;
+    }
+    cout<<"Bodya"<<endl;
+    return;
 }
 /* logic ends */
 
@@ -49,8 +91,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
