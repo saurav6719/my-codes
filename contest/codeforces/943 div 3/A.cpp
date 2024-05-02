@@ -37,8 +37,28 @@
 using namespace std;
 
 /* write core logic here */
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
 void solve(){
-    
+    int x;
+    cin>>x;
+    int ans = INT_MIN;
+    int ans2 = -1;
+    for(int y= 1; y<x; y++){
+        int xx = gcd(x,y)+y;
+        if(xx>ans){
+            ans == xx;
+            ans2 = y;
+        }
+    }
+
+    cout<<ans2<<endl;
 }
 /* logic ends */
 
@@ -49,8 +69,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }

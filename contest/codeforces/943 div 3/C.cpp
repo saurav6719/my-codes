@@ -38,7 +38,27 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    vector<int> input(n-1);
+    for(int i = 0; i<n-1; i++){
+        cin>>input[i];
+    }
+
+
+    vector<int> ans;
+
+    ans.push_back(1000);
+    print(ans);
+    for(int i = 0; i<n-1; i++){
+        ans.push_back(ans[i] + input[i]);
+    }
+
+    for(auto ele : ans){
+        cout<<ele<<" ";
+    }
+    cout<<endl;
+
 }
 /* logic ends */
 
@@ -49,8 +69,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
