@@ -56,8 +56,10 @@ void solve(){
     int ans = x - 2;
 
     for(int i = 0; i<arr.size(); i++){
-        int ff = (arr[i]+1) % n;
-        int ss = (arr[i]+2) % n;
+        int ff = (arr[i]+1) ;
+        int ss = (arr[i]+2) ;
+        if(ff > n) ff%=n;
+        if(ss > n) ss%=n;
         if(st.count(ff) == 0 and st.count(ss) and ff <= n and ss<=n and ff>0 and ss> 0) ans++;
         debug(ans);
         debug(arr[i]);
