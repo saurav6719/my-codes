@@ -3,6 +3,9 @@
 #include<list>
 #include<set>
 using namespace std;
+
+// question -> determine whether any path exists between given two nodes or not
+
 vector<list<int> > graph;
 int v;
 void add_edge(int src,int dest, bool directed = false){
@@ -11,18 +14,9 @@ void add_edge(int src,int dest, bool directed = false){
         graph[dest].push_back(src);
     }
 }
+
+
 set <int> visited;
-bool dfs(int src, int dest){
-    if(src==dest) return true;
-    visited.insert(src);
-    for(auto neigh : graph[src]){
-        if(!visited.count(neigh) ) {
-            bool ans = dfs(neigh, dest);
-            if(ans = true) return true;
-        }
-    }
-    return false;
-}
 
 void display(){
     for(int i = 0; i<v; i++){
@@ -33,6 +27,18 @@ void display(){
         cout<<endl;
     }
     
+}
+
+bool anyPath(int x, int y){
+    if(x==y) return true;
+    visited.insert(x);
+    for(auto ele : graph[x]){
+        if(!visited.count(ele)){
+            bool res = anyPath(ele, y);
+            if(res) return true;
+        }
+    }
+    return false;
 }
 
 int main(){
@@ -47,7 +53,8 @@ int main(){
     }
     int x;
     int y;
-    cout<<dfs(x,y);
-    display();
+    cin>>x>>y;
+    cout<<anyPath(x,y);
+    // display();
     return 0;
 }

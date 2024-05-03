@@ -5,24 +5,26 @@
 using namespace std;
 vector<list<int> > graph;
 int v;
+
 void add_edge(int src,int dest, bool directed = false){
     graph[src].push_back(dest);
     if(!directed){
         graph[dest].push_back(src);
     }
 }
+
 set <int> visited;
 
 void dfs(int root){
     cout<<root<<" ";
     visited.insert(root);
-    for(auto neigh : graph[root]){
-        if(!visited.count(neigh)){
-            dfs(neigh);
+    for(auto ele : graph[root]){
+        if(!visited.count(ele)){
+            dfs(ele);
         }
     }
-    return; 
 }
+
 
 int main(){
     cin>>v;
@@ -37,5 +39,6 @@ int main(){
     int root;
     cin>>root;
     dfs(root);
+    
     return 0;
 }
