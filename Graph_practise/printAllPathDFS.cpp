@@ -3,6 +3,8 @@
 #include<list>
 #include<set>
 using namespace std;
+//question :- you are given two nodes . print all the paths from one node to another 
+
 vector<list<int> > graph;
 int v;
 void add_edge(int src,int dest, bool directed = false){
@@ -11,26 +13,27 @@ void add_edge(int src,int dest, bool directed = false){
         graph[dest].push_back(src);
     }
 }
-set <int> visited;
-vector<int> path;
-vector<vector<int> > res;
-void dfs(int src, int dest){
-    if(src == dest){
-        path.push_back(src);
-        res.push_back(path);
-        path.pop_back();
-        return ;
+set<int> visited;
+vector<vector<int> >ans;
+
+vector<int> curr;
+
+void allPath(int x, int y){
+    curr.push_back(x);
+    if(x==y) {
+        ans.push_back(curr);
+        curr.pop_back();
+        return;
     }
-    path.push_back(src);
-    visited.insert(src);
-    for(auto neighbour : graph[src]){
-        if(! visited.count(neighbour)){
-            dfs(neighbour, dest);
-        }
+    visited.insert(x);
+    for(auto ele : graph[x]){
+        if(!visited.count(ele) ) allPath(ele,y);
     }
-    path.pop_back();
-    visited.erase(src);
+    curr.pop_back();
+    visited.erase(x);   
 }
+
+
 void display(){
     for(int i = 0; i<v; i++){
         cout<<i<<"-> ";
@@ -53,10 +56,10 @@ int main(){
     int x;
     int y;
     cin>>x>>y;
-    dfs(x,y);
-    for(int i = 0; i<res.size(); i++){  
-        for(int j = 0; j<res[i].size(); j++){
-            cout<<res[i][j]<<" ";
+    allPath(x,y);
+    for(auto ele : ans){
+        for(auto ele2 : ele){
+            cout<<ele2<<" ";
         }
         cout<<endl;
     }
