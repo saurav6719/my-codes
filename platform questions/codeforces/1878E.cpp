@@ -54,11 +54,11 @@ void solve(){
         }
     }
 
-    print(bits[0]);
-    print(bits[1]);
-    print(bits[2]);
-    print(bits[3]);
-    print(bits[4]);
+    // print(bits[0]);
+    // print(bits[1]);
+    // print(bits[2]);
+    // print(bits[3]);
+    // print(bits[4]);
     int q;
     cin>>q;
     while(q--){
@@ -75,8 +75,9 @@ void solve(){
                 break;
             }
         }
+
         // debug(res2);
-        debug(maxofk);
+        //debug(maxofk);
         bool tobreak = false;
         for(int i = maxofk+1;i<=30; i++){
             if(input[l-1] &(1<<i)){
@@ -88,33 +89,32 @@ void solve(){
                 res1 = max(res1 , bits[i][xx]-1);
             }
         }
-        debug(res1);
+
+        //debug(res1);
         if(tobreak) {
             cout<<n<<" ";
             continue;
         }
+
+        int num = 0;
+
         for(int i = 0; i<=maxofk; i++){
-            if((((((1<<i)&input[l-1]) == 0) & (((1<<i) & k) != 0)))){
-                //debug(i);
-                res2 = -1;
-                break;
-            }
             // debug(((1<<i) & input[l-1]));
             // debug(((1<<i) & k));
-            if((((1<<i) & (input[l-1]))== 0) and (((1<<i) & k) == 0)){
-                continue;
-            }
-            if((((1<<i) & k) == 0)) continue;
+            if((((1<<i) & input[l-1]) == 0)) continue;
             int xx = lower_bound(bits[i].begin(), bits[i].end(), l-1) - bits[i].begin();
             if(xx == bits[i].size()){
                 res2 = min(res2,n-1);
             }
             else res2 = min(res2 , bits[i][xx]-1);
-            debug(i);
-            debug(res2);
+            // debug(i);
+            // debug(res2);
         }
-        debug(res2);
-
+        for(int i = 0; i<=maxofk; i++){
+            if((1<<i) & input[l-1]) num += (1<<i);
+            if(num < k) res2 = -1;
+        }
+        //debug(res2);
         // debug(res1);
         // debug(res2);
         int ans = max(res1,res2);
