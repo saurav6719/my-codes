@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
- 
- 
+
 const int N =200003;
 const int bits=30;
 int pref[N][bits];
