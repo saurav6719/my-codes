@@ -40,6 +40,7 @@ using namespace std;
 void solve(){
     int n;
     vector<int> grantsArray;
+    
 
 }
 /* logic ends */
