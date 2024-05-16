@@ -39,7 +39,48 @@ using namespace std;
 /* write core logic here */
 void solve(){
     int n;
-    vector<int> grantsArray;
+    cin>>n;
+    vector<int> parent(n+1);
+    vector<vector<int> > child(n+1);
+    vector<int> respect(n+1);
+    int root ;
+    for(int i = 1; i<=n; i++){
+        int xx;
+        cin>>xx;
+        if(xx == -1){
+            root = i;
+        }
+        parent[i] = xx;
+        if(xx!= -1) child[xx].push_back(i);
+        cin>>respect[i];
+    }
+
+    vector<int> ans;
+    for(int i = 1; i<=n; i++){
+        if(i == root) continue;
+        if(respect[i] == 0) continue;
+        bool check = false;
+        for(auto ele : child[i]){
+            if(respect[ele] == 0){
+                check = true;
+                break;
+            }
+        }
+
+        if(!check){
+            ans.push_back(i);
+        }
+    }
+    if(ans.size() == 0){
+        cout<<-1;
+        return;
+    }
+    for(auto ele: ans){
+        cout<<ele<<" ";
+    }
+
+    
+
 
 }
 /* logic ends */
