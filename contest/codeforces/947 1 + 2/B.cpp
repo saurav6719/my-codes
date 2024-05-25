@@ -38,7 +38,39 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+      cin>>input[i];
+    }
+
+    sort(input.begin(), input.end());
+    int ans1 = input[0];
+    int ans2 = -1;
+    for(int i = 1; i<n; i++){
+      if(input[i] % ans1 != 0){
+        ans2 = input[i];
+        break;
+      }
+    }
+    debug(ans1);
+    debug(ans2);
+
+    if(ans2 == -1){
+      cout<<"YES"<<endl;
+      return;
+    }
+
+    for(int i = 0; i<n; i++){
+      if(input[i] % ans1 != 0 and input[i] % ans2 != 0){
+        cout<<"NO"<<endl;
+        return;
+      }
+    }
     
+
+    cout<<"YES"<<endl;
 }
 /* logic ends */
 
@@ -49,8 +81,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }

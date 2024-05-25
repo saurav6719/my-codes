@@ -1,35 +1,59 @@
-#include <thread>
-#include <mutex>
-#include <iostream>
+/*
+  ------------------------------------------
+ |                                        |
+ |      Code Crafted by Saurav     |
+ |                                        |
+  ------------------------------------------
+    \        ,     ,        /
+      \      |     |      /
+         \   \___/   /
+           \  -----  /
+             \_____/
+  
+  Happy coding! 
+*/
 
-std::mutex fork_mutex[5];
+/* includes and all */
 
-void philosopher(int id) {
-    while (true) {
-        std::cout << "Philosopher " << id << " is thinking.\n";
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+#include<bits/stdc++.h>
+#ifndef ONLINE_JUDGE
+#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
+#define print(v) do { \
+                    cout << "vect--" << #v << " = [ "; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << v[i] << " "; \
+                    } \
+                    cout << " ]" << endl; \
+                } while(0)
+#else
+#define debug(x)
+#define print(v)
+#endif
+#define endl "\n"
+#define int long long int
+#define mod 1000000007
+#define mn(a,b,c) min(a,min(b,c))
+#define mx(a,b,c) max(a,max(b,c))
+using namespace std;
 
-        fork_mutex[id].lock();
-        fork_mutex[(id + 1) % 5].lock();
+/* write core logic here */
+void solve(){
+    
+}
+/* logic ends */
 
-        std::cout << "Philosopher " << id << " is eating.\n";
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-
-        fork_mutex[id].unlock();
-        fork_mutex[(id + 1) % 5].unlock();
+signed main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    #ifndef ONLINE_JUDGE
+        freopen("Error.txt" , "w" , stderr);
+    #endif
+    int t;
+    cin>>t;
+    //t = 1;
+    while(t--){
+        solve();
     }
+return 0;
 }
 
-int main() {
-    std::thread philosophers[5];
-
-    for (int i = 0; i < 5; ++i) {
-        philosophers[i] = std::thread(philosopher, i);
-    }
-
-    for (int i = 0; i < 5; ++i) {
-        philosophers[i].join();
-    }
-
-    return 0;
-} 
