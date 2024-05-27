@@ -37,29 +37,28 @@
 using namespace std;
 
 /* write core logic here */
-set<pair<int,int > > visited;
+int n,m;
+vector<vector<bool> >visited;
 void dfs(vector<vector<char> > &graph, int sr, int sc, int n, int  m){
-    visited.insert({sr,sc});
-    if(sr+1 < n and !visited.count({sr+1, sc}) and graph[sr+1][sc] == '.'){
+    visited[sr][sc] = true;
+    if(sr+1 < n and visited[sr+1][sc] == false and graph[sr+1][sc] == '.'){
         dfs(graph, sr+1, sc, n , m);
     }
 
-    if(sr-1 >= 0 and !visited.count({sr-1, sc}) and graph[sr-1][sc] == '.'){
+    if(sr-1 >= 0 and visited[sr-1][sc] == false and graph[sr-1][sc] == '.'){
         dfs(graph, sr-1, sc, n , m);
     }
 
-    if(sc-1 >= 0 and !visited.count({sr, sc-1}) and graph[sr][sc-1] == '.'){
+    if(sc-1 >= 0 and visited[sr][sc-1] == false and graph[sr][sc-1] == '.'){
         dfs(graph, sr, sc-1, n , m);
     }
 
-    if(sc+1 < m and !visited.count({sr, sc+1}) and graph[sr][sc+1] == '.'){
+    if(sc+1 < m and visited[sr][sc+1] == false and graph[sr][sc+1] == '.'){
         dfs(graph, sr, sc+1, n , m);
     }
 }
 
 void solve(){
-    int n;
-    int m;
     cin>>n>>m;
     vector<vector<char> > graph(n, vector<char> (m));
 
@@ -68,11 +67,11 @@ void solve(){
             cin>>graph[i][j];
         }
     }
-
+    visited.resize(n+5, vector<bool> (m+5, false));
     int ans = 0;
     for(int i = 0; i<n; i++){
         for(int j = 0; j<m; j++){
-            if(graph[i][j] == '.' and !visited.count({i,j})){
+            if(graph[i][j] == '.' and visited[i][j] == false){
                 dfs(graph,i,j,n,m);
                 ans++;
             }
