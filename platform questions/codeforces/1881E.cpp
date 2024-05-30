@@ -48,6 +48,10 @@ void solve(){
     dp[n] = 0;
     dp[n-1] = 1;
     for(int i = n-2; i>=0; i--){
+        if(i+input[i]+1 > n) {
+            dp[i] = 1+dp[i+1];
+            continue;
+        }
         dp[i] = min(1+dp[i+1] , dp[i + input[i] + 1]);
     }
 
