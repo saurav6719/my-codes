@@ -38,7 +38,7 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    cout<<(1148 | 1146 | 1147);
+    cout<<(1535| 1536 | 1534);
 }
 /* logic ends */
 
