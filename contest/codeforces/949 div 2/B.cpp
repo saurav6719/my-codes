@@ -39,7 +39,7 @@ using namespace std;
 /* write core logic here */
 
 string getbinary(int x){
-    bitset<40> b(x);
+    bitset<35> b(x);
     return b.to_string();
 }
 
@@ -97,33 +97,40 @@ void solve(){
     int n;
     int m;
     cin>>n>>m;
-    if(m==0){
-        cout<<n<<endl;
-        return;
+    int X = max(0ll, n-m);
+    int Y = n+m;
+    string str1 = getbinary(X);
+    string str2 = getbinary(Y);
+    string ans = "";
+    // print(str1);
+    // print(str2);
+    bool check = false;
+    for(int i = 0; i<str1.size(); i++){
+        if(str1[i] == str2[i] and !check){
+            ans += str1[i];
+        }
+        else if(str1[i] != str2[i] and !check){
+            check = true;
+            ans += '1';
+        }
+        else ans += '1';
     }
-    int ff;
-    if(n>0)ff = (n | n-1 | n-2);
-    else ff = (n|n+1);
-    int xx = ff;
-    debug(xx);
-    // while(true){
-        string str = getbinary(xx);
-        print(str);
-        string str2 = setBitsTillFirstUnset(str);
-        print(str2);
 
-        int yy = binaryToDecimal(str2);
-        debug(yy);
-        int ans = xx;
-        if(yy - n <= m){
-            string str3  = setBitsTillFirstSet(str2);
-            ans = binaryToDecimal(str3);
-        }
 
-        else {
-            cout<<ans<<endl;
-            return;
+    int res = 0;
+    int j = 0;
+    for(int i = ans.size() - 1; i>=0; i--){
+        if(ans[i] == '1'){
+            res += (1<<j);
         }
+        j++;
+    }
+    //print(ans);
+
+    cout<<res<<endl;
+
+    
+
     //}
 
 }
