@@ -1,0 +1,1 @@
+{"name":"Local: E","url":"/Users/saurav/Desktop/programming/contest/codeforces/950 div 3 /E.cpp","tests":[{"id":1717425183684,"input":"3\n10 1\nBGECDCBDED\n10 2\nBGECDCBDED\n9 1\nBBCDEFFGG\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/contest/codeforces/950 div 3 /E.cpp","group":"local","local":true}
