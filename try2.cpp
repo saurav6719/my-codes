@@ -1,135 +1,92 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
 
-/* includes and all */
+using std::cout;
+using std::endl;
+using std::vector;
 
-#include <bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout << "errr----  " << #x << " " << x << endl
-#define print(v)                                \
-    do                                          \
-    {                                           \
-        cout << "vect--" << #v << " = [ ";      \
-        for (int i = 0; i < v.size(); i++)      \
-        {                                       \
-            cout << v[i] << " ";                \
-        }                                       \
-        cout << " ]" << endl;                   \
-    } while (0)
-#else
-#define debug(x)
-#define print(v)
-#endif
-#define endl "\n"
-#define int long long int
-#define mod 1000000007
-#define mn(a, b, c) min(a, min(b, c))
-#define mx(a, b, c) max(a, max(b, c))
-using namespace std;
-
-/* write core logic here */
-int ans;
-
-void bfs(int start_i, int start_j, int mindis, vector<pair<int, int>> &input)
-{
-    queue<pair<int, int>> q;
-    set<pair<int, int>> visited;
-    q.push({start_i, start_j});
-    visited.insert({start_i, start_j});
-
-    while (!q.empty())
-    {
-        auto [i, j] = q.front();
-        q.pop();
-
-        int curr = 0;
-        for (const auto &p : input)
-        {
-            curr += (abs(p.first - i) + abs(p.second - j));
-        }
-
-        if (curr == mindis)
-            ans++;
-
-        vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-        for (const auto &dir : directions)
-        {
-            int ni = i + dir.first;
-            int nj = j + dir.second;
-            if (!visited.count({ni, nj}))
-            {
-                visited.insert({ni, nj});
-                q.push({ni, nj});
+class Players {
+    private:
+        vector<int> parents;
+        vector<int> sizes;
+        vector<int> points;
+        vector<int> extra_points;
+    public:
+        Players(int size) : parents(size), sizes(size, 1),
+                            points(size), extra_points(size) {
+            for (int i = 0; i < size; i++) {
+                parents[i] = i;
             }
         }
+
+        int get_ultimate(int n) {
+            return parents[n] == n ? n : get_ultimate(parents[n]);
+        }
+
+        int get_points(int n) {
+            int amt = points[n];
+            if (parents[n] == n) {
+                return amt;
+            }
+            amt += get_points(parents[n]) - extra_points[n];
+            return amt;
+        }
+
+        void add_points(int n, int p) {
+            int top = get_ultimate(n);
+            points[top] += p;
+        }
+
+        bool link(int n1, int n2) {
+            n1 = get_ultimate(n1);
+            n2 = get_ultimate(n2);
+            if (n1 == n2) {
+                return false;
+            }
+            if (sizes[n1] < sizes[n2]) {
+                std::swap(n1, n2);
+            }
+            sizes[n1] += sizes[n2];
+            parents[n2] = n1;
+            extra_points[n2] = points[n1];
+            return true;
+        }
+};
+
+/**
+ * https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
+ * 3 6
+ * add 1 100
+ * join 1 3
+ * add 1 50
+ * get 1
+ * get 2
+ * get 3 should output 150, 0, and 50, each on a new line
+ */
+int main() {
+    int node_num;
+    int query_num;
+    std::cin >> node_num >> query_num;
+    Players players(node_num + 1);
+    for (int q = 0; q < query_num; q++) {
+        std::string type;
+        std::cin >> type;
+        if (type == "get") {
+            int n;
+            std::cin >> n;  
+            cout << players.get_points(n) << endl;
+        } else if (type == "add") {
+            int n;
+            int points;
+            std::cin >> n >> points;
+            players.add_points(n, points);
+        } else if (type == "join") {
+            int a;
+            int b;
+            std::cin >> a >> b;
+            players.link(a, b);
+        }
     }
-}
-
-void solve()
-{
-    int n;
-    cin >> n;
-    ans = 0;
-
-    int sumi = 0;
-    int sumj = 0;
-
-    vector<pair<int, int>> input(n);
-
-    for (int i = 0; i < n; i++)
-    {
-        int elei;
-        cin >> elei;
-        sumi += elei;
-
-        int elej;
-        cin >> elej;
-        sumj += elej;
-
-        input[i] = {elei, elej};
-    }
-
-    int mini = sumi / n;
-    int minj = sumj / n;
-
-    int mindis = 0;
-
-    for (int i = 0; i < n; i++)
-    {
-        mindis += (abs(input[i].first - mini) + abs(input[i].second - minj));
-    }
-
-    bfs(mini, minj, mindis, input);
-
-    cout << ans << endl;
-}
-/* logic ends */
-
-signed main()
-{
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-#ifndef ONLINE_JUDGE
-    freopen("Error.txt", "w", stderr);
-#endif
-    int t;
-    cin >> t;
-    // t = 1;
-    while (t--)
-    {
-        solve();
-    }
-    return 0;
 }

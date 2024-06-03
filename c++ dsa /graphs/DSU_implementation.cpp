@@ -3,8 +3,7 @@
 using namespace std;
 
 int find(vector<int> &parent, int x){
-    if(parent[x] == x) return x;
-    return parent[x] = find(parent,parent[x]);
+    return parent[x] == x ? x : find(parent, parent[x]);
 }
 
 void Union(vector<int> &parent,vector<int> &rank, int a, int b){

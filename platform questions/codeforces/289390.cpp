@@ -2,63 +2,108 @@
 #include<vector>
 using namespace std;
 
-int find(vector<int> &parent, int x, vector<int> &score){
-    if(parent[x] == x) {
-        return x;
-    }
-    int par = find(parent,parent[x], score);
-    score[x] += score[par];
-    return parent[x];
+vector<int> parents;
+vector<int> points;
+vector<int> extra_points;
+vector<int> sizes;
+
+
+int find(int x){
+    return parents[x] == x ? x : find(parents[x]);
+
 }
 
-void Union(vector<int> &parent,vector<int> &rank,vector<int> &score,  int a, int b){
-    a = find(parent,a, score);
-    b = find(parent,b, score);
-    if(rank[a] >= rank[b]){
-        rank[a]++; 
-        parent[b] = a;
+int get_points(int n) {
+    int amt = points[n];
+    if (parents[n] == n) {
+        return amt;
     }
-    else{
-        rank[b]++;
-        parent[a] = b;
-    }
+    amt += get_points(parents[n]) - extra_points[n];
+    return amt;
 }
 
-void add(vector<int> &parent, int x, int v, vector<int> & score){
-    int par = parent[x];
-    score[par] += v;
+void add_points(int n, int p) {
+    int top = find(n);
+    points[top] += p;
 }
+
+bool link(int n1, int n2) {
+    n1 = find(n1);
+    n2 = find(n2);
+    if (n1 == n2) {
+        return false;
+    }
+    if (sizes[n1] < sizes[n2]) {
+        std::swap(n1, n2);
+    }
+    sizes[n1] += sizes[n2];
+    parents[n2] = n1;
+    extra_points[n2] = points[n1];
+    return true;
+}
+
+
+
+
+
+
+// void Union(vector<int> &parent,vector<int> &size, int a, int b, vector<int> &point, vector<int> &extra){
+//     a = find(parent,a);
+//     b = find(parent,b);
+//     if(a==b) return;
+//     if(size[a] < size[b]){
+//         swap(a,b);
+//     }
+//     size[a] += size[b];
+//     parent[b] = a;
+//     extra[b] = point[a];
+
+// }
+
+// void add(int x, int v, vector<int> &parent, vector<int> &point){
+//     int par = find(parent, x);
+//     point[par] += v;
+// }
+
+// int get(int x, vector<int> &extra, vector<int> &point, vector<int> & parent){
+//     int amount = point[x];
+//     if(parent[x] == x){
+//         return amount;
+//     }
+//     amount += (get(parent[x], extra, point, parent) - extra[x]);
+//     return amount;
+// }
+
+
 int main(){
     int n; //no of elements
     int m; // no of queries
     cin>>n>>m;
-    vector<int> parent(n+1);
-    vector<int> rank(n+1,0);
+    parents.resize(n+5);
+    points.resize(n+5, 0);
+    extra_points.resize(n+5,0);
+    sizes.resize(n+5, 1);
     for(int i = 0; i<=n ; i++){
-        parent[i] = i;
+        parents[i] = i;
     }
-
-    vector<int> score(n+1, 0);
     while(m--){
         string str; // union or find
         cin>>str;
 
-        if(str == "join"){
+        if(str == "add"){
             int x,y;
             cin>>x>>y;
-            Union(parent,rank,score, x,y);
+            add_points(x,y);
         }
-        else if(str == "add"){
+        else if(str == "join"){
             int x, y;
             cin>>x>>y;
-            add(parent, x, y, score);
+            link(x, y);
         }
         else{
             int x;
             cin>>x;
-            find(parent,x, score);
-            cout<<score[x]<<endl;
-
+            cout<<get_points(x)<<endl;
         }
     }
     return 0;
