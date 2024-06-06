@@ -1,3 +1,7 @@
-let a = 10;
-let b = 5;
-console.log(`The total price is ${a + b} rupees`);
+let msg = "    hello    ";
+let newmsg = msg.trim();
+msg = newmsg;
+// console.log(msg);
+// console.log(newmsg);
+
+console.log(msg.slice(-5));
