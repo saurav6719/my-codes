@@ -40,56 +40,55 @@ using namespace std;
 void solve(){
     int n,k,q;
     cin>>n>>k>>q;
-    vector<int> breaks;
-    breaks.push_back(0);
+    
+    vector<int> v;
+    v.push_back(0);
+    vector<int> time;
+    
 
     for(int i = 0; i<k; i++){
-        int ele;
+        int ele ;
         cin>>ele;
-        breaks.push_back(ele);
+        v.push_back(ele);
     }
 
-    map<int,int> time;
-    for(int i = 0; i<k; i++){
-        int ff = breaks[i+1];
-        int ss;
-        cin>>ss;
-        time[ff] = ss;
+    time.push_back(0);
+
+    for(int i = 0; i<k ;i++){
+        int ele ;
+        cin>>ele;
+        time.push_back(ele);
     }
-    time[0] = 0;
+
+
     while(q--){
         int min;
         cin>>min;
-        if(time.count(min)){
-            cout<<time[min]<<" ";
+        if(min == 0) {
+            cout<<0<<" ";
             continue;
         }
-        int xx = lower_bound(breaks.begin(), breaks.end(), min) - breaks.begin();
-        xx--;
-        int yy = upper_bound(breaks.begin(), breaks.end(), min) - breaks.begin();
-        //debug(xx);
-        //debug(yy);
-        int gap = breaks[yy] - breaks[xx];
-        //debug(gap);
-        int aa = time[breaks[xx]];
-        //debug(aa);
-        int bb = time[breaks[yy]];
-        //debug(bb);
-        double res = bb-aa;
-        //debug(res);
-        res /= gap;
-        //debug(res);
-        double req = min - breaks[xx];
-        //debug(breaks[xx]);
-        //debug(req);
-        //debug(req);
-        double ans = 0;
-        ans = aa;
-        ans += (req * res);
-        std::cout << std::fixed << std::setprecision(0) <<floor(ans)<< " ";
-    }
+        if(min == n){
+            cout<<time[time.size() - 1]<<" ";
+            continue;
+        }
 
+        int ans = 0;
+        int xx = upper_bound(v.begin(), v.end(), min) - v.begin();
+        xx--;
+        ans += time[xx];
+
+        int extra = min - v[xx];
+        int speed = time[xx+1] - time[xx];
+        int dist = v[xx+1] - v[xx];
+
+        ans += (speed * extra) / dist;
+        cout<<ans<<" ";
+    }
     cout<<endl;
+
+
+    
 }
 /* logic ends */
 
