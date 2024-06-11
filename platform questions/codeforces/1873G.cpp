@@ -92,7 +92,7 @@ void solve(){
 signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    #i
+    #ifndef ONLINE_JUDGE
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
