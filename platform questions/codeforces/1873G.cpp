@@ -40,52 +40,44 @@ using namespace std;
 void solve(){
     string str;
     cin>>str;
-    int n = str.size();
-    int i = 0;
-    int cnt = 0;
-    int ans = 0;
+    int n;
+    n = str.size();
+    int ans;
 
-    vector<int> a;
-    vector<int> b;
-
+    int cnta = 0;
+    int cntb = 0;
     for(int i = 0; i<n; i++){
-        if(str[i] == 'A') a.push_back(i);
-        else b.push_back(i);
+        if(str[i] == 'A') cnta++;
+        if(str[i] == 'B') cntb++;
     }
-    //print(b);
 
-    string copy = str;
-    reverse(copy.begin(), copy.end());
-
-    set<int> visited;
-
-    for(int i = 0; i<n; ){
-        debug(ans);
-        if(str[i] == 'A'){
-            int xx = upper_bound(b.begin(), b.end(), i) - b.begin();
-            if(xx < b.size()) {
-                // debug(b[xx]);
-                ans += b[xx] - i;
-                i = b[xx];
-             }
-            else break;
-            
-        }
-
-        else{
-            int xx = upper_bound(b.begin(), b.end(), i) - b.begin();
-            if(xx+1 < b.size() and b[xx+1] > i){
-                //debug(b[xx]);
-                ans += b[xx+1] - i - 1;
-                i = b[xx+1];
-            }
-            else {
-                ans += n-1-i;
-            }
-        }
-        i++;
+    if(cntb == 0 or cnta == 0){
+        cout<<0<<endl;
+        return;
     }
-    cout<<ans<<endl;
+
+    int mini = INT_MAX;
+    int cnt = 0;
+    for(int i = 0; i<n; i++){
+        while(str[i] == 'A'){
+            cnt++;
+            i++;
+        }
+        mini = min(mini , cnt);
+        cnt = 0;
+    }
+
+    //debug(mini);
+
+    if(str[0] == 'B' or str[n-1] == 'B'){
+        cout<<cnta<<endl;
+        return;
+    }
+    
+    else{
+        cout<<(cnta - mini)<<endl;
+        return;
+    }
 }
 /* logic ends */
 
