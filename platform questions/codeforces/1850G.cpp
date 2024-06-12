@@ -12,9 +12,9 @@
   
   Happy coding! 
 */
- 
+
 /* includes and all */
- 
+
 #include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
@@ -35,52 +35,45 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 using namespace std;
- 
+
 /* write core logic here */
- 
-bool poss(int mid, vector<int> &damage, vector<int> &cooldown, int h){
-    __int128 cnt = 0;
-    for(int i = 0; i<damage.size(); i++){
-        cnt += (1+((mid-1)/cooldown[i])) * damage[i];
-        //if(cnt >= h ) return true;
-    }
- 
-    if(cnt >= h) return true;
-    return false;
-}
 void solve(){
-    int h,n;
-    cin>>h>>n;
-    vector<int> damage(n);
+    int n;
+    cin>>n;
+    vector<pair<int,int> > input(n);
+    map<int,int> x;
+    map<int,int> y;
+    map<int,int> diff;
+    map<int,int> sum;
+    
     for(int i = 0; i<n; i++){
-        cin>>damage[i];
+        cin>>input[i].first>>input[i].second;
+        x[input[i].first]++;
+        y[input[i].second]++;
+        int df = (input[i].first) - (input[i].second);
+        int sm = (input[i].first) + (input[i].second);
+        diff[df]++;
+        sum[sm]++;
+
     }
-    vector<int> cooldown(n);
+
+    int ans = 0;
     for(int i = 0; i<n; i++){
-        cin>>cooldown[i];
+        int xx = input[i].first;
+        int yy = input[i].second;
+        int df = (input[i].first) - (input[i].second);
+        int sm = (input[i].first) + (input[i].second);
+
+        if(x[xx] > 1) ans += x[xx] - 1;
+        if(y[yy] > 1) ans += y[yy] - 1;
+        if(diff[df] > 1) ans += diff[df] - 1;
+        if(sum[sm] > 1) ans += sum[sm] - 1;
     }
- 
-    int lo = 1;
-    int hi = 1e12;
-    int res = -1;
- 
-    while(lo<=hi){
-        int mid = lo + (hi - lo )/2;
-        // debug(mid);
-        // debug(poss(mid, damage, cooldown, h));
-        if(poss(mid, damage, cooldown, h)){
-            res = mid;
-            hi = mid-1;
-        }
-        else lo = mid+1;
-    }
- 
-    cout<<res<<endl;
- 
- 
+
+    cout<<ans<<endl;
 }
 /* logic ends */
- 
+
 signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -95,4 +88,4 @@ signed main(){
     }
 return 0;
 }
- 
+
