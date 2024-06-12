@@ -42,6 +42,7 @@ bool poss(int mid, vector<int> &damage, vector<int> &cooldown, int h){
     int cnt = 0;
     for(int i = 0; i<damage.size(); i++){
         cnt += (1+((mid-1)/cooldown[i])) * damage[i];
+        if(cnt >= h ) return true;
     }
 
     if(cnt >= h) return true;
