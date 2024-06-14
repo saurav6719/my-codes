@@ -85,10 +85,6 @@ void solve(){
         }
 
     }
-
-    
-    
-
     if(!find){
         cout<<"IMPOSSIBLE"<<endl;
         return;

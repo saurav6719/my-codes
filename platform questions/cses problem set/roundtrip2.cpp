@@ -65,18 +65,14 @@ void solve(){
     int m;
     cin>>n>>m;
     vector<vector<int> > graph(n+5, vector<int> ());
-
     while(m--){
         int u,v;
         cin>>u>>v;
         graph[u].push_back(v);
     }
-
     vector<int> visited(n+5, 0);
     vector<int> v;
-
     vector<int> parent(n+5, -1);
-
     bool find = false;
     for(int i = 1; i<=n; i++){
         if(visited[i] == 0){
@@ -85,9 +81,6 @@ void solve(){
         }
     }
 
-    print(parent);
-    debug(initial);
-    debug(final);
     if(!find){
         cout<<"IMPOSSIBLE"<<endl;
         return;
