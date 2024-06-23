@@ -47,6 +47,17 @@ void dfs(int node , vector<int> &visited1 , vector<vector<int> > &graph, vector<
 
     dfssort.push_back(node);
 }
+bool check(int node, vector<int> &visited3, vector<vector<int> > &graph, int dest){
+    if(node == dest) return true;
+    visited3[node] = 1;
+    for(auto neigh : graph[node]){
+        if(visited3[neigh] == -1){
+            bool res = check(neigh, visited3, graph, dest);
+            if(res) return true;
+        }
+    }
+    return false;
+}
 void solve(){
     int n;
     cin>>n;
@@ -61,12 +72,13 @@ void solve(){
     }
     vector<int> visited1(n+5, -1);
     vector<int> dfssort;
-    for(int i = 0; i<n; i++){
+    for(int i = 1; i<=n; i++){
         if(visited1[i] == -1 )dfs(i, visited1, graph, dfssort);
     }
     reverse(dfssort.begin(), dfssort.end());
+
     vector<vector<int> > reversegraph(n+5, vector<int> ());
-    for(int i = 0; i<n; i++){
+    for(int i = 1; i<=n; i++){
         for(int j = 0; j<graph[i].size(); j++){
             reversegraph[graph[i][j]].push_back(i);
         }
@@ -79,18 +91,29 @@ void solve(){
         if((visited2[dfssort[i]]) == -1){
             number++;
             dfs(dfssort[i] , visited2, reversegraph , v);
+            //print(v);
             final.push_back(v);
             v.clear();
         }
     }
+    if (number == 1){
+        cout<<"YES";
+        return;
+    }
+    else{
+        cout<<"NO"<<endl;
+    }
+    int aa = final[0][0];
+    int bb = final[1][0];
 
-    cout<<number<<endl;
-    for(int i= 0; i<final.size(); i++){
-        for(int j = 0;j<final[i].size(); j++){
-            cout<<final[i][j]<<" ";
-        }
+    vector<int> visited3(n+5, -1);
 
-        cout<<endl;
+    bool aatobb = check(aa, visited3, graph, bb);
+    if(aatobb){
+        cout<<bb<<" "<<aa;
+    }
+    else{
+        cout<<aa<<" "<<bb;
     }
 
 
