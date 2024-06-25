@@ -30,56 +30,58 @@
 #define print(v)
 #endif
 #define endl "\n"
+#define int long long int
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
-#define ll long long int 
 using namespace std;
 
 /* write core logic here */
 void solve(){
+    int n;
+    int l;
+    int r;
+    cin>>n>>l>>r;
+
+    vector<int> input(n+1, 0);
+    for(int i = 1; i<=n; i++){
+        cin>> input[i];
+    }
+    vector<int> prf(n+1);
+    prf[0] = 0;
+
+    for(int i = 1; i<=n; i++){
+        prf[i] = prf[i-1] + input[i];
+    }
+
+    int ans = 0;
+    int i = 1; 
+    int j =  1;
+
+    int curr = 0;
+    while(j<=n){
+        curr = prf[j] - prf[i-1];
+        if(curr >= l and curr <= r){
+            ans++;
+            j++;
+            i=j;
+            curr = 0;
+            continue;
+        }
+
+        if(curr > r){
+            curr -= input[i];
+            i++;
+            if(i>j){
+                j = i;
+            }
+            continue;
+        }
+        j++;
+    }
+    cout<<ans<<endl;
     
-    ll x, y, k; cin >> x >> y >> k;
- 
-    if(y == 2){
-        if(x % 2 == 0){
-            k--;
-            x++;
-        }
-        
-        while(x != 1 && k > 0){
-            x++;
-            k--;
-            x /= 2; 
-        }
-        cout << x << endl;
-        return;
-    }
- 
-    while(k > 0 && x != 1){
-        ll diff = x%y;
-        ll more = y - diff;
- 
-        if(k < more){
-            cout << x + k << endl;
-            return;
-        }
- 
-        k -= more;
-        x += more;
-        while(x % y == 0){
-            x /= y;
-        }
-    }
- 
-    if(x == 1){
-        // cout << "CHECK" << endl;
-        if(k > 0){
-            x = 1 + (k % (y - 1));
-        }
-    }
- 
-    cout << x << endl;
+
 
 }
 /* logic ends */

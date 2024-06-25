@@ -30,57 +30,27 @@
 #define print(v)
 #endif
 #define endl "\n"
+#define int long long int
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
-#define ll long long int 
 using namespace std;
 
 /* write core logic here */
 void solve(){
-    
-    ll x, y, k; cin >> x >> y >> k;
- 
-    if(y == 2){
-        if(x % 2 == 0){
-            k--;
-            x++;
-        }
-        
-        while(x != 1 && k > 0){
-            x++;
-            k--;
-            x /= 2; 
-        }
-        cout << x << endl;
+    int a1,b1,a2,b2;
+    cin>>a1>>b1>>a2>>b2;
+    if(a1 > b1 and a2 > b2){
+        cout<<"YES"<<endl;
         return;
     }
- 
-    while(k > 0 && x != 1){
-        ll diff = x%y;
-        ll more = y - diff;
- 
-        if(k < more){
-            cout << x + k << endl;
-            return;
-        }
- 
-        k -= more;
-        x += more;
-        while(x % y == 0){
-            x /= y;
-        }
+    if(b1>a1 and b2>a2){
+        cout<<"YES"<<endl;
+        return;
     }
- 
-    if(x == 1){
-        // cout << "CHECK" << endl;
-        if(k > 0){
-            x = 1 + (k % (y - 1));
-        }
-    }
- 
-    cout << x << endl;
 
+    cout<<"NO"<<endl;
+   
 }
 /* logic ends */
 
