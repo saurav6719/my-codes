@@ -184,8 +184,8 @@
   }
   {} % Event Dates
   {Tools \& technologies used: node} % Tools and technologies used
-  {https://example.com/live} % Link to live project
-  {https://github.com/yourusername/yourproject} % Link to GitHub repository
+  {https://saurav6719.github.io/code-collaborator/} % Link to live project
+  {https://github.com/saurav6719/code-collaborator} % Link to GitHub repository
 
 \resumeProjectWithLinks
   {QR Code Generator} % Project Name
@@ -196,8 +196,8 @@
   }
   {} % Event Dates (optional, adjust as needed)
   {} % Tools and technologies used (removed)
-  {https://example.com/live} % Link to live project
-  {https://github.com/yourusername/yourproject} % Link to GitHub repository
+  {https://saurav6719.github.io/QR-code-generator/} % Link to live project
+  {https://github.com/saurav6719/QR-code-generator} % Link to GitHub repository
 
   \resumeSubHeadingListEnd
 \vspace{-5.5mm}
