@@ -27,10 +27,7 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 \geometry{left=1.0cm, top=1cm, right=1cm, bottom=1cm}
-% Adjust margins
-%\addtolength{\oddsidemargin}{-0.5in}
-%\addtolength{\evensidemargin}{-0.5in}
-%\addtolength{\textwidth}{1in}
+
 \usepackage[most]{tcolorbox}
 \tcbset{
 	frame code={}
@@ -91,15 +88,25 @@
     \vspace{-2.4mm}
 }
 
+
 % Define a new command \resumeProjectWithLinks for projects with links
 \newcommand{\resumeProjectWithLinks}[6]{
-\vspace{0.5mm}\item
-    \begin{tabularx}{\dimexpr\linewidth-0.3cm\relax}[t]{l@{\extracolsep{\fill}}r}
-        \textbf{#1} & \textit{\footnotesize{#3}} \\
-        \footnotesize{\textit{#2}} & \footnotesize{\href{#5}{Live} | \href{#6}{GitHub}}
+\item[$\bullet$]
+    \begin{tabularx}{\dimexpr\linewidth-0.3cm\relax}[t]{X r}
+        \textbf{#1} & \underline{\href{#5}{Live}} | \underline{\href{#6}{GitHub}} \\
+        \begin{minipage}[t]{\dimexpr\linewidth-0.3cm\relax}
+            \vspace{-5mm} % Adjust this value to reduce the gap
+            \footnotesize{\textit{\begin{itemize}[leftmargin=0.5cm, itemsep=6pt] % Adjust itemsep value as needed
+                #2
+            \end{itemize}}}
+        \end{minipage} & \\
     \end{tabularx}
-    \vspace{-2.4mm}
+    \vspace{-0.5mm} % Adjust vertical spacing after each project entry
 }
+
+
+
+
 
 
 \newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
@@ -140,131 +147,122 @@
 
 \parbox{\dimexpr\linewidth-0.3cm\relax}{
 \begin{tabularx}{\linewidth}{L r} \\
-  \textbf{\Large \name} & \href{https://github.com/saurav6719}{\raisebox{0.0\height}{\footnotesize \faGithub}\ {GitHub Profile}} \\ 
-  {\raisebox{0.0\height}{\footnotesize \faPhone}\ +91-\phone} & \href{https://www.linkedin.com/in/saurav-kumar-aa181b237/}{\raisebox{0.0\height}{\footnotesize \faLinkedin}\ {LinkedIn Profile}} \\
-  \href{mailto:\emaila}{\raisebox{0.0\height}{\footnotesize \faEnvelope}\ {\emaila}} & \href{https://codeforces.com/profile/sauravkr485}{\raisebox{0.0\height}{\footnotesize \faCode}\ {Codeforces Profile}}
+  \textbf{\Large \name} & \underline{\href{https://github.com/saurav6719}{\raisebox{0.0\height}{\footnotesize \faGithub}\ {GitHub}}} \\ 
+  {\raisebox{0.0\height}{\footnotesize \faPhone}\ +91-\phone} & \underline{\href{https://www.linkedin.com/in/saurav-kumar-aa181b237/}{\raisebox{0.0\height}{\footnotesize \faLinkedin}\ {LinkedIn}}} \\
+  \underline{\href{mailto:\emaila}{\raisebox{0.0\height}{\footnotesize \faEnvelope}\ {\emaila}}} & \underline{\href{https://codeforces.com/profile/sauravkr485}{\raisebox{0.0\height}{\footnotesize \faCode}\ {Codeforces}}}
 \end{tabularx}}
 
 
 %-----------EDUCATION-----------
 \section{\textbf{Education}}
+\vspace{7pt}
   \resumeSubHeadingListStart
     \resumeSubheading
       {Delhi Technological University }{CGPA:       8.65}
       {B.Tech Computer Engineering}{2022-26}
     \resumeSubheading
       {Brilliant Public School, Jehanabad}{Percentage: 86.40}
-      {CBSE XII}{2021}
+      {CBSE XII}{2020-21}
   \resumeSubheading
       {ANR Public School, Jehanabad}{Percentage: 96.50}
-      {CBSE X}{2019}
+      {CBSE X}{2018-19}
   \resumeSubHeadingListEnd
 \vspace{-5.5mm}
 %
 
-
-
-%-----------EXPERIENCE-----------------
-% \section{\textbf{Experience}}
-%   \resumeSubHeadingListStart
-%     \resumeSubheading
-%       {Company Name}{City}
-%       {Your Role}{Event dates}
-%       \vspace{-2.0mm}
-%       \resumeItemListStart
-%     \item {Work description line 1}
-%     \item {Work description line 2}
-%     \resumeItemListEnd
-    
-%     \vspace{-3.0mm}
-    
-%     \resumeSubheading
-%       {Company Name}{City}
-%       {Your Role}{Event dates}
-%       \vspace{-2.0mm}
-%       \resumeItemListStart
-%     \item {Work description line 1}
-%     \item {Work description line 2}
-%     \resumeItemListEnd
-      
-%   \resumeSubHeadingListEnd
-% \vspace{-8.5mm}
-
-
-
 %-----------PROJECTS-----------------
 \section{\textbf{Personal Projects}}
+\vspace{7pt}
 \resumeSubHeadingListStart
 
-    \resumeProjectWithLinks
-      {Real-time Code Collaborator} %Project Name
-      {Project description} %Project Description
-      {Event dates} %Event Dates
-      {Tools \& technologies used: xxx,xxx} %Tools and technologies used
-      {https://example.com/live} %Link to live project
-      {https://github.com/yourusername/yourproject} %Link to GitHub repository
-      
-    \resumeProjectWithLinks
-      {Project Name} %Project Name
-      {Project description} %Project Description
-      {Event dates} %Event Dates
-      {Tools \& technologies used: xxx,xxx} %Tools and technologies used
-      {https://example.com/live} %Link to live project
-      {https://github.com/yourusername/yourproject} %Link to GitHub repository
+  \resumeProjectWithLinks
+  {Real-time Code Collaborator} % Project Name
+  { % Project Description
+    \item Developed a real-time collaborative coding platform allowing multiple users to edit code simultaneously in a shared room.
+    \item Implemented features such as syntax highlighting, code sharing, and user authentication.
+    \item \textbf{Technologies Used: Node.js, Express.js, Socket.io, MongoDB, Heroku}
+  }
+  {} % Event Dates
+  {Tools \& technologies used: node} % Tools and technologies used
+  {https://example.com/live} % Link to live project
+  {https://github.com/yourusername/yourproject} % Link to GitHub repository
+
+\resumeProjectWithLinks
+  {QR Code Generator} % Project Name
+  { % Project Description
+    \item Developed a web application for generating QR codes from any text or URL input.
+    \item Integrated functionalities to convert user-provided data into QR codes instantly.
+    \item \textbf{Technologies Used: HTML, CSS, JavaScript, Node.js, API}
+  }
+  {} % Event Dates (optional, adjust as needed)
+  {} % Tools and technologies used (removed)
+  {https://example.com/live} % Link to live project
+  {https://github.com/yourusername/yourproject} % Link to GitHub repository
 
   \resumeSubHeadingListEnd
 \vspace{-5.5mm}
 
-
-
-%-----------Technical skills-----------------
-\section{\textbf{Technical Skills and Interests}}
- \begin{itemize}[leftmargin=0.1in, label={}]
-    \small{\item{
-     \textbf{Technical Skills}{: } \\
-     \textbf{Soft Skills}{: } \\
-     \textbf{Field of Interest}{: } \\
-     \textbf{Hobbies}{: } \\
-    }}
- \end{itemize}
- \vspace{-16pt}
-
+%-----------Skills-----------------
+\section{\textbf{Skills and Interests}}
+\vspace{7pt}
+\begin{itemize}[leftmargin=0.1in, label={}, itemsep=6pt] % Adjust itemsep value as needed
+    \small{
+        \item \textbf{Languages}: C, C++, Javascript
+        \item \textbf{Technologies}: Node.js, Express.js, React.js, Socket.io, Heroku 
+        \item \textbf{Computer Fundamentals}: Data Structures, Algorithms, OOPS, DBMS, Operating System
+        \item \textbf{Databases}: MySQL, MongoDB
+        \item \textbf{Interests}: Algorithms, Competitive Programming, Artificial Intelligence
+        \item \textbf{Hobbies}: Gaming, Cricket
+    }
+\end{itemize}
+\vspace{-10pt}
 
 
 %-----------Positions of Responsibility-----------------
 \section{\textbf{Positions of Responsibility}}
-\vspace{-0.4mm}
+\vspace{7pt}
 \resumeSubHeadingListStart
-\resumePOR{Position, } % Position
-    {Club or Event} %Club,Event
-    {Position tenure} %Tenure Period
-    -work description in 1 line
-\resumePOR{Position, } % Position
-    {Club or Event} %Club,Event
-    {Position tenure} %Tenure Period
--work description in 1 line
-    
+\resumePOR{Head Boy, } % Position
+    {Brilliant Public School, Jehanabad} %Club, Event
+    {2020-21} %Tenure Period
+    \begin{itemize}[leftmargin=0.5cm, itemsep=0pt]
+        \item \footnotesize{\textit{Led student council activities, organized events, and served as a liaison between students and administration.}}
+    \end{itemize}
+\resumePOR{Desh Ke Mentor, } % Position
+    {Delhi Government} %Club, Event
+    {2022-23} %Tenure Period
+    \begin{itemize}[leftmargin=0.5cm, itemsep=0pt]
+        \item \footnotesize{\textit{Mentored students in choosing various career paths, providing guidance and support for their future aspirations.}}
+    \end{itemize}
 \resumeSubHeadingListEnd
 \vspace{-5mm}
-
-
 
 
 %-----------Achievements-----------------
 \section{\textbf{Achievements}}
-\vspace{-0.4mm}
+\vspace{7pt}
 \resumeSubHeadingListStart
-\resumePOR{Achievement } % Award
-    {description} % Event
-    {Event dates} %Event Year
+\resumePOR{Specialist} % Award
+    { at CodeForces (max rating - 1507)} % Event
+    {} %Event Year
+    \vspace{7pt}
     
-\resumePOR{Achievement } % Award
-    {description} % Event
-    {Event dates} %Event Year
+\resumePOR{} % Award
+    {Global Rank Under \textbf{2000} in Multiple CodeForces Round} % Event
+    {} %Event Year
+
+      \vspace{7pt}
+    
+\resumePOR{} % Award
+    {Global Rank \textbf{504} in CodeForces Round 954} % Event
+    {} %Event Year
+    
+    \vspace{7pt}
+    \resumePOR{} % Award
+    {JEE Main 2022 - \textbf{99.53} percentile with AIR \textbf{4311}} % Event
+    {} %Event Year
 \resumeSubHeadingListEnd
 \vspace{-5mm}
-
-
 
 %-------------------------------------------
 \end{document}
