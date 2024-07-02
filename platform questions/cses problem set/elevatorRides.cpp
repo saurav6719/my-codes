@@ -34,46 +34,47 @@
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
+#define pp pair<int,int> 
 using namespace std;
 
 /* write core logic here */
+pp dp[(1<<20) + 5];
+
 void solve(){
     int n;
     cin>>n;
-    int x;
-    cin>>x;
+    int k;
+    cin>>k;
+    for(int i = 0; i<(1<<20)+5; i++){
+        dp[i] = {-1,-1};
+    }
+
+    dp[0] = {1, 0};
     vector<int> input(n);
-    multiset<int> ms;
-    int sum = 0;
     for(int i = 0; i<n; i++){
         cin>>input[i];
-        ms.insert(input[i]);
-        sum += input[i];
     }
 
-    debug(sum); 
-    int cnt = 1;
-    int left = x;
-
-    while(left >= 0){
-        if(ms.empty()) break;
-        auto it = ms.upper_bound(left);
-        if(it == ms.begin()){
-            left = x;
-            cnt++;
-            continue;
-        }
-        it--;
-        int val = *it;
-        debug(val);
-        debug(cnt);
-        ms.erase(it);
-        left -= val;
+    for(int mask = 1; mask < (1<<n); mask++){
+        pp ans = {INT_MAX, INT_MAX};
+        for(int j = 0; j<n; j++){
+        if((mask & (1<<j))){
+            pp aa = dp[mask ^ (1<<j)];
+            if(aa.second + input[j] <= k){
+                aa.second += input[j];
+            }
+            else{
+                aa.second = input[j];
+                aa.first++;
+            }
+            if(aa.first < ans.first) ans = aa;
+            if(aa.second < ans.second) ans = aa;
+        }   
+        dp[mask] = ans;
     }
+}
 
-    cout<<cnt;
-
-
+cout<<dp[(1<<n)-1].first;
 }
 /* logic ends */
 

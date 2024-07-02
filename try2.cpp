@@ -30,57 +30,47 @@
 #define print(v)
 #endif
 #define endl "\n"
+#define int long long int
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
-#define ll long long int 
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    
-    ll x, y, k; cin >> x >> y >> k;
- 
-    if(y == 2){
-        if(x % 2 == 0){
-            k--;
-            x++;
-        }
-        
-        while(x != 1 && k > 0){
-            x++;
-            k--;
-            x /= 2; 
-        }
-        cout << x << endl;
-        return;
+int dp[105][1005];
+int f(int i , int n , vector<int> & arr, int k){
+    if(k == 0) return 1;
+    if(k < 0) return 0;
+    if(i == n) return 0;
+    if(dp[i][k] != -1) {
+        return dp[i][k];
     }
- 
-    while(k > 0 && x != 1){
-        ll diff = x%y;
-        ll more = y - diff;
- 
-        if(k < more){
-            cout << x + k << endl;
-            return;
-        }
- 
-        k -= more;
-        x += more;
-        while(x % y == 0){
-            x /= y;
-        }
-    }
- 
-    if(x == 1){
-        // cout << "CHECK" << endl;
-        if(k > 0){
-            x = 1 + (k % (y - 1));
-        }
-    }
- 
-    cout << x << endl;
+    //pick 
+	int ans = 0;
+    int xx = f(i+1, n, arr, k-arr[i]);
+    ans += xx;
+	ans = ans % 1000000007;
+    //not pick 
+    int yy = f(i+1, n, arr, k);
+    ans += yy;
+	ans = ans % 1000000007;
 
+    return dp[i][k] = ans;
+}
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> arr(n);
+    for(int i = 0; i<n; i++){
+        cin>>arr[i];
+    }
+
+    int k; cin>>k;
+    memset(dp, -1, sizeof dp);
+	cout<< f(0, arr.size(), arr, k)<<endl;
+    for(int i = 0; i<n; i++){
+        cout<<dp[i][k]<<" ";
+    }
 }
 /* logic ends */
 
@@ -91,8 +81,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
