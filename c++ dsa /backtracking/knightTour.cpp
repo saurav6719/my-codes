@@ -38,8 +38,10 @@ void f(vector<vector<int> > &grid, int i, int j, int n, int count){
     grid[i][j] = -1;  // backtrack
 }
 int main(){
-    int n = 5;
+    int n = 8;
+    int i, j;
+    cin>>i>>j;
     vector<vector<int> > grid(n, vector<int> (n, -1));
-    f(grid,0,0,n,1);
+    f(grid,i,j,n,1);
     return 0;
 }
