@@ -85,22 +85,27 @@ int lca(int u, int v){
     u = lft(u, level[u] - level[v]);
     if(u==v) return v;
 
-    int lo = 1;
-    int hi = level[u];
-    int res = -1;
-    while(lo <= hi){
-        int mid = (lo + hi) / 2;
-        if(lft(u, mid) == lft(v,mid)){
-            res = lft(v,mid);
-            hi = mid -1;
-        }   
-        else{
-            lo= mid + 1;
+    for(int i = 19; i >= 0; i--) {
+        if(powpar[u][i] != powpar[v][i]) {
+            u = powpar[u][i];
+            v = powpar[v][i];
         }
     }
+    return powpar[u][0];
 
-    return res;
 }
+
+void findingParent(vector<vector<int> > &tree, int src, int par, vector<int> &visited, vector<int> &parent){
+    visited[src] = 1;
+    for(auto child : tree[src]){
+        if(visited[child] == -1){
+            parent[child] = src;
+            findingParent(tree, child, src, visited, parent);
+        }
+    }
+}
+
+
 
 
 void solve(){
@@ -111,13 +116,14 @@ void solve(){
     vector<vector<int> > tree(n+5, vector<int> ());
     vector<int> par(n+5);
     par[1] = -1;
-    for(int i = 2; i<=n; i++){
-        int x;
-        cin>>x;
-        tree[i].push_back(x);
-        tree[x].push_back(i);
-        par[i] = x;
-    } 
+    for(int i = 0; i<n-1; i++){
+        int u,v;
+        cin>>u>>v;
+        tree[u].push_back(v);
+        tree[v].push_back(u);
+    }
+    vector<int> visited2(n+5, -1);
+    findingParent(tree, 1, -1, visited2, par);
 
     print(par);
     powpar.resize(n+5, vector<int> ());
@@ -131,7 +137,9 @@ void solve(){
     while(q--){
         int u, v;
         cin>>u>>v;
-        cout<<lca(u,v)<<endl;
+        int ff = lca(u,v);wwww
+        cout<<level[u] - level[ff] + level[v] - level[ff]<<endl;
+
     }
 }
 /* logic ends */
