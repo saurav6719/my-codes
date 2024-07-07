@@ -37,40 +37,81 @@
 using namespace std;
 
 /* write core logic here */
-int dp[105][1005];
-int f(int i , int n , vector<int> & arr, int k){
-    if(k == 0) return 1;
-    if(k < 0) return 0;
-    if(i == n) return 0;
-    if(dp[i][k] != -1) {
-        return dp[i][k];
-    }
-    //pick 
-	int ans = 0;
-    int xx = f(i+1, n, arr, k-arr[i]);
-    ans += xx;
-	ans = ans % 1000000007;
-    //not pick 
-    int yy = f(i+1, n, arr, k);
-    ans += yy;
-	ans = ans % 1000000007;
-
-    return dp[i][k] = ans;
-}
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> arr(n);
+    vector<int> nums = {1,9,9,7,4};
+    int n = nums.size();
+    int k = 1;
+    vector<int> mark(n+5, 0);
+
     for(int i = 0; i<n; i++){
-        cin>>arr[i];
+        if(((nums[i] & k) == k)) {
+            mark[i] = 1;
+            // debug(nums[i]);
+        }
+        else {
+            //debug(nums[i]);
+            mark[i] = 0; 
+        }
+    }   
+
+    vector<int> last;
+
+    last.push_back(-1);
+
+    print(mark);
+
+    vector<int> check(n+5, -5);
+
+    for(int i = 1; i<n; i++){
+        if((nums[i] & nums[i-1]) == k){
+            check[i] = 1;
+        }
+        else{
+            check[i] = -1;
+        }
     }
 
-    int k; cin>>k;
-    memset(dp, -1, sizeof dp);
-	cout<< f(0, arr.size(), arr, k)<<endl;
+    print(check);
+
+
     for(int i = 0; i<n; i++){
-        cout<<dp[i][k]<<" ";
+        if(check[i] == -1) last.push_back(i);
     }
+    last.push_back(n);
+    int ans = 0 ;
+    for(int i = 0; i<n; i++){
+        if(nums[i] == k) ans++;
+    }
+
+    debug(ans);
+
+    print(last);
+
+
+
+    for(int i = 1; i<n; i++){
+        if(check[i] == -1) continue;
+        int xx = lower_bound(last.begin(), last.end(), i)- last.begin();
+        debug(xx);
+  
+        if(xx==1){
+            int nmber = i+1;
+            ans += nmber-1;
+            debug(ans);
+        }
+        
+        else{
+            xx--;
+            int nmber = i - last[xx];
+            ans += nmber-1;
+        }
+
+        
+    }
+
+    cout<<ans;
+
+
 }
 /* logic ends */
 
