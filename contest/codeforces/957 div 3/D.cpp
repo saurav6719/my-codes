@@ -37,36 +37,76 @@
 using namespace std;
 
 /* write core logic here */
-
-bool f(string &str, int i, int m, int k, int curr){
-    if(i >= str.size()) {
-        debug(i);
-        debug(str.size());
-        return true;
-    }
-    if(i>=0 and i < str.size() and str[i] == 'C') return false;
-    if(curr > k) return false;
-    for(int j = 1; j<=m; j++){
-        int res = f(str, i+j, m, k, (i+j>= 0 and i+j<str.size() and  str[i+j] == 'W') ? curr + 1 : curr);
-        if(res == true) {
-            debug(i+j);
-        }
-    }
-
-    return false;
-}
 void solve(){
     int n,m,k;
     cin>>n>>m>>k;
 
     string str;
     cin>>str;
-    print(str);
+    
 
-    if(f(str,-1, m, k, 0)) {
-        cout<<"YES"<<endl;return;
+    vector<int> logs;
+    logs.push_back(-1);
+    for(int i = 0; i<n; i++){
+        if(str[i] == 'L') logs.push_back(i);
     }
-    cout<<"NO"<<endl;
+
+    logs.push_back(n);
+
+    print(logs);
+
+
+
+    int i = -1;
+    int curr = 0;
+
+    int cnt = 0;
+    while(i<n and cnt<5){
+        debug(i);
+        if(i>=0  and i<n and str[i] == 'C') {
+            cout<<"NO"<<endl;
+            return;
+        }
+        if(i>=0  and i<n and str[i] == 'W'){
+            curr++;
+            if(curr > k){
+                cout<<"NO"<<endl;
+                return;
+            }
+            i++;
+            continue;
+        }
+
+        int xx = lower_bound(logs.begin(), logs.end(), i+m) - logs.begin();
+        debug(i+m);
+        debug(xx);
+        
+        if(logs[xx] == i+m) {
+            i = logs[xx];
+            continue;
+        }
+
+        else{
+            xx--;
+            debug(xx);
+            if(logs[xx] <= i) {
+                i = i+m;
+                if(str[i] == 'C'){
+                    cout<<"NO"<<endl;
+                    return;
+                }
+            }
+            else{
+                i = logs[xx];
+            }
+            
+        }
+        cnt++;
+        
+    }
+
+    cout<<"YES"<<endl;
+    return;
 }
 /* logic ends */
 
