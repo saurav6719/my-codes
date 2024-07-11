@@ -43,8 +43,6 @@ void solve(){
 
     string str;
     cin>>str;
-    
-
     vector<int> logs;
     logs.push_back(-1);
     for(int i = 0; i<n; i++){
