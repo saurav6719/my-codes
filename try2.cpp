@@ -37,102 +37,116 @@
 using namespace std;
 
 /* write core logic here */
+string countOfAtoms(string formula) {
+        int n = formula.size();
+        vector<int> index(n,0);
 
-vector<vector<int> > powpar;
-vector<int> level;
+        vector<pair<int,int> > bracks;
+        int curr = 0;
 
-void blf(vector<int> &par, int n){
-    for(int i = 1; i<=n; i++){
-        powpar[i].push_back(par[i]);
-    }
+        stack<int> st;
+        int i = 0;
 
-    for(int j = 1; j<20; j++){
-        for(int i = 1; i<=n; i++){
-            if(powpar[i][j-1] == -1) powpar[i].push_back(-1);
-            else{
-                int ele = powpar[i][j-1];
-                powpar[i].push_back(powpar[ele][j-1]);
+        while(i<n){
+            if(isupper(formula[i])){
+                curr = i;
+                index[curr] = 1;
+            }
+            if(isdigit(formula[i]) and curr!=-1){
+                string xx = "";
+                while(i<n and isdigit(formula[i]) ){
+                    xx += formula[i];
+                    i++;
+                }
+                index[curr] = stoi(xx);
+                i--;
+            }
+
+            if(formula[i] == '('){
+                st.push(i);
+            }
+
+            if(formula[i] == ')'){
+                curr = -1;
+                int xx = st.top();
+                st.pop();
+                bracks.push_back({xx, i});
+            }
+            i++;
+        }
+
+        //print(index);
+
+        
+        for(int i = 0; i<bracks.size(); i++){
+            pair<int,int> a = bracks[i];   
+            int start = a.first;
+            int end = a.second;
+            
+            int tomul ;
+            string xx ="";
+            int y = end+1;
+            if(!isdigit(formula[y])) continue;
+            while(y<n and isdigit(formula[y])){
+                xx += formula[y];
+                y++;
+            }
+
+            tomul = stoi(xx);
+            for(int j = start; j<end; j++){
+                index[j] *= tomul;
             }
         }
-    }
-}
+
+        //print(index);
 
 
-int lft(int node , int k){
-    for(int i = 19; i>=0; i--){
-        if(node == -1) return -1;
-        if((k&(1<<i))){
-            node = powpar[node][i];
-            k-=(1<<i);
+        vector<string> mapping(n, "");
+        int curr2 = 0;
+        for(int i = 0; i<n; i++){
+            if(isupper(formula[i])){
+                curr2 = i;
+                mapping[curr2] += formula[i];
+            }
+            if(islower(formula[i])){
+                mapping[curr2] += formula[i];
+            }
         }
-    }
-    return node;
-}
+
+        //print(mapping);
+        map<string, int> mp;
 
 
-void dfs(vector<vector<int> > &tree , int src, vector<int> &visited){
-    visited[src] = 1;
-    for(auto child : tree[src]){
-        if(visited[child] == -1){
-            level[child] = level[src]+1;
-            dfs(tree, child , visited);
+        for(int i =0 ;i<n; i++){
+            if(mapping[i] != ""){
+                //print(mapping[i]);
+                //debug(index[i]);
+                int xx = index[i];                
+                mp[mapping[i]] += xx;
+            }
         }
-    }
-}
 
-int lca(int u, int v){
-    if(level[v]>level[u]) swap(u,v);
-    u = lft(u, level[u] - level[v]);
-    if(u==v) return v;
+        // for(auto ele : mp){
+        //     cout<<ele.first<<ele.second<<endl;
+        // }
+        // cout<<endl;
 
-    int lo = 1;
-    int hi = level[u];
-    int res = -1;
-    while(lo <= hi){
-        int mid = (lo + hi) / 2;
-        if(lft(u, mid) == lft(v,mid)){
-            res = lft(v,mid);
-            hi = mid -1;
-        }   
-        else{
-            lo= mid + 1;
+        string ans = "";
+        for(auto ele: mp){
+            ans += ele.first;
+
+            if(ele.second > 1) ans += to_string(ele.second);
         }
-    }
 
-    return res;
+        
+
+        return ans;
 }
-
 
 void solve(){
-    int n;
-    cin>>n;
-    int q;
-    cin>>q;
-    vector<vector<int> > tree(n+5, vector<int> ());
-    vector<int> par(n+5);
-    par[1] = -1;
-    for(int i = 2; i<=n; i++){
-        int x;
-        cin>>x;
-        tree[i].push_back(x);
-        tree[x].push_back(i);
-        par[i] = x;
-    } 
-
-    print(par);
-    powpar.resize(n+5, vector<int> ());
-    blf(par, n);
-
-    level.resize(n+5);
-    level[1] = 0;
-    vector<int> visited(n+5, -1);
-    dfs(tree, 1, visited);
-    print(level);
-    while(q--){
-        int u, v;
-        cin>>u>>v;
-        cout<<lca(u,v)<<endl;
-    }
+    string str;
+    cin>>str;
+    cout<<countOfAtoms(str);
 }
 /* logic ends */
 
