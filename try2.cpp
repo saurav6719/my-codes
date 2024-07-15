@@ -77,7 +77,7 @@ string countOfAtoms(string formula) {
 
         //print(index);
 
-        
+        `
         for(int i = 0; i<bracks.size(); i++){
             pair<int,int> a = bracks[i];   
             int start = a.first;
