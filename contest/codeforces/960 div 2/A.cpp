@@ -38,7 +38,28 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    int maxi = INT_MIN;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+        maxi = max(maxi, input[i]);
+    }
+    map<int,int> freq;
+    int cnt = 0;
+    for(int i =0; i<n; i++){
+        freq[input[i]]++;
+    }
+
+    for(auto ele : freq){
+        if(ele.second & 1){
+            cout<<"YES"<<endl;
+            return;
+        }
+    }
+
+    cout<<"NO"<<endl;
 }
 /* logic ends */
 
@@ -49,8 +70,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
