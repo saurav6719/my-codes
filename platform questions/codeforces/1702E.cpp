@@ -63,10 +63,50 @@
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
+#define pp pair<int,int> 
 using namespace std;
 
 /* write core logic here */
 void solve(){
+    int n;
+    cin>>n;
+
+    vector<pp> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i].first>>input[i].second;
+    }
+
+    printpp(input);
+
+    set<int> st1;
+    set<int> st2;
+    
+
+    for(int i = 0; i<n; i++){
+        int a = input[i].first;
+        int b = input[i].second;
+        if(a==b){
+            cout<<"NO"<<endl;
+            return;
+        }
+
+        if(!st1.count(a) and !st1.count(b)){
+            st1.insert(a);
+            st1.insert(b);
+        }
+
+        else{
+            if(st2.count(a) or st2.count(b)){
+                cout<<"NO"<<endl;
+                return;
+            }
+            st2.insert(a);
+            st2.insert(b);
+        }
+
+    }
+
+    cout<<"YES"<<endl;
     
 }
 /* logic ends */
@@ -78,8 +118,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
