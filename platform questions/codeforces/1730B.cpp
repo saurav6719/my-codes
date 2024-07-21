@@ -63,96 +63,65 @@
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int> 
+#define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
+double ans;
+double currtime;
 
-bool dfs(int node , vector<int> &visited, vector<int> &mark, vector<vector<int>> &graph, int curr){
-    visited[node] = 1;
-    mark[node] = curr;
-    for(auto child : graph[node]){
-        if(visited[child] == 1){
-            if(mark[child] == curr){
-                return false;
-            }
-        }
-        else{
-            bool xx = dfs(child, visited, mark, graph, (curr == 1) ? 2 : 1);
-            if(!xx) return false;
-        }
+bool poss(double mid, vector<int> &x, vector<int> &t){
+    double a = INT_MIN;
+    double b = INT_MAX;
+    int n = x.size();
+    for(int i = 0; i<n; i++){
+        if(mid < t[i]) return false;
+        double rem = mid - t[i];
+        a = max(a, x[i] - rem);
+        b = min(b, x[i] + rem); 
     }
 
+    if(a > b) return false;
+    else{
+        if(mid < currtime){
+            ans = a;
+        }
+    }
     return true;
+
+
 }
 void solve(){
+    ans = 0;
+    currtime = INT_MAX;
     int n;
     cin>>n;
-
-    vector<pp> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i].first>>input[i].second;
+    vector<int> x(n);
+    vector<int> t(n);
+    for(int i = 0; i<n;i++){
+        cin>>x[i];
     }
 
     for(int i = 0; i<n; i++){
-        if(input[i].first == input[i].second){
-            cout<<"NO"<<endl;
-            return;
-        }
+        cin>>t[i];
     }
 
-    map<int,vector<int> > mp;
+    double lo = 0;
+    double hi = 2e8;
 
-    for(int i = 0; i<n; i++){
-        int a = input[i].first;
-        int b = input[i].second;
-        mp[a].push_back(i);
-        mp[b].push_back(i);
+    int cnt = 0;
 
-        if(mp[a].size() > 2){
-            cout<<"NO"<<endl;
-            return;
+    while(hi - lo >1e-6){
+        double mid = (lo + hi)/2;
+        if(poss(mid, x, t)){
+            hi = mid;
         }
-
-        if(mp[b].size() > 2){
-            cout<<"NO"<<endl;
-            return;
-        }
-
+        else lo = mid;
+        cnt++;
     }
 
-    vector<vector<int>> graph(n, vector<int> ());
+    cout << fixed << setprecision(10)<<ans<<endl;
 
-    for(int i = 0; i<n; i++){
-        int a = input[i].first;
-        int b = input[i].second;
-        for(auto ele : mp[a]){
-            if(ele!=i) graph[i].push_back(ele);
-        }
-        for(auto ele : mp[b]){
-            if(ele!=i) graph[i].push_back(ele);
-        }
-    }
-
-    // print2d(graph);
-
-
-    vector<int> visited(n, -1);
-
-    vector<int> mark(n);
-
-    for(int i = 0; i<n; i++){
-        if(visited[i] == -1){
-            bool xx = dfs(i, visited, mark, graph, 1);
-            if(xx == false){
-                cout<<"NO"<<endl;
-                return;
-            }
-        }
-    }
-
-    cout<<"YES"<<endl;
-    
 }
 /* logic ends */
 
@@ -164,7 +133,7 @@ signed main(){
     #endif
     int t;
     cin>>t;
-    //t = 1;
+    ///t = 1;
     while(t--){
         solve();
     }
