@@ -1,88 +1,74 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
-
-/* includes and all */
 
 #include<bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
 
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#endif
-#define endl "\n"
-#define int long long int
-#define mod 1000000007
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
 using namespace std;
 
-/* write core logic here */
-void solve(){
-    
-}
-/* logic ends */
+// Define an interval as a tuple (start, end)
+typedef tuple<int, int> Interval;
 
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
-    int t;
-    //cin>>t;
-    t = 1;
-    while(t--){
-        solve();
+// Comparator to sort intervals by their end time
+bool compareEnd(const Interval &a, const Interval &b) {
+    return get<1>(a) < get<1>(b);
+}
+
+// Comparator to sort intervals by their start time
+bool compareStart(const Interval &a, const Interval &b) {
+    return get<0>(a) < get<0>(b);
+}
+
+int countNonOverlappingTriplets(vector<Interval> &intervals) {
+    int n = intervals.size();
+    if (n < 3) return 0; // If less than 3 intervals, return 0
+
+    // Sort intervals by end time
+    sort(intervals.begin(), intervals.end(), compareEnd);
+
+    // Create prefix and suffix maximum arrays
+    vector<int> prefixMax(n, 0), suffixMax(n, 0);
+    prefixMax[0] = 1;
+    suffixMax[n - 1] = 1;
+
+    for (int i = 1; i < n; ++i) {
+        prefixMax[i] = max(prefixMax[i - 1], i + 1);
     }
-return 0;
+
+    for (int i = n - 2; i >= 0; --i) {
+        suffixMax[i] = max(suffixMax[i + 1], n - i);
+    }
+
+    // Count the number of valid triplets
+    int count = 0;
+
+    for (int i = 0; i < n; ++i) {
+        int end_i = get<1>(intervals[i]);
+        // Find the maximum number of intervals that end before intervals[i] starts
+        int left = lower_bound(intervals.begin(), intervals.end(), Interval(0, end_i), compareEnd) - intervals.begin() - 1;
+
+        if (left >= 0 && prefixMax[left] >= 1) {
+            int start_i = get<0>(intervals[i]);
+            // Find the maximum number of intervals that start after intervals[i] ends
+            int right = upper_bound(intervals.begin(), intervals.end(), Interval(start_i, INT_MAX), compareStart) - intervals.begin();
+
+            if (right < n && suffixMax[right] >= 1) {
+                count += prefixMax[left] * suffixMax[right];
+            }
+        }
+    }
+
+    return count;
 }
 
+int main() {
+    int n;
+    cin >> n;
+    vector<Interval> intervals(n);
+    for (int i = 0; i < n; ++i) {
+        int start, end;
+        cin >> start >> end;
+        intervals[i] = make_tuple(start, end);
+    }
+
+    cout << countNonOverlappingTriplets(intervals) << endl;
+
+    return 0;
+}

@@ -67,60 +67,127 @@
 using namespace std;
 
 /* write core logic here */
+
+bool cmp(pair<int,char> &a, pair<int, char> &b){
+    return a.first > b.first;
+}
 void solve(){
     int n;
     cin>>n;
     string str;
     cin>>str;
 
-    int start = n/26;
-    if(start == 0) start++;
-    int end = n;
-
-    vector<int> freq;
-
-    map<char, int> mp;
+    map<char,int> mp;
 
     for(auto ele : str){
         mp[ele]++;
     }
 
-    map<int,int> mp2;
-    for(auto ele : mp){
-        mp2[ele.second]++;
+
+    vector<int> poss;
+
+    for(int i = 1; i<=26; i++){
+        if(n % i == 0){
+            poss.push_back(n/i);
+        }
     }
 
-    printmap(mp2);
+    print(poss);
+    printmap(mp);  
+    set<char> st;
+    for(char i = 'a'; i<='z'; i++ ){
+        st.insert(i);
+    }
+
+    
+
+    vector<pair<int,char> > v;
+    for(auto ele: mp){
+        v.push_back({ele.second , ele.first});
+        st.erase(ele.first);
+    }
+
+    sort(v.begin(), v.end(), cmp);
 
     int ans = INT_MAX;
-    for(int i = start ; i<=end; i++){
-        int curr = 0;
-        int rem = 0;
-        if(n % i != 0) continue;
+    int res = -1;
 
-        for(auto ele : mp2){
-            if(ele.first == i) continue;
-            if(ele.first < i){
-                int xx = ele.first * ele.second;
-                xx -= (i)
-                curr += (xx+ rem) / i;
-                rem =(xx+rem) % i;
+    string toprintfinally;
+
+    for(int i = 0; i<poss.size(); i++){
+
+        
+        int curr = poss[i];
+        int charrequired = n / curr;
+
+        string final = "";
+        int j = 0;
+        while(final.size() < n and j<v.size()){
+            char ch = v[j].second;
+            for(int k = 0; k<curr; k++){
+                final += ch;
             }
-            else{
-                int xx = ele.first * ele.second;
-                xx -= (i * ele.second);
-                curr += xx;
-                rem = xx & i;
+            j++;
+        }
+
+        if(final.size() < n){
+            while(final.size() < n){
+                char ch =*st.begin();
+                for(int k = 0; k<curr; k++){
+                    final += ch;
+                }
+                st.erase(ch);
             }
         }
 
-        debug(i);
-        debug(curr);
+        print(final);
 
-        ans = min(ans, curr);
+        map<char,int> mpfinal;
+        for(auto ele : final){
+            mpfinal[ele]++;
+        }
+        map<char,int> mp2 = mp;
+
+        string copied = str;
+
+        vector<int> tochange;
+
+        for(int i = 0; i<n; i++){
+            char original = copied[i];
+            if(mpfinal[original] > 0){
+                mpfinal[original]--;
+                continue;
+            }
+            tochange.push_back(i);
+        }
+
+        string tochangestring = "";
+        for(auto ele : mpfinal){
+            char ch = ele.first;
+            int freq = ele.second;
+
+            for(int i = 0; i<freq; i++){
+                tochangestring += ch;
+            }
+        }
+
+        debug(tochange.size());
+        if(tochange.size() < ans){
+            res = tochange.size();
+            ans = tochange.size();
+
+            for(int i = 0; i<tochange.size(); i++){
+                int index = tochange[i];
+                copied[index] = tochangestring[i];
+            }
+
+            toprintfinally = copied;
+        }
+
     }
+    cout<<res<<endl;
+    cout<<toprintfinally<<endl;
 
-    debug(ans);
 
 }
 /* logic ends */
