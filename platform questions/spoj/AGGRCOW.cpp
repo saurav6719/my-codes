@@ -67,52 +67,41 @@
 using namespace std;
 
 /* write core logic here */
-int poss(int mid, vector<int> &input, int m){
+bool poss(int mid , vector<int> & input, int cows){
     int cnt = 1;
-    int curr =0;
-    int n = input.size();
-    for(int i = 0; i<n; i++){
-        if(input[i] > mid){
-            return 0;
-        }
-        if(curr + input[i] > mid){
+    int last = input[0];
+    for(int i = 1; i<input.size(); i++){
+        if(input[i] - last >= mid){
             cnt++;
-            curr = input[i];
-        }
-        else{
-            curr += input[i];
+            last = input[i];
+            // if(mid == 3) debug(input[i]);
+            // if(mid == 3) print(input);
         }
     }
-
-    if(mid == 10) debug(cnt);
-
-    if(cnt <= m) return 1;
-    
-    else return 0;
+    return cnt >= cows;
 }
 void solve(){
-    int n,m;
-    cin>>n>>m;
-
-    
+    int n;
+    cin>>n;
+    int c;
+    cin>>c;
     vector<int> input(n);
     for(int i = 0; i<n; i++){
         cin>>input[i];
     }
-
-    int lo = 0; 
+    sort(input.begin(), input.end());
+    int lo = 0;
     int hi = 1e15;
-    int res = -1;
-    while(lo <= hi){
-        int mid = lo + (hi - lo)/2;
-        if(poss(mid, input,m) == 1){
+    int res = -1 ; 
+    while (lo <= hi){
+        int mid = lo + (hi - lo) / 2;
+        if (poss (mid , input, c)){
             res = mid;
+            lo = mid + 1;
+        }
+        else {
             hi = mid - 1;
         }
-        else if(poss(mid, input, m) == 2){
-            hi = mid - 1;
-        }
-        else lo = mid+ 1;
     }
 
     cout<<res<<endl;
@@ -126,8 +115,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
