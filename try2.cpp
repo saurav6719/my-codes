@@ -67,55 +67,8 @@
 using namespace std;
 
 /* write core logic here */
-int poss(int mid, vector<int> &input, int m){
-    int cnt = 1;
-    int curr =0;
-    int n = input.size();
-    for(int i = 0; i<n; i++){
-        if(input[i] > mid){
-            return 0;
-        }
-        if(curr + input[i] > mid){
-            cnt++;
-            curr = input[i];
-        }
-        else{
-            curr += input[i];
-        }
-    }
-
-    if(mid == 10) debug(cnt);
-
-    if(cnt <= m) return 1;
-    
-    else return 0;
-}
 void solve(){
-    int n,m;
-    cin>>n>>m;
-
-    
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-    }
-
-    int lo = 0; 
-    int hi = 1e15;
-    int res = -1;
-    while(lo <= hi){
-        int mid = lo + (hi - lo)/2;
-        if(poss(mid, input,m) == 1){
-            res = mid;
-            hi = mid - 1;
-        }
-        else if(poss(mid, input, m) == 2){
-            hi = mid - 1;
-        }
-        else lo = mid+ 1;
-    }
-
-    cout<<res<<endl;
+    adws
 }
 /* logic ends */
 
