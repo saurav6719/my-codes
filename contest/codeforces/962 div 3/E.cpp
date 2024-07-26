@@ -60,44 +60,62 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define MOD 1000000007
+#define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-long long countValidSubstrings(const string& s) {
-    int n = s.length();
-    unordered_map<int, int> prefix_count;
-    long long total_count = 0;
-    int prefix_sum = 0;
 
-    // Initialize hash map with prefix sum 0 occurring once
-    prefix_count[0] = 1;
+vector<pp> f(string&s) {
+    int n = s.size();
+    map<int, vector<int> > prf;
+    vector<pp> v;
 
-    // Traverse the string to compute prefix sums and count valid substrings
-    for (int i = 0; i < n; ++i) {
-        // Update the prefix sum
-        prefix_sum += (s[i] == '1') ? 1 : -1;
+   
+    int ps = 0;
+    prf[0].push_back(0); 
 
-        // If this prefix sum has been seen before, it contributes to valid substrings
-        if (prefix_count.find(prefix_sum) != prefix_count.end()) {
-            total_count = (total_count + prefix_count[prefix_sum]) % MOD;
+    
+    for (int i = 0; i < n; i++) {
+       
+        ps += (s[i] == '1') ? 1 : -1;
+
+       
+        if (prf.find(ps) != prf.end()) {
+            vector<int> &positions = prf[ps];
+            for (int ele : positions) {
+                v.emplace_back(ele + 1, i + 1); 
+            }
         }
-
-        // Update the count of this prefix sum
-        prefix_count[prefix_sum]++;
+        prf[ps].push_back(i + 1);
     }
 
-    return total_count;
+    return v;
 }
+
 
 void solve(){
     string s;
     cin>>s;
-    int cnt = countValidSubstrings(s);
-    debug(cnt);
+    int n = s.size();
+
+    vector<pp> result = f(s);
+
+    int cnt= 0;
+
+    for(auto ele : result){
+        int start = ele.first;
+        int end = ele.second;
+
+        int xx = n-end+1;
+        int yy = start;
+        cnt += xx*yy;
+        cnt %= mod;
+    }
+
+    cout<<cnt%mod<<endl;
 }
 /* logic ends */
 
@@ -108,11 +126,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
 return 0;
 }
-

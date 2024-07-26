@@ -13,8 +13,6 @@
   Happy coding! 
 */
 
-/* includes and all */
-
 #include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
@@ -60,59 +58,81 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define MOD 1000000007
+#define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-long long countValidSubstrings(const string& s) {
-    int n = s.length();
-    unordered_map<int, int> prefix_count;
-    long long total_count = 0;
-    int prefix_sum = 0;
 
-    // Initialize hash map with prefix sum 0 occurring once
-    prefix_count[0] = 1;
+const int MAXN = 1e6 + 5;
+const int ALPHABET_SIZE = 26;
 
-    // Traverse the string to compute prefix sums and count valid substrings
-    for (int i = 0; i < n; ++i) {
-        // Update the prefix sum
-        prefix_sum += (s[i] == '1') ? 1 : -1;
+void solve() {
+    int n;
+    cin >> n;
 
-        // If this prefix sum has been seen before, it contributes to valid substrings
-        if (prefix_count.find(prefix_sum) != prefix_count.end()) {
-            total_count = (total_count + prefix_count[prefix_sum]) % MOD;
-        }
-
-        // Update the count of this prefix sum
-        prefix_count[prefix_sum]++;
+    int q;
+    cin >> q;
+    vector<char> input(n);
+    for (int i = 0; i < n; i++) {
+        cin >> input[i];
     }
 
-    return total_count;
+    vector<char> input2(n);
+    for (int i = 0; i < n; i++) {
+        cin >> input2[i];
+    }
+
+    // Precompute prefix frequencies
+    vector<vector<int>> prefixFreq1(n, vector<int>(ALPHABET_SIZE, 0));
+    vector<vector<int>> prefixFreq2(n, vector<int>(ALPHABET_SIZE, 0));
+
+    for (int i = 0; i < n; ++i) {
+        if (i > 0) {
+            prefixFreq1[i] = prefixFreq1[i-1];
+            prefixFreq2[i] = prefixFreq2[i-1];
+        }
+        prefixFreq1[i][input[i] - 'a']++;
+        prefixFreq2[i][input2[i] - 'a']++;
+    }
+
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        l--; r--;
+
+        vector<int> freq1(ALPHABET_SIZE, 0);
+        vector<int> freq2(ALPHABET_SIZE, 0);
+
+        for (int i = 0; i < ALPHABET_SIZE; ++i) {
+            freq1[i] = prefixFreq1[r][i] - (l > 0 ? prefixFreq1[l-1][i] : 0);
+            freq2[i] = prefixFreq2[r][i] - (l > 0 ? prefixFreq2[l-1][i] : 0);
+        }
+
+        int cnt = 0;
+        for (int i = 0; i < ALPHABET_SIZE; ++i) {
+            if (freq2[i] > freq1[i]) {
+                cnt += freq2[i] - freq1[i];
+            }
+        }
+        cout << cnt << endl;
+    }
 }
 
-void solve(){
-    string s;
-    cin>>s;
-    int cnt = countValidSubstrings(s);
-    debug(cnt);
-}
 /* logic ends */
 
-signed main(){
+signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
+        freopen("Error.txt", "w", stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
-    while(t--){
+    cin >> t;
+    while (t--) {
         solve();
     }
-return 0;
+    return 0;
 }
-
