@@ -68,7 +68,11 @@ using namespace std;
 
 /* write core logic here */
 
-vector<pp> f(string&s) {
+
+void solve(){
+    string s;
+    cin>>s;
+
     int n = s.size();
     map<int, vector<int> > prf;
     vector<pp> v;
@@ -77,6 +81,7 @@ vector<pp> f(string&s) {
     int ps = 0;
     prf[0].push_back(0); 
 
+    int cnt= 0;
     
     for (int i = 0; i < n; i++) {
        
@@ -84,35 +89,18 @@ vector<pp> f(string&s) {
 
        
         if (prf.find(ps) != prf.end()) {
-            vector<int> &positions = prf[ps];
-            for (int ele : positions) {
-                v.emplace_back(ele + 1, i + 1); 
+            for (int ele : prf[ps]) {
+                int start = ele + 1;
+                int end = i+1;
+
+                int xx = n-end+1;
+                int yy = start;
+                cnt += xx*yy;
+                cnt %= mod;
+                
             }
         }
         prf[ps].push_back(i + 1);
-    }
-
-    return v;
-}
-
-
-void solve(){
-    string s;
-    cin>>s;
-    int n = s.size();
-
-    vector<pp> result = f(s);
-
-    int cnt= 0;
-
-    for(auto ele : result){
-        int start = ele.first;
-        int end = ele.second;
-
-        int xx = n-end+1;
-        int yy = start;
-        cnt += xx*yy;
-        cnt %= mod;
     }
 
     cout<<cnt%mod<<endl;
