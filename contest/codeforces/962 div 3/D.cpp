@@ -76,7 +76,6 @@ void solve(){
             if(i*j > n or i+j > x-1) break;
             int c1 = (n - (i*j)) / (i+j);
             int c2 = (x - i- j);
-
             int xx = min(c1, c2);
             if(xx > 0) cnt+= xx;
         }
