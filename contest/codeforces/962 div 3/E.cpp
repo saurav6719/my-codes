@@ -72,38 +72,44 @@ using namespace std;
 void solve(){
     string s;
     cin>>s;
-
     int n = s.size();
-    map<int, vector<int> > prf;
-    vector<pp> v;
 
-   
-    int ps = 0;
-    prf[0].push_back(0); 
+    vector<int> v;
+    for(int i= 0; i<n; i++){
+        if(s[i] == '0') v.push_back(-1);
+        else v.push_back(1);
+    }   
 
-    int cnt= 0;
-    
-    for (int i = 0; i < n; i++) {
-       
-        ps += (s[i] == '1') ? 1 : -1;
 
-       
-        if (prf.find(ps) != prf.end()) {
-            for (int ele : prf[ps]) {
-                int start = ele + 1;
-                int end = i+1;
-
-                int xx = n-end+1;
-                int yy = start;
-                cnt += xx*yy;
-                cnt %= mod;
-                
-            }
-        }
-        prf[ps].push_back(i + 1);
+    for(int i = 1; i<n; i++){
+        v[i] += v[i-1];
     }
 
-    cout<<cnt%mod<<endl;
+    vector<int> newv;
+    newv.push_back(0);
+
+    for(int i = 0; i<n;i++){
+        newv.push_back(v[i]);
+    }
+
+    print(newv);
+
+    map<int,int> mp;
+
+    int cnt = 0;
+    for(int i = 0; i<=n; i++){
+        int ele = newv[i];
+        int right = n-i+1;
+        int left = mp[ele];
+        debug(i);
+        debug(left);
+        debug(right);
+        cnt += right * left;
+        cnt %= mod;
+        mp[ele] += i+1;
+    }
+
+    cout<<cnt<<endl;
 }
 /* logic ends */
 
