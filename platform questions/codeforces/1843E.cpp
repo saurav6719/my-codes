@@ -67,55 +67,78 @@
 using namespace std;
 
 /* write core logic here */
+struct segments{
+    int l;
+    int r;
+    int sum;
+};
+
+
+bool poss(int mid, vector<segments> &v, vector<int> arr, vector<int> &queries){
+    // if(mid > queries.size() )return false;
+    
+    
+    // pri/nt(queries);
+    int xx = min((int)mid, (int)(queries.size()));
+    for(int i = 0; i<xx; i++){
+        // debug(queries[i]-1);
+        arr[queries[i]-1]++;
+    }
+    for(int i = 1; i<arr.size(); i++){
+        arr[i] += arr[i-1];
+    }
+    // debug(mid);
+    // debug(xx);
+    // print(arr);
+    for(auto ele : v){
+        int l = ele.l;
+        int r = ele.r;
+        l--;
+        r--;
+        int size = r-l+1;
+        int sum = arr[r] - ((l>0) ? arr[l-1] : 0);
+        if(sum > size/2) return true;
+    }
+    return false;
+}
+
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    int n,m;
+    cin>>n>>m;
+    vector<int> arr(n, 0);
+    vector<segments> v(m);
+
+    for(int i = 0; i<m; i++){
+        cin>>v[i].l>>v[i].r;
+        v[i].sum = 0;
+    }
+    int q;
+    cin>>q;
+
+    vector<int> queries(q);
+    for(int i = 0; i<q; i++){
+        cin>>queries[i];
     }
 
-    vector<int> ans;
+    int lo = 0;
+    int hi = n;
+    int res= -1;
+    while(lo<=hi){
+        int mid = (lo + hi )/ 2;
 
-    for(int i = 0; i<40; i++){
-        sort(input.begin(), input.end());
-        int mini = input[0];
-        int maxi = input[n-1];
-        bool flag = true;
-        for(int j = 0; j<n; j++){
-            if(input[j] != 0){
-                flag = false;
-                break;
-            }
+        if(poss(mid,v, arr, queries)){
+            hi = mid-1;
+            res = mid;
         }
-        int median =  maxi /2;
-        median /= 2;
+        else lo =mid + 1;
 
-        if(flag ) break;
-        if(median == 0) median++;
-        ans.push_back(median);
-        
-        for(int j = 0; j<n; j++){
-            input[j]  = abs(input[j] - median);
-        }  
-
-        print(input); 
     }
 
-    for(int i = 0; i<n; i++){
-        if(input[i] != 0) {
-            cout<<-1<<endl;
-            return;
-        }
-    }
+    cout<<res<<endl;
 
-    cout<<ans.size()<<endl;
 
-    for(int i = 0; i<ans.size(); i++){
-        cout<<ans[i]<<" ";
-    }
 
-    cout<<endl;
+
 }
 /* logic ends */
 
