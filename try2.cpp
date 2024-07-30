@@ -1,64 +1,99 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-vector<pair<int, int>> findValidSubstrings(const string& s) {
-    int n = s.length();
-    unordered_map<int, int> prefix_count;
-    vector<pair<int, int>> valid_substrings;
+vector<vector<int>> tree;
+vector<int> a;
+vector<long long> subtreeSum;
+vector<int> originalA;
 
-    // Initialize prefix sum and hash map
-    int prefix_sum = 0;
-    prefix_count[0] = 1; // To handle the case when prefix_sum is zero
-
-    // Compute prefix sums and find valid substrings
-    for (int i = 0; i < n; ++i) {
-        // Update the prefix sum
-        prefix_sum += (s[i] == '1') ? 1 : -1;
-
-        // If this prefix sum has been seen before
-        if (prefix_count.find(prefix_sum) != prefix_count.end()) {
-            // We need to find the starting indices
-            int count = prefix_count[prefix_sum];
-            int start_index = i + 1 - count; // Start from the first occurrence of this prefix sum
-
-            // Record all valid substrings
-            for (int j = 0; j < count; ++j) {
-                valid_substrings.emplace_back(start_index + j + 1, i + 1); // Adjusting to 1-based indexing
-            }
-        }
-
-        // Update the count of this prefix sum
-        prefix_count[prefix_sum]++;
+// DFS to calculate subtree sums
+void dfs(int v) {
+    subtreeSum[v] = a[v];
+    for (int u : tree[v]) {
+        dfs(u);
+        subtreeSum[v] += subtreeSum[u];
     }
+}
 
-    return valid_substrings;
+// Function to check if any subtree sum is negative
+bool hasNegativeSubtreeSum(int v) {
+    if (subtreeSum[v] < 0) {
+        return true;
+    }
+    for (int u : tree[v]) {
+        if (hasNegativeSubtreeSum(u)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Function to decrease the value for all vertices in the subtree
+void decreaseSubtree(int v, int decreaseValue) {
+    for (int u : tree[v]) {
+        a[u] -= decreaseValue;
+        decreaseSubtree(u, decreaseValue);
+    }
+}
+
+// Function to simulate the operation
+bool performOperation(int increaseValue) {
+    // Copy the original values
+    a = originalA;
+    
+    // Perform the increase and decrease operations
+    a[1] += increaseValue;
+    decreaseSubtree(1, increaseValue);
+
+    // Recalculate subtree sums with DFS
+    dfs(1);
+
+    // Check for negative subtree sums
+    return hasNegativeSubtreeSum(1);
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    int n;
+    cin >> n;
 
-    string s;
-    cin >> s;
-    int n = s.size();
+    tree.resize(n + 1);
+    a.resize(n + 1);
+    originalA.resize(n + 1);
+    subtreeSum.resize(n + 1, 0);
 
-    vector<pair<int, int>> result = findValidSubstrings(s);
-
-    int cnt= 0;
-
-    for(auto ele : result){
-        int start = ele.first;
-        int end = ele.second;
-
-        int xx = n-end+1;
-        int yy = start;
-        cnt += xx*yy;
-    }
-    for (const auto& p : result) {
-        cout << p.first << " " << p.second << endl;
+    // Input values at each vertex
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i];
+        originalA[i] = a[i];
     }
 
-    // cout<<cnt<<endl;
+    // Input the parent of each vertex from 2 to n
+    for (int i = 2; i <= n; i++) {
+        int parent;
+        cin >> parent;
+        tree[parent].push_back(i);
+    }
+
+    // Calculate initial subtree sums with DFS
+    int lo = a[1];
+    // debug(lo);
+    int hi = 1e15;
+    int res = a[1];
+    while(lo<=hi){
+        int mid = lo + (hi-lo)/2;
+        if(!performOperation(mid - originalA[1])){
+            res = mid;
+            lo = mid+1;
+        }
+        else{
+            hi = mid-1;
+        }
+    }
+
+    cout<<res<<endl;
 
     return 0;
 }
