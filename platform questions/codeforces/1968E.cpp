@@ -67,51 +67,39 @@
 using namespace std;
 
 /* write core logic here */
-const int MOD = 1e9 + 7;
-
-// Function to calculate power in modular arithmetic
-long long power(long long x, long long y) {
-    long long res = 1;
-    x = x % MOD;
-    while (y > 0) {
-        if (y & 1)
-            res = (res * x) % MOD;
-        y = y >> 1; // y = y/2
-        x = (x * x) % MOD;
-    }
-    return res;
-}
-
-// Function to calculate factorial in modular arithmetic
-long long factorial(int n) {
-    long long res = 1;
-    for (int i = 2; i <= n; ++i)
-        res = (res * i) % MOD;
-    return res;
-}
-
-// Function to calculate nCr in modular arithmetic
-long long nCr(int n, int r) {
-    if (r == 0 || r == n)
-        return 1;
-    long long numerator = factorial(n);
-    long long denominator = (factorial(r) * factorial(n - r)) % MOD;
-    return (numerator * power(denominator, MOD - 2)) % MOD;
-}
 void solve(){
-    int l,r,k;
-    cin>>l>>r>>k;
-    if(k>=10) {
-        cout<<0<<endl;
+    int n;
+    cin>>n;
+    if(n==2){
+        cout<<1<<" "<<1<<endl;
+        cout<<1<<" "<<2<<endl;
         return;
     }
-    int base = 10/k;
+    if(n==3){
+        cout<<2<<" "<<1<<endl;
+        cout<<2<<" "<<3<<endl;
+        cout<<3<<" "<<1<<endl;
+        return;
+    }
 
-    if(10 % k !=0) base++;
+    if(n==4){
+        cout<<1<<" "<<1<<endl;
+        cout<<1<<" "<<3<<endl;
+        cout<<4<<" "<<3<<endl;
+        cout<<4<<" "<<4<<endl;
+        return;
+    }
 
-    int xx = power(base, r);
-    int yy = power(base , l);
-    cout<<(xx-yy+mod)%mod<<endl;
+    int curr = 1;
+
+    for(int i = 0; i<n-2; i++){
+        cout<<1<<" "<<curr<<endl;
+        curr++;
+    }
+
+    cout<<n<<" "<<n<<endl;
+
+    cout<<n-2<<" "<<n-1<<endl;
 
 }
 /* logic ends */
