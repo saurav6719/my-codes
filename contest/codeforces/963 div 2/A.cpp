@@ -68,7 +68,45 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    string str;
+    cin>>str;
+    int ac =0;
+    int bc = 0;
+    int cc = 0;
+    int dc = 0;
+
+    for(int i = 0; i<str.size(); i++){
+        if(str[i] == 'A') ac++;
+        if(str[i] == 'B') bc++;
+        if(str[i] == 'C') cc++;
+        if(str[i] == 'D') dc++;
+    }
+
+    vector<int> v;
+    v.push_back(ac);
+    v.push_back(bc);
+
+    v.push_back(cc);
+    v.push_back(dc);
+
+    sort(v.begin(), v.end(), greater<int> ());
+    print(v);
+    int ans = 0;
+    for(int i = 0; i<4; i++){
+        if(v[i] <= n){
+            ans += v[i];
+            
+        }
+        else{
+            ans += n;
+        }
+    }
+
+    cout<<ans<<endl;
+
+
 }
 /* logic ends */
 
@@ -79,8 +117,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

@@ -68,7 +68,54 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
+    int n;
+    cin>>n;
+    priority_queue<int> odd;
+    priority_queue<int, vector<int> , greater<int> > even;
+    int ev = 0;
+    for(int i = 0; i<n; i++){
+        int ele;
+        cin>>ele;
+        if(ele & 1){
+            odd.push(ele);
+        }
+        else {
+            even.push(ele);
+            ev++;
+        }
+    }
+
+
     
+    
+
+    int ans = 0;
+
+    if(odd.size() == 0 or even.size() == 0){
+        cout<<0<<endl;
+        return;
+    }
+
+    while(!even.empty()){
+        int lodd = odd.top();
+        int leven = even.top();
+
+        odd.pop();
+        even.pop();
+
+        if(leven > lodd){
+            lodd += leven;
+            odd.push(lodd);
+            even.push(leven);
+        }
+
+        else{
+            odd.push(lodd + leven);
+        }
+        ans ++;
+    }
+
+    cout<<min(ans, ev+1) <<endl;
 }
 /* logic ends */
 
@@ -79,8 +126,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

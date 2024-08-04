@@ -67,8 +67,84 @@
 using namespace std;
 
 /* write core logic here */
+int largestNumberSmallerThanOrEqualToY(int x, int y, int cd) {
+    // Calculate the maximum number of times cd can be added to x without exceeding y
+    int maxIncrements = (y - x) / cd;
+
+    // Calculate the result by adding cd maxIncrements times to x
+    int result = x + maxIncrements * cd;
+
+    return result;
+}
+
+bool f(int l1, int r1, int l2, int r2){
+    return max(l1, l2) <= min(r1, r2);
+}
 void solve(){
-    
+    int n;
+    cin>>n;
+    int k; cin>>k;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
+
+    sort(input.begin(), input.end());
+
+    int y = input.back();
+
+    vector<pp> v;
+
+    for(int i = 0; i<n; i++){
+        input[i] = largestNumberSmallerThanOrEqualToY(input[i], y, 2*k);
+        v.push_back({input[i] , input[i] + 2*k});
+    }
+
+    print(input);
+
+
+    // for(int i = 0; i<n; i++){
+    //     cout<<v[i].first<<" "<< v[i].second<<endl;
+    // }
+
+
+    int l1 = v[0].first;
+    int r1 = v[0].first + k - 1;
+
+    int xx = v[0].first;
+    int yy =v[0].second;
+    if(abs(yy- y) < abs(xx-y)){
+        l1 = v[0].second;
+        r1 = v[0].second + k -1;
+    }
+
+    for(int i = 1; i<n; i++){
+        int xx = v[i].first;
+        int xx2 = v[i].first + k- 1;
+        int yy = v[i].second;
+        int yy2 = v[i].second + k -1;
+
+        if(f(l1, r1, xx, xx2)){
+            l1 = max(l1, xx);
+            r1 = min(r1, xx2);
+        }
+        else{
+            l1 = max(l1, yy);
+            r1 = min(r1, yy2);
+        }
+    }
+
+    if(l1<=r1){
+        cout<<l1<<endl;
+        return;
+    }
+
+    cout<<-1<<endl;
+    return;
+
+
+
+
 }
 /* logic ends */
 
@@ -79,8 +155,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = /1;
     while(t--){
         solve();
     }
