@@ -67,110 +67,35 @@
 using namespace std;
 
 /* write core logic here */
-const int MOD = 1e9 + 7;
-const int MAXN = 2e5 + 5; // Adjust according to the problem constraints
-
-// Arrays to store factorials and modular inverses
-long long fact[MAXN];
-long long invfact[MAXN];
-
-// Function to calculate power in modular arithmetic
-long long power(long long x, long long y) {
-    long long res = 1;
-    x = x % MOD;
-    while (y > 0) {
-        if (y & 1)
-            res = (res * x) % MOD;
-        y = y >> 1; // y = y/2
-        x = (x * x) % MOD;
-    }
-    return res;
-}
-
-// Function to precompute factorials and modular inverses
-void precompute_factorials() {
-    fact[0] = fact[1] = 1;
-    for (int i = 2; i < MAXN; ++i) {
-        fact[i] = fact[i-1] * i % MOD;
-    }
-    invfact[MAXN-1] = power(fact[MAXN-1], MOD-2);
-    for (int i = MAXN-2; i >= 0; --i) {
-        invfact[i] = invfact[i+1] * (i+1) % MOD;
-    }
-}
-
-// Function to calculate nCr in modular arithmetic using precomputed values
-long long nCr(int n, int r) {
-    if (r > n || r < 0) return 0;
-    return fact[n] * invfact[r] % MOD * invfact[n-r] % MOD;
-}
-
 void solve(){
-    int n;
-    cin>>n;
-    int k;
-    cin>>k;
-    vector<int> input(n);
-    for(int i= 0; i<n; i++){
-        cin>>input[i];
-    }
+    int lo = 2;
+    int hi = 999;
+    int res = -1;
+    while(lo < hi){
+        int mid1 = lo + (hi - lo) / 3;
+        int mid2 = hi - (hi - lo) / 3;
+        int k1;
+        cout<<"? "<<mid1<<" "<<mid2<<endl;
+        cout<<flush;
+        cin>>k1;
+        if(k1 == (mid1 * mid2)){
+            lo = mid2 + 1;
+        }
 
-    k = (k -1) / 2;
-
-    vector<int> aageone(n, 0);
-
-    for(int i = n-2; i>=0; i--){
-        if(input[i+1] == 1){
-            aageone[i] = aageone[i+1]+1;
+        else if(k1 ==( mid1 * (mid2+1))){
+            lo = mid1 + 1;
+            hi = mid2;
         }
         else{
-            aageone[i] = aageone[i+1];
+            hi = mid1;
         }
-    }
+    }   
 
-    vector<int> picheone(n, 0);
-
-    for(int i = 1; i<n; i++){
-        if(input[i-1] == 1){
-            picheone[i] = picheone[i-1]+1;
-        }
-        else{
-            picheone[i] = picheone[i-1];
-        }
-    }
-
-    int totalzero = 0;
-    for(int i = 0; i<n; i++){
-        if(input[i] == 0) totalzero++;
-    }
-
-    int ans = 0;
-
-    for(int i =0; i<n; i++){
-        if(input[i] == 0) continue;
-        int xx = aageone[i];
-        debug(xx);
-        int y = picheone[i];
-        int x = totalzero;
-        int curr = 0;
-        int xxx = nCr(x+y , k);
-        debug(xxx);
-        curr += xxx;
-        curr %= mod;
-        int yyy = nCr(xx, k);
-        debug(yyy);
-        curr *= yyy;
-        curr %= mod;
-
-        debug(i);
-        debug(curr);
-
-        ans += curr;
-        ans %= mod;
-    }
-
-    cout<<ans<<endl;
+    cout<<"!"<<" "<<lo<<endl;
+    cout<<flush;
+    return;
 }
+/* logic ends */
 
 signed main(){
     ios_base::sync_with_stdio(false);
@@ -178,7 +103,6 @@ signed main(){
     #ifndef ONLINE_JUDGE
         freopen("Error.txt" , "w" , stderr);
     #endif
-    precompute_factorials(); // Precompute factorials and inverses
     int t;
     cin>>t;
     // t = 1;
@@ -187,3 +111,4 @@ signed main(){
     }
 return 0;
 }
+

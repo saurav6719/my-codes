@@ -1,5 +1,6 @@
-function fun(){
-    content = "js";
-}
+fun();
 
-console.log(content);
+function fun(){
+    console.log("saurav");
+}
+ 
