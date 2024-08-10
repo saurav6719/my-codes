@@ -1,8 +1,30 @@
-let arr = [1, 7, 41, 38, 24];
+console.log("hi");
+setTimeout(() => {
+    console.log("set timeout 1");
+}, 1000);
 
-function cmp(a, b){
-    return (a - b);
+console.log("byy");
+
+setTimeout(() => {
+    console.log("set timeout 2");
+},2000)
+
+console.log("hi2");
+console.log("hi2");
+
+console.log("hi2");
+console.log("hi2");
+console.log("hi2");
+console.log("hi2");
+console.log("hi2");
+console.log("hi2");
+console.log("hi2");
+console.log("hi2");
+console.log("hi2");
+
+
+for(let i = 0; i<=10000000000; i++){
+    //work
 }
 
-arr.sort(cmp);
-console.log(arr);
+console.log("hiiiiii");
