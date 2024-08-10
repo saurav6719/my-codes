@@ -75,23 +75,70 @@ void solve(){
 
     vector<vector<int> > tree(n+5, vector<int> ());
 
-    for(int i = 0; i< n; i++){
+    for(int i = 0; i< n-1; i++){
         int u,v;
         cin>>u>>v;
         tree[u].push_back(v);
         tree[v].push_back(u);
     }
 
-    int root = -1;
-    int maxi = INT_MIN;
-    for(int i = 1; i<=n; i++){
-        if(graph[i].size() > maxi){
-            root = i;
-            maxi = graph[i].size();
-        }
+    if(n==1){
+        cout<<0<<endl;
+        return;
     }
 
-    debug(root);
+    set<int> one;
+    vector<int> degree(n+5, 0);
+
+
+    for(int i = 1; i<=n; i++){
+        degree[i] = tree[i].size();
+        if(degree[i] == 1){
+            one.insert(i);
+        }
+    }
+    print(degree);
+
+    int cnt = 0;
+    int less = 0;
+    while(cnt<n and k>0 and less<10){
+        k--;
+        debug(k);
+        set<int>newone;
+        for(auto ele : one){
+            debug(ele);
+            
+            if(degree[ele] == 0) {
+                cnt++;
+                continue;
+            }
+
+            degree[ele] = 0;
+            cnt++;
+            for(auto ele2 : tree[ele]){
+                if(degree[ele2] == 0) continue;
+                degree[ele2]--;
+                if(degree[ele2] == 1){
+                    newone.insert(ele2);
+                }
+                if(degree[ele2] == 0 and one.count(ele2) == 0){
+                    degree[ele2] = 1;
+                }
+                
+            }
+        }
+        one = newone;
+        print(degree);
+        
+    }
+
+    int ans = 0;
+
+    for(int i = 1; i<=n; i++){
+        if(degree[i] > 0) ans++;
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -102,8 +149,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }
