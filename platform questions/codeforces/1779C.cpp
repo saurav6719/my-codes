@@ -67,6 +67,7 @@
 using namespace std;
 
 /* write core logic here */
+
 void solve(){
     int n,m;
     cin>>n>>m;
@@ -74,6 +75,59 @@ void solve(){
     for(int i = 0; i<n; i++){
         cin>>input[i];
     }
+
+
+    vector<int> prf(n);
+    prf[0] = input[0];
+    for(int i = 1; i<n; i++){
+        prf[i] = input[i] + prf[i-1];
+    }
+
+    priority_queue<int> pq;
+
+    // 1 to m-1
+
+    // if(input[m-1] > 0){
+    //     pq.push(2 * input[m-1]);
+    // }
+
+    int curr = prf[m-1];
+    int ans =0;
+    for(int i = m-1; i>=0; i--){
+        if(prf[i] < curr){
+            while(prf[i] < curr){
+                int s = pq.top();
+                pq.pop();
+                curr -= s;
+                ans++;
+            }
+        }
+
+        if(input[i] > 0){
+            pq.push(2 * input[i]);
+        }
+    }
+
+    priority_queue<int> pq1;
+    curr = prf[m-1];
+    int topsum = 0;
+    for(int i = m; i<n; i++){
+        if(input[i] < 0){
+            pq1.push(-1 * input[i] * 2 );
+        }
+        if(prf[i] + topsum < curr){
+            while(prf[i] + topsum < curr){
+                int s = pq1.top();
+                pq1.pop();
+                prf[i] += s;
+                topsum += s;
+                ans++;
+            }
+        }
+    }
+
+    cout<<ans<<endl;
+
 
     
 }
