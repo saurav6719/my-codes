@@ -68,27 +68,47 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n, k; cin >> n >> k;
-    vector<int> v(n);
-    for(int i = 0; i < n; i++) cin >> v[i];
+    int l,r;
+    cin>>l>>r;
 
-    vector<vector<int>> dp(n + 1, vector<int> (k + 1, 0));
-    for(int i = 0; i <= v[0]; i++){
-        dp[0][i] = 1;
-    }
 
-    for(int idx = 1; idx < n; idx++){
-        for(int left = 0; left <= k; left++){  
-            for(int taken = 0; taken <= v[idx]; taken++){
-                if(left >= taken) dp[idx][left] += dp[idx - 1][left - taken];
+    map<int,int> mp1;
+
+    for(int i = 0; i<=r; i++){
+        for(int j = 0; j<=17; j++){
+            if(i & (1<<j)){
+                mp1[j]++;
             }
         }
     }
 
-    int ans = 0;
-    ans = dp[n - 1][k];
+    printmap(mp1);
 
-    cout << ans << endl;
+    vector<int> input(r+1);
+
+    for(int i = 0; i<=r; i++){
+        cin>>input[i];
+    }
+
+    map<int,int> mp2;
+
+    for(int i = 0; i<=r; i++){
+        for(int j = 0; j<=17; j++){
+            if(input[i] & (1<<j)){
+                mp2[j]++;
+            }
+        }
+    }
+
+    printmap(mp2);
+    int ans = 0;
+    for(auto ele : mp2){
+        if(mp1[ele.first] < ele.second){
+            ans += (1<<ele.first);
+        }
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -99,8 +119,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }
