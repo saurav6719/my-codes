@@ -67,43 +67,21 @@
 using namespace std;
 
 /* write core logic here */
-void fillGrid(int n, int m, int k, vector<vector<int>> &grid) {
+int countSubgridsContainingPoint(int n, int m, int k, int i, int j) {
+    // Calculate valid x range
+    int x_start = max(0ll, i - (k - 1));
+    int x_end =  min(n - k, i);
     
-
-    for (int i = 0; i < n; ++i) {
-        int multiplier = (i < k) ? i + 1 : min(k, n - i);
-        int val = 1;
-        int j = 0;
-
-        // Fill increasing values from 1 to k
-        for (; j < k && j < m; ++j) {
-            grid[i][j] = multiplier * val;
-            val++;
-        }
-
-        // Fill with k if more than k-1 columns left
-        for (; j < m - (k - 1); ++j) {
-            grid[i][j] = multiplier * k;
-        }
-
-        // Fill decreasing values from k-1 down to 1
-        for (val = k - 1; j < m; ++j) {
-            grid[i][j] = multiplier * val;
-            val--;
-        }
-    }
-
-    // Print the grid
-    for (const auto &row : grid) {
-        for (int cell : row) {
-            cout << cell << " ";
-        }
-        cout << endl;
-    }
-}
-
-bool cmp(const pair<int, int>& a, const pair<int, int>& b) {
-    return a.second > b.second;
+    // Calculate valid y range
+    int y_start = std::max(0ll, j - (k - 1));
+    int y_end = std::min(m - k, j);
+    
+    // Number of valid positions in x and y directions
+    int valid_x_positions = x_end - x_start + 1;
+    int valid_y_positions = y_end - y_start + 1;
+    
+    // Total number of subgrids
+    return valid_x_positions * valid_y_positions;
 }
 
 void solve(){
@@ -111,7 +89,15 @@ void solve(){
     cin>>n>>m>>k;
     vector<vector<int> > graph(n , vector<int> (m, 0));
 
-    fillGrid(n,m,k, graph);
+    // fillGrid(n,m,k, graph);
+
+    for(int i = 0; i<n;i++){
+        for(int j = 0; j<m; j++){
+            graph[i][j] = countSubgridsContainingPoint(n,m,k,i,j);
+        }
+    }
+
+    print2d(graph);
     map<int,int> mp;
 
     for(int i = 0; i<n; i++){
