@@ -67,41 +67,56 @@
 using namespace std;
 
 /* write core logic here */
-void fillGrid(int n, int m, int k) {
-    vector<vector<int>> grid(n, vector<int>(m, 0));
+void solve(){
+    int n;
+    cin>>n;
+    string str = to_string(n);
+    string yy = "";
 
-    for (int i = 0; i < n; ++i) {
-        int multiplier = (i < k) ? i + 1 : min(k, n - i);
-        int val = 1;
-        int j = 0;
-
-        // Fill increasing values from 1 to k
-        for (; j < k && j < m; ++j) {
-            grid[i][j] = multiplier * val;
-            val++;
-        }
-
-        // Fill with k if more than k-1 columns left
-        for (; j < m - (k - 1); ++j) {
-            grid[i][j] = multiplier * k;
-        }
-
-        // Fill decreasing values from k-1 down to 1
-        for (val = k - 1; j < m; ++j) {
-            grid[i][j] = multiplier * val;
-            val--;
-        }
+    if(str.size() < 2){
+        cout<<"NO"<<endl;
+        return;
     }
 
-    // Print the grid
-    for (const auto &row : grid) {
-        for (int cell : row) {
-            cout << cell << " ";
-        }
-        cout << endl;
+    yy += str[0];
+    yy += str[1];
+
+    print(yy);
+
+    if(yy != "10"){
+        cout<<"NO"<<endl;
+        return;
     }
+    string xx = "";
+
+    for(int i = 2; i<str.size(); i++){
+        xx += str[i];
+    }
+
+
+    if(xx.size() == 0){
+        cout<<"NO"<<endl;
+        return;
+    }
+
+    
+    if(xx[0] == '0'){
+        cout<<"NO"<<endl;
+        return;
+    }
+
+    
+
+    if(xx.size() == 1 and xx[0] < '2'){
+        cout<<"NO"<<endl;
+        return;
+    }
+    print(xx);
+
+    cout<<"YES"<<endl;
+
+
 }
-
 /* logic ends */
 
 signed main(){
@@ -111,10 +126,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
-        fillGrid(20, 15,7);
+        solve();
     }
 return 0;
 }

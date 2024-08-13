@@ -67,8 +67,8 @@
 using namespace std;
 
 /* write core logic here */
-void fillGrid(int n, int m, int k) {
-    vector<vector<int>> grid(n, vector<int>(m, 0));
+void fillGrid(int n, int m, int k, vector<vector<int>> &grid) {
+    
 
     for (int i = 0; i < n; ++i) {
         int multiplier = (i < k) ? i + 1 : min(k, n - i);
@@ -102,6 +102,54 @@ void fillGrid(int n, int m, int k) {
     }
 }
 
+bool cmp(const pair<int, int>& a, const pair<int, int>& b) {
+    return a.second > b.second;
+}
+
+void solve(){
+    int n,m,k;
+    cin>>n>>m>>k;
+    vector<vector<int> > graph(n , vector<int> (m, 0));
+
+    fillGrid(n,m,k, graph);
+    map<int,int> mp;
+
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            mp[graph[i][j]]++;
+        }
+    }
+
+    int w;
+    cin>>w;
+    vector<int> input(w);
+    for(int i = 0; i<w; i++){
+        cin>>input[i];
+    }
+
+    sort(input.begin(), input.end(), greater<int> ());
+
+    vector<int> xx;
+
+    for(auto ele : mp){
+        for(int i= 0;i<ele.second; i++){
+            xx.push_back(ele.first);
+        }
+    }
+
+    reverse(xx.begin(), xx.end());
+
+    print(xx);
+
+    int ans = 0;
+    for(int i = 0; i<w; i++){
+        ans += (input[i] * xx[i]);
+    }
+    
+
+    cout<<ans<<endl;
+
+}
 /* logic ends */
 
 signed main(){
@@ -111,10 +159,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
-        fillGrid(20, 15,7);
+        solve();
     }
 return 0;
 }

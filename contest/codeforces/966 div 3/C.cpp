@@ -67,41 +67,57 @@
 using namespace std;
 
 /* write core logic here */
-void fillGrid(int n, int m, int k) {
-    vector<vector<int>> grid(n, vector<int>(m, 0));
-
-    for (int i = 0; i < n; ++i) {
-        int multiplier = (i < k) ? i + 1 : min(k, n - i);
-        int val = 1;
-        int j = 0;
-
-        // Fill increasing values from 1 to k
-        for (; j < k && j < m; ++j) {
-            grid[i][j] = multiplier * val;
-            val++;
-        }
-
-        // Fill with k if more than k-1 columns left
-        for (; j < m - (k - 1); ++j) {
-            grid[i][j] = multiplier * k;
-        }
-
-        // Fill decreasing values from k-1 down to 1
-        for (val = k - 1; j < m; ++j) {
-            grid[i][j] = multiplier * val;
-            val--;
-        }
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
 
-    // Print the grid
-    for (const auto &row : grid) {
-        for (int cell : row) {
-            cout << cell << " ";
-        }
-        cout << endl;
+    string str;
+    cin>>str;
+    vector<int> prf(n);
+
+    prf[0] = input[0];
+
+    for(int i = 1; i<n; i++){
+        prf[i] = prf[i-1] + input[i];
     }
+
+    int ans = 0;
+    int i = 0;
+    int j = n-1;
+
+    print(prf);
+    while(i < j){
+        if(str[i] == 'R'){
+            i++;
+            continue;
+        }
+        if(str[j] == 'L'){
+            j--;
+            continue;
+        }
+
+        if(str[i] == 'L'){
+            while(j>=0 and str[j] != 'R' and j>i){
+                j--;
+            }
+            if(j>=0 and str[j] == 'R' and j>i){
+                ans += prf[j] - ((i==0) ? 0 : prf[i-1]);
+            }
+            i++;
+            j--;
+            if(j<=i) break;
+            else continue;
+        }
+        i++;
+    }
+
+    cout<<ans<<endl;
+
 }
-
 /* logic ends */
 
 signed main(){
@@ -111,10 +127,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
-        fillGrid(20, 15,7);
+        solve();
     }
 return 0;
 }

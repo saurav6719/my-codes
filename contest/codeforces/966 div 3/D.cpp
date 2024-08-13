@@ -67,41 +67,64 @@
 using namespace std;
 
 /* write core logic here */
-void fillGrid(int n, int m, int k) {
-    vector<vector<int>> grid(n, vector<int>(m, 0));
-
-    for (int i = 0; i < n; ++i) {
-        int multiplier = (i < k) ? i + 1 : min(k, n - i);
-        int val = 1;
-        int j = 0;
-
-        // Fill increasing values from 1 to k
-        for (; j < k && j < m; ++j) {
-            grid[i][j] = multiplier * val;
-            val++;
-        }
-
-        // Fill with k if more than k-1 columns left
-        for (; j < m - (k - 1); ++j) {
-            grid[i][j] = multiplier * k;
-        }
-
-        // Fill decreasing values from k-1 down to 1
-        for (val = k - 1; j < m; ++j) {
-            grid[i][j] = multiplier * val;
-            val--;
-        }
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
 
-    // Print the grid
-    for (const auto &row : grid) {
-        for (int cell : row) {
-            cout << cell << " ";
+    map<int, vector<int> > mp;
+    for(int i= 0; i<n; i++){
+        mp[input[i]].push_back(i);
+    }
+
+
+
+    int m;
+    cin>>m;
+    while(m--){
+        set<char> st;
+        string str;
+        cin>>str;
+        if(str.size() != n){
+            cout<<"NO"<<endl;
+            continue;
         }
-        cout << endl;
+        bool check = true;
+        for(auto ele : mp){
+            vector<int> two = ele.second;
+            int xx = two[0];
+            
+            char ch = str[xx];
+
+            if(st.count(ch)){
+                // cout<<"NO"<<endl;
+                check = false;
+                break;
+            }
+
+            for(auto ele2 : two){
+                if(str[ele2] != ch){
+                    // cout<<"NO"<<endl;
+                    check = false;
+                    break;
+                }
+                
+            }
+            st.insert(ch);
+        }
+
+        if(!check){
+            cout<<"NO"<<endl;
+        }
+        else{
+            cout<<"YES"<<endl;
+        }
+
     }
 }
-
 /* logic ends */
 
 signed main(){
@@ -111,10 +134,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
-        fillGrid(20, 15,7);
+        solve();
     }
 return 0;
 }
