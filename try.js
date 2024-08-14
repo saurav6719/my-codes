@@ -1,30 +1,23 @@
-console.log("hi");
-setTimeout(() => {
-    console.log("set timeout 1");
-}, 1000);
+let myPromise = new Promise(function exec(resolve, reject){
+        setTimeout(function givevalue(){
+            let x = 5;
+            if(x%2===0){
+                resolve("successful");
+            } else{
+                reject("failed");
+            }
 
-console.log("byy");
+            console.log("after resolving or rejecting");
+        }, 3000);
 
-setTimeout(() => {
-    console.log("set timeout 2");
-},2000)
+        console.log("promise done");
+        
+    });
 
-console.log("hi2");
-console.log("hi2");
-
-console.log("hi2");
-console.log("hi2");
-console.log("hi2");
-console.log("hi2");
-console.log("hi2");
-console.log("hi2");
-console.log("hi2");
-console.log("hi2");
-console.log("hi2");
-
-
-for(let i = 0; i<=10000000000; i++){
-    //work
-}
-
-console.log("hiiiiii");
+// Consuming the Promise
+myPromise
+    .then(function fulfillmenthandler(){
+        console.log("success");
+    } , function rejectionhandler(){
+        console.log("failed");
+    });
