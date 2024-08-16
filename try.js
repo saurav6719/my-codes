@@ -7,8 +7,15 @@ let myPromise = new Promise(function exec(resolve, reject){
                 reject("failed");
             }
 
+            console.log("doing synchrounous job inside set timeout ");
+
+
+            for(let i =0;i<10000000000; i++){}
+
+            console.log("ending synchrounous job inside set timeout");
+
             console.log("after resolving or rejecting");
-        }, 3000);
+        }, 1000);
 
         console.log("promise done");
         
@@ -21,3 +28,8 @@ myPromise
     } , function rejectionhandler(){
         console.log("failed");
     });
+
+console.log("doing synchronous job");
+for(let i= 0; i<10000000000; i++) {}
+
+console.log("Ending synchrounous job");
