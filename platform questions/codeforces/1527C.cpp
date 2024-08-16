@@ -68,47 +68,24 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-
     int n;
     cin>>n;
-    vector<int> arr(n);
-
-    for(int i = 0;  i<n; i++){
-        cin>>arr[i];
+    vector<int> input(n+1);
+    for(int i = 1; i<=n; i++){
+        cin>>input[i];
     }
 
-    vector<vector<int> > subarray;
-
-    for(int i = 0; i<n; i++){
-        for(int j = i+1; j<n; j++){
-            vector<int> v;
-            for(int k = i; k<=j; k++){
-                v.push_back(arr[k]);
-            }   
-
-            subarray.push_back(v);
-        }
+    vector<int> dp(n+1, 0);
+    map<int,int> currsum;
+    for(int i = 1; i<=n; i++){
+        dp[i] += dp[i-1];
+        dp[i] += currsum[input[i]];
+        currsum[input[i]] += i;
     }
-
-    print2d(subarray);
 
     int ans = 0;
-
-    for(int i = 0; i<subarray.size(); i++){
-        vector<int> v = subarray[i];
-
-        map<int,int> mp;
-        for(auto ele : v){
-            mp[ele]++;
-        }
-
-        
-
-        for(auto ele : mp){
-            if(ele.second >= 2){
-                ans += ((ele.second * (ele.second - 1)) / 2);
-            }
-        }
+    for(int i = 1; i<=n; i++){
+        ans += dp[i];
     }
 
     cout<<ans<<endl;
@@ -122,8 +99,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }
