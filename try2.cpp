@@ -1,132 +1,96 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
-
-/* includes and all */
-
 #include<bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
-
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#endif
-#define endl "\n"
-#define int long long int
-#define mod 1000000007
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int>
 using namespace std;
+#define int long long
+#define pp pair<int,int>
 
-/* write core logic here */
+int query(int r, int c) {
+    std::cout << "? " << r << " " << c << std::endl;
+    int ans;
+    std::cin >> ans;
+    return ans;
+}
+
 void solve(){
+    int n, m;
+    cin >> n >> m;
 
-    int n;
-    cin>>n;
-    vector<int> arr(n);
+    // Query (1, 1)
+    
 
-    for(int i = 0;  i<n; i++){
-        cin>>arr[i];
+    int k11 = query(1,1);
+
+    // Query (1, m)
+    
+
+    int k1m = query(1,m);
+
+    // Query (n, 1)
+    
+
+    int kn1 = query(n,1);
+
+    // Calculate possible x and y ranges
+    int x1 = k11 + 1;
+    int y1 = k11 + 1;
+
+    int x2 = 1 + k1m;
+    int y2 = m - k1m;
+
+    int x3 = n - kn1;
+    int y3 = 1 + kn1;
+
+    vector<pp> x, y;
+    x.push_back({1, x1});
+    y.push_back({1, y1});
+
+    x.push_back({1, x2});
+    y.push_back({m - y2, m});
+
+    x.push_back({x3, n});
+    y.push_back({1, y3});
+
+
+    pp xrange = {INT_MIN, INT_MAX};
+    for (auto ele : x) {
+        xrange.first = max(xrange.first, ele.first);
+        xrange.second = min(xrange.second, ele.second);
     }
 
-    vector<vector<int> > subarray;
-
-    for(int i = 0; i<n; i++){
-        for(int j = i+1; j<n; j++){
-            vector<int> v;
-            for(int k = i; k<=j; k++){
-                v.push_back(arr[k]);
-            }   
-
-            subarray.push_back(v);
-        }
+    pp yrange = {INT_MIN, INT_MAX};
+    for (auto ele : y) {
+        yrange.first = max(yrange.first, ele.first);
+        yrange.second = min(yrange.second, ele.second);
     }
 
-    print2d(subarray);
 
-    int ans = 0;
+    int finalx = -1;
+    int finaly = -1;
 
-    for(int i = 0; i<subarray.size(); i++){
-        vector<int> v = subarray[i];
-
-        map<int,int> mp;
-        for(auto ele : v){
-            mp[ele]++;
-        }
-
-        
-
-        for(auto ele : mp){
-            if(ele.second >= 2){
-                ans += ((ele.second * (ele.second - 1)) / 2);
+    // Check for the correct position
+    for (int i = xrange.first; i <= xrange.second; i++) {
+        if(finalx != -1 and finaly != -1) break;
+        for (int j = yrange.first; j <= yrange.second; j++) {
+            if (max(i - 1, j - 1) == k11 && max(i - 1, m - j) == k1m && max(n - i, j - 1) == kn1) {
+                finalx = i;
+                finaly = j;
+                break;
             }
         }
     }
 
-    cout<<ans<<endl;
+    // Output the final result
+    std::cout << "! " << finalx << " " << finaly << std::endl;
+
 }
-/* logic ends */
 
 signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
+
     int t;
-    //cin>>t;
-    t = 1;
-    while(t--){
+    cin >> t;
+    while (t--) {
         solve();
     }
-return 0;
+    return 0;
 }
-

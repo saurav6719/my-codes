@@ -68,7 +68,51 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    string str;
+    cin>>str;
+    multiset<char> ms;
+    map<int,int> mp;
+    for(int i = 0; i<n/2; i++){
+        if(str[i] == str[n-1-i]){
+            ms.insert(str[i]);
+            mp[str[i]]++;
+        }
+    }
+
+
+    vector<int> cnt(26, 0);
+
+    for(int i = 0; i<n; i++){
+        cnt[str[i] - 'a']++;
+        if(cnt[str[i] - 'a'] > n/2){
+            cout<<-1<<endl;
+            return;
+        }
+    }
+
+    if(n&1){
+        cout<<-1<<endl;
+        return;
+    }
+
+    int m = ms.size();
+    debug(m);
+
+    int k = -1;
+    for(auto ele : mp){
+        k = max(k , ele.second);
+    }
+    debug(k);
+
+    if(k > n/2){
+        cout<<-1<<endl;
+        return;
+    }
+
+    cout<<max(k , m/2 + m%2)<<endl;
+    return;
 }
 /* logic ends */
 
@@ -79,8 +123,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

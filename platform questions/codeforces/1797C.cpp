@@ -67,101 +67,56 @@
 using namespace std;
 
 /* write core logic here */
-
-void solvee(){
-    int n;cin>>n;
-    vector<int> p(2*n);
-    for(int i = 0; i<2*n; i++){
-        cin>>p[i];
-    }
-
-    cout<<n<<endl;
-}
 void solve(){
-    int n;cin>>n;
-    vector<int> p(2*n);
-    for(int i = 0; i<2*n; i++){
-        cin>>p[i];
-    }
+    int n,m;
+    cin >> n >> m;
 
-    if(n==1){
-        cout<<abs(p[0] - p[1])<<endl;
-        return;
-    }
+    
+
+    // Query (1, 1)
+    cout << "? 1 1" << endl;
+    cout.flush();
+    int k11;
+    cin >> k11;
+
+    cout << "? 1 " << m << endl;
+    cout.flush();
+    int k1m;
+    cin >> k1m;
 
 
-    if(n==2){
+    cout << "? " << n << " 1" << endl;
+    cout.flush(); 
+    int kn1;
+    cin >> kn1;
+    
 
-        int ans = LLONG_MAX;
-        int curr = 0;
-        for(int i = 0; i<2*n; i++){
-            curr += abs(p[i]);
-        }
+    int x1 = k11 + 1;
+    int y1 = k11 + 1;
 
-        
+    
+    
 
-        ans = min(ans, curr);
 
-        curr = 0;
+    int x2 = 1 + k1m;
+    int y2 = m - k1m;
 
-        for(int i = 0; i<2*n; i++){
-            curr += abs(p[i] - 2);
-        }
+    
 
-        ans = min(ans, curr);
 
-        curr = 0;
 
-        for(int i = 0; i<2*n; i++){
-            curr += abs(p[i] + 1);
-        }
+    int x3 = n - kn1;
+    int y3 = 1 + kn1;
 
-        for(int i = 0; i<2*n; i++){
-            curr -= abs(p[i] + 1);
-            curr += abs(p[i] - n);
-            ans = min(ans , curr);
-            curr += abs(p[i] + 1);
-            curr -= abs(p[i] - n);
-        }
-        cout<<ans<<endl;
-        return;
-    }   
+    
+    // Determine possible ranges for x and y
+    
 
-    if(n&1){
-        
-
-        int ans = LLONG_MAX;
-        int curr =0;
-        for(int i = 0; i<2*n; i++){
-            curr += abs(p[i]);
-        }
-        ans = min(ans , curr);
-
-        cout<<ans<<endl;
-        return;
-    }
-    int ans = LLONG_MAX;
-    int curr = 0;
-
-    for(int i = 0; i<2*n; i++){
-        curr += abs(p[i]);    
-    }
-
-    ans = min(ans , curr);
-
-    curr =0;
-
-    for(int i = 0; i<2*n; i++){
-        curr += abs(p[i]+1);    
-    }
-
-    for(int i = 0; i<2*n; i++){
-        ans = min(ans, curr - abs(p[i] + 1) + abs(p[i] - n));
-    }
-    cout<<ans<<endl;
-
+    cout << "! " << finalx << " " << finaly << endl;
+    cout.flush();
 
 }
+
 /* logic ends */
 
 signed main(){
@@ -173,7 +128,7 @@ signed main(){
     int t;
     cin>>t;
     // t = 1;
-    for(int i = 1; i<=t; i++){
+    while(t--){
         solve();
     }
 return 0;
