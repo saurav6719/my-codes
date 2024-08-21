@@ -67,59 +67,84 @@
 using namespace std;
 
 /* write core logic here */
-vector<int> segment_tree;
-void build_segment_tree(int i , int lo, int hi , vector<int> &input){
-    if(lo == hi){
-        segment_tree[i] = input[lo];
+void solve(){
+    int n,m;
+    cin>>n>>m;
+    vector<int> initial(n);
+    for(int i = 0; i<n; i++){
+        cin>>initial[i];
+    }
+    vector<int> final(n);
+    for(int i = 0; i<n; i++){
+        cin>>final[i];
+    }
+
+    vector<int> painters(m);
+    for(int i =0; i<m; i++){
+        cin>>painters[i];
+    }
+    map<int,int> differences;
+    for(int i = 0; i<n; i++){
+        if(initial[i] != final[i]){
+            differences[final[i]]++;
+        }
+    }
+
+    int initialsize = differences.size();
+
+    map<int,int> paints;
+    for(int i = 0; i<m; i++){
+        paints[painters[i]]++;
+    }
+
+    int cntt = 0;
+
+    for(auto ele : differences){
+        cntt++;
+        int xx = ele.second;
+        int yy = paints[ele.first];
+
+        if(yy < xx){
+            cout<<"NO"<<endl;
+            return;
+        }
+
+        paints[ele.second] -= xx;
+        if(paints[ele.second] == 0){
+            paints.erase(ele.first);
+        }
+        differences.erase(ele.first);
+    }
+
+    if(differences.size() > 0){
+        cout<<"NO"<<endl;
         return;
     }
-    int mid = lo + (hi - lo )/2;
 
-    build_segment_tree(2*i+1, lo , mid, input);
-    build_segment_tree(2*i+2, mid+1, hi, input);
+    if(cntt == 0){
+        set<int> finals;
+        for(int i =0; i<n; i++){
+            finals.insert(final[i]);
+        }
+        bool check = false;
 
-    segment_tree[i] = (segment_tree[2*i+1] + segment_tree[2*i+2]);
-}
+        for(auto ele : paints){
+            if(finals.count(ele.first) != 0){
+                check = true;
+            }
+        }
 
-int get_sum(int i, int lo , int hi , int &l ,int &r){
-    //if l,r lies outside of lo,hi then return INT_MAX;
-    if(r < lo or l > hi){
-        return 0;
+        if(!check) {
+            cout<<"NO"<<endl;
+            return;
+        }
     }
-    // if lo, hi lies completely inside l,r then return the value at index
-    if(lo >= l and hi <= r) return segment_tree[i];
 
+    cout<<"YES"<<endl;
 
-    int mid = lo + (hi - lo )/2;
     
-    //else call left right
-    int left_min = get_sum(2*i+1, lo, mid, l, r);
-    int right_min = get_sum(2*i+2, mid+1, hi, l, r);
-    return (left_min + right_min);
 
-}
 
-void solve(){
-    int n;
-    cin>>n;
-    int q;
-    cin>>q;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-    }
-
-    segment_tree.resize(4 * n);
-
-    build_segment_tree(0, 0, n-1, input);
-
-    while(q--){
-        int l,r;
-        cin>>l>>r;
-        l--;
-        r--;
-        cout<<get_sum(0,0,n-1,l,r)<<endl;
-    }
 }
 /* logic ends */
 
@@ -130,8 +155,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

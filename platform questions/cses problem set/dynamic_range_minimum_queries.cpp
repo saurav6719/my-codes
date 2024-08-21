@@ -78,13 +78,31 @@ void build_segment_tree(int i , int lo, int hi , vector<int> &input){
     build_segment_tree(2*i+1, lo , mid, input);
     build_segment_tree(2*i+2, mid+1, hi, input);
 
-    segment_tree[i] = (segment_tree[2*i+1] + segment_tree[2*i+2]);
+    segment_tree[i] = min(segment_tree[2*i+1], segment_tree[2*i+2]);
 }
 
-int get_sum(int i, int lo , int hi , int &l ,int &r){
+void update(int i, int lo , int hi , int idx_to_update , int val_to_update){
+
+    if(lo == hi){
+        segment_tree[i] = val_to_update;
+        return;
+    }
+
+    int mid = lo + (hi - lo)/2;
+    if(idx_to_update <= mid){
+        update(2*i+1, lo, mid, idx_to_update, val_to_update);
+    }
+    else{
+        update(2*i+2, mid+1, hi, idx_to_update, val_to_update);
+    }
+
+    segment_tree[i] = min(segment_tree[2*i+1] , segment_tree[2*i+2]);
+}
+
+int get_minimum(int i, int lo , int hi , int &l ,int &r){
     //if l,r lies outside of lo,hi then return INT_MAX;
     if(r < lo or l > hi){
-        return 0;
+        return INT_MAX;
     }
     // if lo, hi lies completely inside l,r then return the value at index
     if(lo >= l and hi <= r) return segment_tree[i];
@@ -93,9 +111,9 @@ int get_sum(int i, int lo , int hi , int &l ,int &r){
     int mid = lo + (hi - lo )/2;
     
     //else call left right
-    int left_min = get_sum(2*i+1, lo, mid, l, r);
-    int right_min = get_sum(2*i+2, mid+1, hi, l, r);
-    return (left_min + right_min);
+    int left_min = get_minimum(2*i+1, lo, mid, l, r);
+    int right_min = get_minimum(2*i+2, mid+1, hi, l, r);
+    return min(left_min, right_min);
 
 }
 
@@ -114,11 +132,22 @@ void solve(){
     build_segment_tree(0, 0, n-1, input);
 
     while(q--){
-        int l,r;
-        cin>>l>>r;
-        l--;
-        r--;
-        cout<<get_sum(0,0,n-1,l,r)<<endl;
+        int type;
+        cin>>type;
+        
+        if(type == 1){
+            int k,u;
+            cin>>k>>u;
+            k--;
+            update(0, 0, n-1, k, u);
+        }
+        else{
+            int l,r;
+            cin>>l>>r;
+            l--;
+            r--;
+            cout<<get_minimum(0, 0, n-1, l,r)<<endl;
+        }
     }
 }
 /* logic ends */
