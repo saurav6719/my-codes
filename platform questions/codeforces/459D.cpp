@@ -67,33 +67,56 @@
 using namespace std;
 
 /* write core logic here */
-vector<int> segment_tree;
-void build_segment_tree(int i , int lo, int hi , vector<int> &input){
+
+vector<vector<int> > st;
+void build(int i, int lo, int hi, vector<int> &arr, vector<int> &v){
     if(lo == hi){
-        segment_tree[i] = input[lo];
+        st[i].push_back(arr[lo]);
         return;
     }
-    int mid = lo + (hi - lo )/2;
-
-    build_segment_tree(2*i+1, lo , mid, input);
-    build_segment_tree(2*i+2, mid+1, hi, input);
-
-    segment_tree[i] = (segment_tree[2*i+1] + segment_tree[2*i+2]);
-}
-
-int get_count_of_equal(int i, int lo , int hi , int &l ,int &r, int val){
-
-    if(lo == hi){
-        if(segment_tree[lo] == val) return 1;
-        return 0;
+    int mid = lo + (hi - lo)/2;
+    build(2*i+1, lo, mid, arr, v);
+    build(2*i+2, mid +1 , hi, arr, v);
+    int sz = st[2*i+1].size();
+    sz += st[2*i+2].size();
+    
+    int a = 0;
+    int j = 0;
+    while(a<st[2*i+1].size() and j < st[2*i+2].size()){
+        if(st[2*i+1][a] <= st[2*i+2][j]){
+            st[i].push_back(st[2*i+1][a]);
+            a++;
+        }
+        else{
+            st[i].push_back(st[2*i+2][j]);
+            j++;
+        }
     }
 
-    int mid = lo + (hi - lo )/2;
-    //else call left right
-    int left_min = get_count_of_equal(2*i+1, lo, mid, l, r, val);
-    int right_min = get_count_of_equal(2*i+2, mid+1, hi, l, r, val);
-    return (left_min + right_min);
+    while(a<st[2*i+1].size()){
+        st[i].push_back(st[2*i+1][a]);
+        a++;
+    }
 
+    while(j < st[2*i+2].size()){
+        st[i].push_back(st[2*i+2][j]);
+        j++;
+    }
+}
+
+int get (vector<int> &v, int k){
+    int xx = lower_bound(v.begin(), v.end(), k) - v.begin();
+    return xx;
+}
+
+int answer(int i, int lo, int hi , int l, int r, int k){
+    if(l> hi or r<lo) return 0;
+    if(lo>=l and hi <= r) return get(st[i] , k);
+
+    int mid = lo + (hi-lo)/2;
+    int left = answer(2*i+1, lo, mid, l,r,k);
+    int right = answer(2*i+2, mid+1, hi, l, r, k);
+    return left + right;
 }
 void solve(){
     int n;
@@ -102,6 +125,52 @@ void solve(){
     for(int i = 0; i<n; i++){
         cin>>input[i];
     }
+
+    st.resize(4*n , vector<int> ());
+    
+    map<int,int> mp1;
+    vector<int> iii(n);
+    for(int i = 0; i<n; i++){
+        mp1[input[i]]++;
+        iii[i] = mp1[input[i]];
+    }
+
+
+    map<int,int> mp2;
+    vector<int> jjj(n);
+    for(int i = n-1; i>=0; i--){
+        mp2[input[i]]++;
+        jjj[i] = mp2[input[i]];
+    }
+
+    
+    print(jjj);
+    vector<int> v;
+    build(0,0,n-1, jjj, v);
+
+    // for(int i = 0; i<(4*n); i++){
+    //     cout<<i<<" -> ";
+    //     for(int j = 0; j<st[i].size(); j++){
+    //         cout<<st[i][j]<<" ";
+    //     }
+    //     cout<<endl;
+    // }
+
+    vector<int> ans(n);
+    print(iii);
+    for(int i = 0; i<n; i++){
+        ans[i] = answer(0,0,n-1, i+1, n-1, iii[i]);
+    }
+
+    print(ans);
+
+    int res = 0;
+    for(auto ele: ans){
+        res += ele;
+    }
+    cout<<res;
+
+
 
 
 }
