@@ -61,8 +61,8 @@ int getSum(int i, int lo, int hi, int l, int r){ // we are finding max in l to r
         st[i] += range * lazy[i];
         // send lazy to left and right if not leaf 
         if(lo != hi){
-            lazy[2*i+1] = lazy[i];
-            lazy[2*i+2] = lazy[i];
+            lazy[2*i+1] += lazy[i];
+            lazy[2*i+2] += lazy[i];
         }
         //set lazy to zero 
         lazy[i] = 0;
