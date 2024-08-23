@@ -68,92 +68,34 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    vector<vector<int> > graph(220, vector<int> (220, -1));
-    int n ;cin>>n;
-    int x,y;
-    cin>>x>>y;
-    x+=100;
-    y+=100;
-    string str;
-    cin>>str;
-    int maxn = 210;
-    int maxy = 210;
+    int n;int t;
+    cin>>n>>t;
+    int l = 1;
+    int r = n;
+    int k;cin>>k;
+    int cnt = 0;
+    int ans = -1;
 
-    graph[x][y] = 0;
-    queue<pp> qu;
-    qu.push({x,y});
+    while(l<=r and cnt < 20){
+        int mid = (l+r) / 2;
+        cout<<"? "<<1<<" "<<mid<<endl;
+        cout<<flush;
+        int sum;
+        cin>>sum;
 
-    while(!qu.empty()){
-        auto top = qu.front();
-        qu.pop();
-        int row = top.first;
-        int col = top.second;
-        
-        //left 
-        if(row-1 >=0 and graph[row-1][col] == -1){
-            graph[row-1][col] = 1+ graph[row][col];
-            qu.push({row-1, col});
+        if( mid - sum < k){
+            l = mid + 1;
+            
         }
-
-        //right
-        if(row+1 <maxn and graph[row+1][col] == -1){
-            graph[row+1][col] = 1+ graph[row][col];
-            qu.push({row+1, col});
+        if(mid - sum >= k){
+            ans = mid;
+            r = mid - 1;
         }
-        //up
-        if(col-1  >=0  and graph[row][col-1] == -1){
-            graph[row][col-1] = 1+ graph[row][col];
-            qu.push({row, col-1});
-        }
-
-        //down
-        if(col+1  <maxn  and graph[row][col+1] == -1){
-            graph[row][col+1] = 1+ graph[row][col];
-            qu.push({row, col+1});
-        }
+        cnt++;
     }
 
-    int currx = 100;
-    int curry = 100;
-    int currtime = 0;
-
-    bool ans = false;
-
-    debug(graph[101][100]);
-
-
-    for(int i = 0; i<str.size(); i++){
-        char ele = str[i];
-        debug(ele);
-        if(ele == 'R'){
-            currx++;
-        }
-        else if(ele == 'U'){
-            curry++;
-        }
-        else if(ele == 'D'){
-            curry --;
-        }
-        else{
-            currx--;
-        }
-        currtime++;
-        debug(currx);
-        debug(curry);
-
-        int alice = graph[currx][curry];
-        if(alice <= currtime and (abs(alice - currtime) % 2 == 0)){
-            ans= true;
-        }
-    }
-
-    
-    if(ans){
-        cout<<"YES"<<endl;
-        return ;
-    }
-    cout<<"NO"<<endl;
-    return;
+    cout<<"! "<<ans<<endl;
+    cout<<flush;
 
 
 }
@@ -166,8 +108,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    // t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

@@ -67,93 +67,67 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    vector<vector<int> > graph(220, vector<int> (220, -1));
-    int n ;cin>>n;
-    int x,y;
-    cin>>x>>y;
-    x+=100;
-    y+=100;
-    string str;
-    cin>>str;
-    int maxn = 210;
-    int maxy = 210;
 
-    graph[x][y] = 0;
-    queue<pp> qu;
-    qu.push({x,y});
+std::vector<int> generatePrimes(int MAXSQRTN) {
+    std::vector<bool> isPrime(MAXSQRTN + 1, true); // Initialize all numbers as prime
+    isPrime[0] = isPrime[1] = false; // 0 and 1 are not prime
 
-    while(!qu.empty()){
-        auto top = qu.front();
-        qu.pop();
-        int row = top.first;
-        int col = top.second;
-        
-        //left 
-        if(row-1 >=0 and graph[row-1][col] == -1){
-            graph[row-1][col] = 1+ graph[row][col];
-            qu.push({row-1, col});
-        }
-
-        //right
-        if(row+1 <maxn and graph[row+1][col] == -1){
-            graph[row+1][col] = 1+ graph[row][col];
-            qu.push({row+1, col});
-        }
-        //up
-        if(col-1  >=0  and graph[row][col-1] == -1){
-            graph[row][col-1] = 1+ graph[row][col];
-            qu.push({row, col-1});
-        }
-
-        //down
-        if(col+1  <maxn  and graph[row][col+1] == -1){
-            graph[row][col+1] = 1+ graph[row][col];
-            qu.push({row, col+1});
+    for (int i = 2; i * i <= MAXSQRTN; ++i) {
+        if (isPrime[i]) {
+            for (int j = i * i; j <= MAXSQRTN; j += i) {
+                isPrime[j] = false;
+            }
         }
     }
 
-    int currx = 100;
-    int curry = 100;
-    int currtime = 0;
+    std::vector<int> primes;
+    for (int i = 2; i <= MAXSQRTN; ++i) {
+        if (isPrime[i]) {
+            primes.push_back(i);
+        }
+    }
 
-    bool ans = false;
+    return primes;
+}
 
-    debug(graph[101][100]);
+set<int> pf(int x, vector<int> &primes){
+    set<int> v;
+    for(int i =0; i<primes.size(); i++){
+        if ((primes[i] * primes[i]) > x) break; // No need to check beyond sqrt(x)
+        while(x % primes[i] == 0){
+            x /= primes[i];
+            v.insert(primes[i]);
+        }
+    }
+    if(x > 1) v.insert(x);
+    return v;
+}
 
+void solve(vector<int> &primes){
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
 
-    for(int i = 0; i<str.size(); i++){
-        char ele = str[i];
+    set<int> st;
+
+    for(int i = 0; i<n; i++){
+        int ele = input[i];
+        set<int> v = pf(ele, primes);
         debug(ele);
-        if(ele == 'R'){
-            currx++;
-        }
-        else if(ele == 'U'){
-            curry++;
-        }
-        else if(ele == 'D'){
-            curry --;
-        }
-        else{
-            currx--;
-        }
-        currtime++;
-        debug(currx);
-        debug(curry);
 
-        int alice = graph[currx][curry];
-        if(alice <= currtime and (abs(alice - currtime) % 2 == 0)){
-            ans= true;
+        for(auto ele2 : v){
+            if(st.count(ele2)){
+                cout<<"YES"<<endl;
+                return;
+            }
+            st.insert(ele2);
         }
     }
 
-    
-    if(ans){
-        cout<<"YES"<<endl;
-        return ;
-    }
     cout<<"NO"<<endl;
-    return;
 
 
 }
@@ -167,10 +141,11 @@ signed main(){
     #endif
     int t;
     cin>>t;
+    const int MAXSQRTN = 31622; // sqrt(1e9)
+    std::vector<int> primes = generatePrimes(MAXSQRTN);
     // t = 1;
     while(t--){
-        solve();
+        solve(primes);
     }
 return 0;
 }
-
