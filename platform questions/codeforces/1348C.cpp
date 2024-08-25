@@ -67,79 +67,108 @@
 using namespace std;
 
 /* write core logic here */
-int sumFromLtoR(int l, int r) {
-    int n = r - l + 1;
-    return n * (l + r) / 2;
-}
-
 void solve(){
-    int n, m;
-    cin>>n>>m;
+    int n;cin>>n;
+    int k;cin>>k;
+    string str;
+    cin>>str;
 
-    vector<vector<int> > input(n);
+    sort(str.begin(), str.end());
 
-    for(int i = 0; i<n; i++){
-        int sz;
-        cin>>sz;
-        vector<int> v(sz);
+    map<char,int> mp;
+    for(auto ele : str){
+        mp[ele]++;
+    }
 
-        for(int i = 0; i<sz; i++){
-            cin>>v[i];
+    bool allequal = true;
+
+    for(auto ele : mp){
+        if(ele.second != k){
+            allequal = false;
+            break;
+        }
+    }
+
+    vector<string> ans(k, "");
+
+    if(allequal){
+        int i = 0;
+        while(i<n){
+            ans[i%k]+= str[i];
+            i++;
+        }
+        cout<<ans[0]<<endl;
+        return;
+    }
+
+    if(mp.size() == 1){
+        int least = n / k;
+        string res = "";
+        res += str.substr(0, least);
+        if(n%k != 0){
+            res += str[0];
         }
 
-        input[i] = v;
+        cout<<res<<endl;
+        return;
     }
 
 
-
-    vector<int> secondmex;
-
-    for(int i = 0; i<n; i++){
-        vector<int> &v = input[i];
-        set<int> st;
-        for(auto ele : v){
-            st.insert(ele);
+    if(mp.size() == 2){
+        auto one = *mp.begin();
+        auto two = *mp.rbegin();
+        int freqtwo = two.second;
+        int freqone = one.second;
+        if(freqone < k){
+            cout<<two.first<<endl;
+            return;
         }
-
-        bool firstmex = true;
-        for(int j = 0; j<=v.size()+5; j++){
-            if(st.count(j) == 0){
-                if(firstmex) {
-                    firstmex = false;
-                    continue;
-                }
-                else{
-                    secondmex.push_back(j);
-                    break;
-                }
+        else if(freqone > k){
+            int i = 0;
+            while(i<k){
+                ans[i%k] += str[i];
+                i++;
+                
             }
+            ans[0] += str.substr(k);
+
+            sort(ans.begin(), ans.end());
+
+            cout<<ans.back()<<endl;
+            return;
         }
+        else{
+            string res = "";
+            res += one.first;
+            int res2 = freqtwo / k;
+            for(int a = 0; a<res2; a++){
+                res += two.first;
+            }
+            if(freqtwo % k != 0){
+                res += two.first;
+            }
+
+            cout<<res<<endl;
+            return;
+        }
+
     }
+    int i = 0;
+    while(i<k){
+        ans[i%k] += str[i];
+        i++;
+        
+    }
+    
+    
 
-    print(secondmex);
 
-    sort(secondmex.begin(), secondmex.end());
-    reverse(secondmex.begin(), secondmex.end());
-    print(secondmex);
+    ans[0] += str.substr(k);
 
-    int curr = secondmex.back();
+    sort(ans.begin(), ans.end());
 
-    int currm = 0;
-    int ans = 0;
+    cout<<ans.back()<<endl;
 
-    for(int i =0; i<secondmex.size(); i++){
-        if(currm > m) break;
-        if(currm < secondmex[i]){
-            ans += secondmex[i];
-        }
-        else ans += currm;
-        debug(currm);
-        debug(ans);
-        currm++;
-    }    
-
-    ans += sumFromLtoR( currm , m);
-    cout<<ans<<endl;
 
 
 }

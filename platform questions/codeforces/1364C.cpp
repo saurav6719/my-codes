@@ -67,79 +67,45 @@
 using namespace std;
 
 /* write core logic here */
-int sumFromLtoR(int l, int r) {
-    int n = r - l + 1;
-    return n * (l + r) / 2;
-}
-
 void solve(){
-    int n, m;
-    cin>>n>>m;
-
-    vector<vector<int> > input(n);
-
-    for(int i = 0; i<n; i++){
-        int sz;
-        cin>>sz;
-        vector<int> v(sz);
-
-        for(int i = 0; i<sz; i++){
-            cin>>v[i];
-        }
-
-        input[i] = v;
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i =0; i<n; i++){
+        cin>>input[i];
     }
 
+    vector<int> ans(n, -5);
+    set<int> taken;
 
-
-    vector<int> secondmex;
+    for(int i = 0; i<n-1; i++){
+        if(input[i] != input[i+1]){
+            ans[i+1] = input[i];
+            taken.insert(input[i]);
+        }
+    }
+    taken.insert(input.back());
+    
+    set<int> nottaken;
+    for(int i = 0; i<=n; i++){
+        if(taken.count(i)) continue;
+        else nottaken.insert(i);
+    }
 
     for(int i = 0; i<n; i++){
-        vector<int> &v = input[i];
-        set<int> st;
-        for(auto ele : v){
-            st.insert(ele);
-        }
-
-        bool firstmex = true;
-        for(int j = 0; j<=v.size()+5; j++){
-            if(st.count(j) == 0){
-                if(firstmex) {
-                    firstmex = false;
-                    continue;
-                }
-                else{
-                    secondmex.push_back(j);
-                    break;
-                }
-            }
+        if(ans[i] == -5){
+            int next = *nottaken.begin();
+            debug(next);
+        
+            ans[i] = next;
+            nottaken.erase(nottaken.begin());
+            
         }
     }
 
-    print(secondmex);
-
-    sort(secondmex.begin(), secondmex.end());
-    reverse(secondmex.begin(), secondmex.end());
-    print(secondmex);
-
-    int curr = secondmex.back();
-
-    int currm = 0;
-    int ans = 0;
-
-    for(int i =0; i<secondmex.size(); i++){
-        if(currm > m) break;
-        if(currm < secondmex[i]){
-            ans += secondmex[i];
-        }
-        else ans += currm;
-        debug(currm);
-        debug(ans);
-        currm++;
-    }    
-
-    ans += sumFromLtoR( currm , m);
-    cout<<ans<<endl;
+    for(int i = 0; i<n; i++){
+        cout<<ans[i]<<" ";
+    }
 
 
 }
@@ -152,8 +118,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    // t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

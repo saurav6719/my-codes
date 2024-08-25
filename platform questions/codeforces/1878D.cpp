@@ -67,79 +67,70 @@
 using namespace std;
 
 /* write core logic here */
-int sumFromLtoR(int l, int r) {
-    int n = r - l + 1;
-    return n * (l + r) / 2;
-}
-
 void solve(){
-    int n, m;
-    cin>>n>>m;
-
-    vector<vector<int> > input(n);
-
-    for(int i = 0; i<n; i++){
-        int sz;
-        cin>>sz;
-        vector<int> v(sz);
-
-        for(int i = 0; i<sz; i++){
-            cin>>v[i];
-        }
-
-        input[i] = v;
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    string str;
+    cin>>str;
+    vector<int> l(k);
+    for(int i =0; i<k; i++){
+        cin>>l[i];
     }
 
+    vector<int> r(k);
+    for(int i = 0; i<k; i++){
+        cin>>r[i];
+    }
+    int q;
+    cin>>q;
 
+    vector<pp> correspondence;
+    for(int i = 0; i<k; i++){
+        int start = l[i];
+        int end = r[i];
+        start--;
+        end--;
+        while(start<=end){
+            correspondence.push_back({start,end});
+            start++;
+            end--;
+        }
+    }
+    map<int,int> corr;
+    for(int i = 0; i<correspondence.size(); i++){
+        int a = correspondence[i].first;
+        int b = correspondence[i].second;
+        corr[a] = b;
+        corr[b] = a;
+    }
+    vector<int> ans(n+1, 0);
+    while(q--){
+        int x;
+        cin>>x;
+        int index = lower_bound(r.begin(), r.end(), x) - r.begin();
+        int start = min(x, r[index] + l[index] - x);
+        int end = max(x, r[index] + l[index] - x);
+        ans[start-1]++;
+        ans[end]--;
+    }
 
-    vector<int> secondmex;
+    for(int i = 1; i<n+1; i++){
+        ans[i] += ans[i-1];
+    }
+
+    string str_copy = str;
 
     for(int i = 0; i<n; i++){
-        vector<int> &v = input[i];
-        set<int> st;
-        for(auto ele : v){
-            st.insert(ele);
-        }
-
-        bool firstmex = true;
-        for(int j = 0; j<=v.size()+5; j++){
-            if(st.count(j) == 0){
-                if(firstmex) {
-                    firstmex = false;
-                    continue;
-                }
-                else{
-                    secondmex.push_back(j);
-                    break;
-                }
-            }
+        if(ans[i] & 1){
+            int curr = corr[i];
+            str[i] = str_copy[curr];
         }
     }
 
-    print(secondmex);
+    cout<<str<<endl;
 
-    sort(secondmex.begin(), secondmex.end());
-    reverse(secondmex.begin(), secondmex.end());
-    print(secondmex);
-
-    int curr = secondmex.back();
-
-    int currm = 0;
-    int ans = 0;
-
-    for(int i =0; i<secondmex.size(); i++){
-        if(currm > m) break;
-        if(currm < secondmex[i]){
-            ans += secondmex[i];
-        }
-        else ans += currm;
-        debug(currm);
-        debug(ans);
-        currm++;
-    }    
-
-    ans += sumFromLtoR( currm , m);
-    cout<<ans<<endl;
 
 
 }
