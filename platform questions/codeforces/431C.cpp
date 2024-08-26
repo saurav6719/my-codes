@@ -67,108 +67,33 @@
 using namespace std;
 
 /* write core logic here */
+vector<vector<int> > dp;
+
 void solve(){
-    int n;cin>>n;
-    int k;cin>>k;
-    string str;
-    cin>>str;
+    int n,k,d;
+    cin>>n>>k>>d;
+    dp.resize(n+110, vector<int>(2, 0));
 
-    sort(str.begin(), str.end());
+    dp[n][1] = 1;
+    dp[n][0] = 0;
 
-    map<char,int> mp;
-    for(auto ele : str){
-        mp[ele]++;
-    }
-
-    if(mp.size() == 1){
-        auto one = *mp.begin();
-        char ch = one.first;
-        int freq = one.second;
-        if(freq == k){
-            cout<<ch<<endl;
-            return;
-        }
-        else{
-            int least = freq / k;
-            if(freq % k != 0) least++;
-
-            for(int i = 0; i<least; i++){
-                cout<<ch;
-            }cout<<endl;
-            return;
+    for(int i = n-1; i>= 0; i--){
+        for(int j = 1; j<=k; j++){
+            if(j < d){
+                dp[i][0] += dp[i+j][0];
+                dp[i][0] %= mod;
+            }
+            else{
+                dp[i][0] += dp[i+j][1];
+                dp[i][0] %= mod;
+            }
+            dp[i][1] += dp[i+j][1];
+            dp[i][1] %= mod;
         }
     }
 
-    if(mp.size() == 2){
-        auto one = *mp.begin();
-        char ch1 = one.first;
-        int freq1 = one.second;
-
-        auto two = *mp.rbegin();
-        char ch2 = two.first;
-        int freq2 = two.second;
-
-        if(freq1 > k){
-            for(int i = 0; i<(freq1 - (k - 1)); i++){
-                cout<<ch1;
-            }
-            for(int i = 0; i<freq2; i++){
-                cout<<ch2;
-            }
-            cout<<endl;
-            return;
-        }
-
-        if(freq1==k){
-            cout<<ch1;
-            int least = freq2 / k;
-            if(freq2 % k !=0 ) least++;
-            for(int i = 0; i<least; i++){
-                cout<<ch2;
-            }
-            cout<<endl;
-            return;
-
-        }
-
-        if(freq1 < k){
-            cout<<ch2<<endl;
-            return;
-        }
-    }
-
-    if(mp.size() > 2){
-        auto one = *mp.begin();
-        char ch1 = one.first;
-        int freq1 =one.second;
-        auto it = mp.begin();
-        advance(it, 1);
-        auto two = *it;
-
-        char ch2 = two.first;
-        int freq2 = two.second;
-
-        if(freq1 < k){
-            cout<<str[k-1]<<endl;
-            return;
-        }
-        if(freq1 >= k){
-            for(int i = 0; i<(freq1 - (k-1)); i++){
-                cout<<ch1;
-            }
-
-            for(auto ele : mp){
-                if(ele.first == ch1)continue;
-                for(int i = 0; i<ele.second; i++){
-                    cout<<ele.first;
-                }
-            }
-
-            cout<<endl;
-            return;
-        }
-    }
-
+    
+    cout<<dp[0][0]%mod;
 
 }
 /* logic ends */
@@ -180,10 +105,11 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    // t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
 return 0;
 }
+
