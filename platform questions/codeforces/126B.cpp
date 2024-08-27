@@ -1,30 +1,13 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
-
-/* includes and all */
-
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 #ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
+#define debug(x) cout << "errr----  " << #x << " " << x << endl 
 #define print(v) do { \
                     cout << "vect--" << #v << " = [ "; \
                     for (int i = 0; i < v.size(); i++) { \
                         cout << v[i] << " "; \
                     } \
                     cout << " ]" << endl; \
-                } while(0)
+                } while (0)
 #define print2d(v) do { \
                     cout << "vect-- starts" << endl; \
                     for (int i = 0; i < v.size(); i++) { \
@@ -35,14 +18,14 @@
                         cout << "]" << endl; \
                     } \
                     cout << "vect-- ends" << endl; \
-                } while(0)
+                } while (0)
 #define printmap(m) do { \
                     cout << "map-- starts" << endl; \
                     for (auto it = m.begin(); it != m.end(); ++it) { \
                         cout << it->first << " -> " << it->second << endl; \
                     } \
                     cout << "map-- ends" << endl; \
-                } while(0)
+                } while (0)
 
 #define printpp(v) do { \
                     cout << "vect--" << " = [ "; \
@@ -50,7 +33,7 @@
                         cout << "(" << v[i].first << ", " << v[i].second << ") "; \
                     } \
                     cout << " ]" << endl; \
-                } while(0)
+                } while (0)
 #else
 #define debug(x)
 #define print(v)
@@ -61,123 +44,109 @@
 #define endl "\n"
 #define int long long int
 #define mod 1000000007
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int>
+#define mn(a, b, c) min(a, min(b, c))
+#define mx(a, b, c) max(a, max(b, c))
+#define pp pair<int, int>
+const int p = 31;      // Base for hash function
 using namespace std;
+void computeHashAndPowers(const string &s, vector<long long> &prefix_hash, vector<long long> &p_pow) {
+    int n = s.size();
+    prefix_hash.resize(n + 1, 0);
+    p_pow.resize(n, 1);
 
-/* write core logic here */
-vector<vector<int> > comp;
+    // Compute powers of p up to n
+    for (int i = 1; i < n; i++) {
+        p_pow[i] = (p_pow[i - 1] * p) % mod;
+    }
 
-void dfs(vector<vector<int> > &graph, int node, vector<int> &visited, vector<int> &v){
-    visited[node] = 1;
-    v.push_back(node);
-    for(auto child : graph[node]){
-        if(visited[child] == 0){
-            dfs(graph , child, visited, v);
+    // Compute prefix hash values
+    for (int i = 0; i < n; ++i) {
+        prefix_hash[i + 1] = (prefix_hash[i] + (s[i] - 'a' + 1) * p_pow[i]) % mod;
+    }
+}
+
+long long getHash(int l, int r, const vector<long long> &prefix_hash, const vector<long long> &p_pow) {
+    long long hash_value = (prefix_hash[r + 1] - prefix_hash[l] + mod) % mod;
+    hash_value = (hash_value * p_pow[p_pow.size() - r - 1]) % mod; // Align hash
+    return hash_value;
+}
+
+vector<int> findPrefixSuffixMatches(const string &s) {
+    int n = s.size();
+    vector<long long> prefix_hash, p_pow;
+    computeHashAndPowers(s, prefix_hash, p_pow);
+
+    vector<int> matches;
+
+    for (int len = 1; len < n; ++len) {
+        long long prefix_h = getHash(0, len - 1, prefix_hash, p_pow);
+        long long suffix_h = getHash(n - len, n - 1, prefix_hash, p_pow);
+
+        if (prefix_h == suffix_h) {
+            matches.push_back(len);
         }
     }
+
+    return matches;
 }
 
-int find(vector<int> &par, int x) {
-    if (par[x] == x) return x;
-    return par[x] = find(par, par[x]);  // Path compression
-}
+bool find(int mid, string &str) {
+    int n = str.size();
+    if (mid >= n - 1) return false; // Pattern too long to be inside
 
-void Union(vector<int> &rank, vector<int> &par, vector<int> &minVal, vector<int> &maxVal, int a, int b) {
-    a = find(par, a);
-    b = find(par, b);
-    
-    if (a == b) return;  // Already in the same set
-    
-    if (rank[a] < rank[b]) {
-        par[a] = b;
-        minVal[b] = min(minVal[a], minVal[b]);
-        maxVal[b] = max(maxVal[a], maxVal[b]);
-    } else if (rank[a] > rank[b]) {
-        par[b] = a;
-        minVal[a] = min(minVal[a], minVal[b]);
-        maxVal[a] = max(maxVal[a], maxVal[b]);
-    } else {
-        par[b] = a;
-        rank[a]++;
-        minVal[a] = min(minVal[a], minVal[b]);
-        maxVal[a] = max(maxVal[a], maxVal[b]);
+    vector<long long> prefix_hash, p_pow;
+    computeHashAndPowers(str, prefix_hash, p_pow);
+    long long pattern_hash = getHash(0, mid - 1, prefix_hash, p_pow);
+
+    for (int i = 1; i <= n - mid - 1; ++i) {
+        long long substring_hash = getHash(i, i + mid - 1, prefix_hash, p_pow);
+        if (substring_hash == pattern_hash) {
+            return true;
+        }
     }
-}
 
+    return false;
+}
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
-    vector<vector<int>> graph(n + 1);  // Graph initialization
+    string str;
+    cin >> str;
+    vector<int> result = findPrefixSuffixMatches(str);
+    sort(result.begin(), result.end());
+    print(result);
 
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        graph[u].push_back(v);
-        graph[v].push_back(u);
-    }
+    int lo = 0;
+    int n = result.size();
+    int hi = n - 1;
 
-    vector<int> par(n + 1), rank(n + 1, 0), minVal(n + 1), maxVal(n + 1);
-
-    // Initialize parent, min, and max values
-    for (int i = 1; i <= n; i++) {
-        par[i] = i;
-        minVal[i] = i;
-        maxVal[i] = i;
-    }
-
-    vector<int> visited(n + 1, 0);
-    vector<vector<int>> comp;
-
-    // Finding components via DFS
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            vector<int> v;
-            dfs(graph, i, visited, v);
-            sort(v.begin(), v.end());
-            comp.push_back(v);
+    int res = -1;
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+        int length = result[mid];
+        if (find(length, str)) {
+            res = length;
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
         }
     }
 
-    vector<pair<int, int>> intervals;
-    
-    for(const auto & v: comp){
-        intervals.push_back({v[0], v.back()});
+    if (res == -1) {
+        cout << "Just a legend" << endl;
+    } else {
+        cout << str.substr(0, res) << endl;
     }
-
-    sort(intervals.begin(), intervals.end());
-
-    int ans = 0;
-    int maxEnd = intervals[0].second;
-
-    for (int i = 1; i < intervals.size(); ++i) {
-        if (intervals[i].first <= maxEnd) {
-            ans++;
-        }
-        maxEnd = max(maxEnd, intervals[i].second);
-    }
-
-    cout << ans << endl;
-
-    // cout << ans << endl;
 }
 
-/* logic ends */
-
-signed main(){
+signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
+        freopen("Error.txt", "w", stderr);
     #endif
-    int t;
-    //cin>>t;
-    t = 1;
-    while(t--){
+    int t = 1;
+    while (t--) {
         solve();
     }
-return 0;
+    return 0;
 }
-

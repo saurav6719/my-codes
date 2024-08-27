@@ -60,15 +60,43 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+#define mod 1000000009
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
+int p = 31;
+
+void computeHashAndPowers(const string &s, vector<long long> &prefix_hash, vector<long long> &p_pow) {
+    int n = s.size();
+    prefix_hash.resize(n + 1, 0);
+    p_pow.resize(n, 1);
+
+    // Compute powers of p up to n
+    for (int i = 1; i < n; i++) {
+        p_pow[i] = (p_pow[i - 1] * p) % mod;
+    }
+
+    // Compute prefix hash values
+    for (int i = 0; i < n; ++i) {
+        debug(((s[i] - 'a' + 1) * p_pow[i]) % mod);
+        prefix_hash[i + 1] = (prefix_hash[i] + (s[i] - 'a' + 1) * p_pow[i]) % mod;
+    }
+
+    print(prefix_hash);
+}
+
 void solve(){
-    
+    string str = "aur";
+    vector<int> p_pow;
+    vector<int> prefix_hash;
+
+    computeHashAndPowers(str, prefix_hash , p_pow);
+
+
+
 }
 /* logic ends */
 

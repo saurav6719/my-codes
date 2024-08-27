@@ -60,88 +60,43 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+// #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
+const int p = 31;
+const int mod = 1e9 + 9;
 using namespace std;
 
 /* write core logic here */
-int sumFromLtoR(int l, int r) {
-    int n = r - l + 1;
-    return n * (l + r) / 2;
+vector<long long> computePrefixHash(const string &s) {
+    int n = s.size();
+    vector<long long> prefix_hash(n + 1, 0); // Prefix hashes, prefix_hash[0] = 0
+    vector<long long> p_pow(n, 1);            // Powers of p
+
+    // Compute powers of p up to n
+    for (int i = 1; i < n; i++) {
+        p_pow[i] = (p_pow[i - 1] * p) % mod;
+    }
+
+    print(p_pow);
+
+    // Compute prefix hash values
+    for (int i = 0; i < n; ++i) {
+        prefix_hash[i + 1] = (prefix_hash[i] + (s[i] - 'a' + 1) * p_pow[i]) % mod;
+    }
+
+    return prefix_hash;
 }
 
 void solve(){
-    int n, m;
-    cin>>n>>m;
-
-    vector<vector<int> > input(n);
-
-    for(int i = 0; i<n; i++){
-        int sz;
-        cin>>sz;
-        vector<int> v(sz);
-
-        for(int i = 0; i<sz; i++){
-            cin>>v[i];
-        }
-
-        input[i] = v;
-    }
-
-
-
-    vector<int> secondmex;
-
-    for(int i = 0; i<n; i++){
-        vector<int> &v = input[i];
-        set<int> st;
-        for(auto ele : v){
-            st.insert(ele);
-        }
-
-        bool firstmex = true;
-        for(int j = 0; j<=v.size()+5; j++){
-            if(st.count(j) == 0){
-                if(firstmex) {
-                    firstmex = false;
-                    continue;
-                }
-                else{
-                    secondmex.push_back(j);
-                    break;
-                }
-            }
-        }
-    }
-
-    print(secondmex);
-
-    sort(secondmex.begin(), secondmex.end());
-    reverse(secondmex.begin(), secondmex.end());
-    print(secondmex);
-
-    int curr = secondmex.back();
-
-    int currm = 0;
-    int ans = 0;
-
-    for(int i =0; i<secondmex.size(); i++){
-        if(currm > m) break;
-        if(currm < secondmex[i]){
-            ans += secondmex[i];
-        }
-        else ans += currm;
-        debug(currm);
-        debug(ans);
-        currm++;
-    }    
-
-    ans += sumFromLtoR( currm , m);
-    cout<<ans<<endl;
-
-
+    string str;
+    cin>>str;
+    vector<int> v = computePrefixHash(str);
+    reverse(str.begin(), str.end());
+    vector<int> v2 = computePrefixHash(str);
+    print(v);
+    print(v2);
 }
 /* logic ends */
 
@@ -152,8 +107,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    // t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
