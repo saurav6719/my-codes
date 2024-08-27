@@ -67,68 +67,47 @@
 using namespace std;
 
 /* write core logic here */
-
-void rabin_karp(string &text, string &pattern ,vector<int> &result){
-    int n = text.size(); 
-    int m = pattern.size();
-    vector<int> powers(max(n,m)+5);
-    int p = 31;
-    int md = 1e9+9;
-    powers[0] = 1;
-    for(int i = 1; i<powers.size(); i++){
-        powers[i] = (powers[i-1] * p ) % md;
-    }
-
-    vector<int> hash_of_text(n+1 ,0);
-
-    for(int i = 0; i<n; i++){
-        hash_of_text[i+1] = hash_of_text[i] +((text[i] - 'a' + 1) * powers[i] )%md;
-    }
-
-    int pattern_hash = 0;
-    for(int i = 0; i<m; i++){
-        pattern_hash = (pattern_hash + (pattern[i] - 'a' +1) * powers[i]) %m;
-    }
-
-
-    for(int i = 0; i + m - 1 < n ; i++){
-        int text_hash = (hash_of_text[i+m] + md - hash_of_text[i]) % md;
-        pattern_hash = (pattern_hash * powers[i]);
-        pattern_hash %= md;
-
-        if(text_hash == pattern_hash){
-            result.push_back(i); 
-        }
-    }
-}
-
 vector<int> rabin_karp(string const& s, string const& t) {
-    const int p = 31; 
-    const int m = 1e9 + 9;
+    const int p1 = 31, p2 = 53;
+    const int m1 = 1e9 + 7, m2 = 1e9 + 9;
     int S = s.size(), T = t.size();
 
-    vector<long long> p_pow(max(S, T)); 
-    p_pow[0] = 1; 
-    for (int i = 1; i < (int)p_pow.size(); i++) 
-        p_pow[i] = (p_pow[i-1] * p) % m;
+    vector<long long> p1_pow(max(S, T)), p2_pow(max(S, T));
+    p1_pow[0] = p2_pow[0] = 1;
+    for (int i = 1; i < (int)p1_pow.size(); i++) {
+        p1_pow[i] = (p1_pow[i-1] * p1) % m1;
+        p2_pow[i] = (p2_pow[i-1] * p2) % m2;
+    }
 
-    vector<long long> h(T + 1, 0); 
-    for (int i = 0; i < T; i++)
-        h[i+1] = (h[i] + (t[i] - 'a' + 1) * p_pow[i]) % m; 
-    long long h_s = 0; 
-    for (int i = 0; i < S; i++) 
-        h_s = (h_s + (s[i] - 'a' + 1) * p_pow[i]) % m; 
+    vector<pair<long long, long long>> h(T + 1, {0, 0});
+    for (int i = 0; i < T; i++) {
+        h[i+1].first = (h[i].first + (t[i] - 'a' + 1) * p1_pow[i]) % m1;
+        h[i+1].second = (h[i].second + (t[i] - 'a' + 1) * p2_pow[i]) % m2;
+    }
+
+    pair<long long, long long> h_s = {0, 0};
+    for (int i = 0; i < S; i++) {
+        h_s.first = (h_s.first + (s[i] - 'a' + 1) * p1_pow[i]) % m1;
+        h_s.second = (h_s.second + (s[i] - 'a' + 1) * p2_pow[i]) % m2;
+    }
 
     vector<int> occurrences;
     for (int i = 0; i + S - 1 < T; i++) {
-        long long cur_h = (h[i+S] + m - h[i]) % m;
-        if (cur_h == h_s * p_pow[i] % m)
+        pair<long long, long long> cur_h = {
+            (h[i+S].first + m1 - h[i].first) % m1,
+            (h[i+S].second + m2 - h[i].second) % m2
+        };
+        pair<long long, long long> h_s_shifted = {
+            (h_s.first * p1_pow[i]) % m1,
+            (h_s.second * p2_pow[i]) % m2
+        };
+
+        if (cur_h == h_s_shifted) {
             occurrences.push_back(i);
+        }
     }
     return occurrences;
 }
-
-
 
 void solve(){
     string text;
@@ -136,24 +115,8 @@ void solve(){
     string pattern;
     cin>>pattern;
 
-    vector<int> result = rabin_karp(pattern , text);
-    // cout<<result.size()<<endl;
-
-    if(result.empty()){
-        cout<<"Not Found"<<endl;
-        return;
-    }
-
+    vector<int> result = rabin_karp(pattern, text);
     cout<<result.size()<<endl;
-    for(auto ele : result){
-        cout<<ele+1<<" ";
-    }
-    cout<<endl;
-
-    // rabin_karp(text, pattern, result);
-
-    // print(result);
-
 
 }
 /* logic ends */
@@ -165,8 +128,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    // t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
