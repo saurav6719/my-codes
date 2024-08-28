@@ -68,40 +68,7 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int x0,y0;
-    cin>>x0>>y0;
-    int ax,ay;
-    cin>>ax>>ay;
-    int bx,by;
-    cin>>bx>>by;
-    int xs,ys;
-    cin>>xs>>ys;
-    int t;
-    cin>>t;
-
-    vector<pp> datanodes;
-    datanodes.push_back({x0,y0});
-    for(int i = 0;i<100; i++){
-        int lastx = datanodes.back().first;
-        int lasty = datanodes.back().second;
-        int newx = ((ax * lastx) + bx);
-        int newy = ((ay * lasty) + by);
-        if(newx > 1e16 or newy > 1e16) break;
-        datanodes.push_back({newx, newy});
-    }
-
-    int ans = 0;
-    int currx = xs;
-    int curry = ys;
-    while(t>0){
-        int mini = 1e15;
-        for(auto ele : datanodes){
-
-        }
-    }
-
-
-
+    
 }
 /* logic ends */
 
