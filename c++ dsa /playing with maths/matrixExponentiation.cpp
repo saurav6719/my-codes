@@ -16,7 +16,7 @@ vector<vector<int>> matrixMultiply(const vector<vector<int>>& A, const vector<ve
     return C;
 }
 
-vector<vector<int>> matrixExponentiate(vector<vector<int>> base, int exp, int mod = MOD) {
+vector<vector<int>> matrixExponentiate(vector<vector<int>> base, int exp, int mod = MOD){
     int n = base.size();
     vector<vector<int>> result(n, vector<int>(n, 0));
     
