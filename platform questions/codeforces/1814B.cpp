@@ -67,36 +67,25 @@
 using namespace std;
 
 /* write core logic here */
+
+int f(int dest1, int dest2, int xx){
+    int ans = 0;
+    ans += (xx-1);
+    ans += (dest1 / xx);
+    if(dest1 % xx != 0) ans++;
+    ans += (dest2 / xx);
+    if(dest2 % xx != 0) ans++;
+    return ans;
+}
 void solve(){
     int a,b;
     cin>>a>>b;
-    int diff = a;
-    int diff2 = b;
-    int mini = diff;
-    for(int i = 2; i<= 1e5; i++){
-        int req = diff/ i;
-        if(req == 0) break;
-        int curr = req;
-        int ans = curr;
-        int rem = diff - curr;
-        if(rem%curr != 0)  ans++;
-        ans += (rem / curr);
-        mini = min(mini, ans);
+    int ans = INT_MAX;
+    for(int i = 1; i<=1e5; i++){
+        ans = min(ans, f(a,b,i));
     }
-    int mini2 = diff2;
+    cout<<ans<<endl;
 
-    for(int i = 2; i<= 1e5; i++){
-        int req = diff2/ i;
-        if(req == 0) break;
-        int curr = req;
-        int ans = curr;
-        int rem = diff2 - curr;
-        if(rem%curr != 0)  ans++;
-        ans += (rem / curr);
-        mini2 = min(mini, ans);
-    }
-
-    cout<<mini + mini2<<endl;
 }
 /* logic ends */
 
