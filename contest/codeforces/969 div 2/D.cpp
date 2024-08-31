@@ -12,9 +12,9 @@
   
   Happy coding! 
 */
- 
+
 /* includes and all */
- 
+
 #include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
@@ -43,7 +43,7 @@
                     } \
                     cout << "map-- ends" << endl; \
                 } while(0)
- 
+
 #define printpp(v) do { \
                     cout << "vect--" << " = [ "; \
                     for (int i = 0; i < v.size(); i++) { \
@@ -65,113 +65,96 @@
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
- 
+
 /* write core logic here */
-vector<int> st;
-vector<int> lazy;
- 
-void build(int i, int lo, int hi , vector<int> &input){
-    if(lo==hi){
-        st[i] = input[lo];
-        return;
-    }
-    int mid = (lo + hi) / 2;
-    build(2*i+1, lo, mid, input);
-    build(2*i+2, mid+1, hi, input);
-    st[i] = max(st[2*i+1] , st[2*i+2]);
-}
- 
-void update(int i, int lo, int hi, int l, int r, int val){
-    if(lazy[i] != 0){
-        int range = hi - lo +1;
-        st[i] += range * lazy[i];
-        if(lo != hi){
-            lazy[2*i+1] += lazy[i];
-            lazy[2*i+2] += lazy[i];
-        }
-        lazy[i] = 0;
-    }
- 
-    if(l>hi or r<lo){
-        return;
-    }
-    if(lo >=l and hi <= r){
-        int range = hi - lo +1;
-        st[i] += (range * val);
-        if(lo != hi){
-            lazy[2*i+1] += val;
-            lazy[2*i+2] += val;
-        }
-        
-        return ;
-    }
- 
-    int mid = (lo + hi) / 2;
- 
-    update(2*i+1, lo, mid, l, r, val);
-    update(2*i+2, mid+1, hi, l, r, val);
- 
-    st[i] = st[2*i+1] + st[2*i+2];
-}
- 
-int getsum(int i, int lo, int hi, int l , int r){
-    if(lazy[i] != 0){
-        int range = hi - lo +1;
-        st[i] += range * lazy[i];
-        if(lo != hi){
-            lazy[2*i+1] += lazy[i];
-            lazy[2*i+2] += lazy[i];
-            
-        }
-        lazy[i] = 0;
-    }
-    if(l>hi or r<lo){
-        return 0;
-    }
-    if(lo >=l and hi <= r){
-        return st[i];
-    }
-    int mid =(hi + lo)/2;
-    int left = getsum(2*i+1, lo, mid, l,r);
-    int rightsum = getsum(2*i+2, mid+1, hi, l, r);
- 
-    return left + rightsum;
-    
-}
 void solve(){
     int n;
     cin>>n;
-    int q;
-    cin>>q;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    vector<int> indegree(n+1);
+
+    for(int i = 1; i<=n-1; i++){
+        int u,v;
+        cin>>u>>v;
+        indegree[u]++;
+        indegree[v]++;
     }
- 
-    st.resize(4*n);
-    lazy.resize(4*n, 0);
-    build(0, 0, n - 1, input);
-    while(q--){
-        int type;
-        cin>>type;
-        if(type == 1){
-            int l,r,val;
-            cin>>l>>r>>val;
-            l--;
-            r--;
-            update(0, 0, n-1, l, r,val);
+
+    int questionleaf = 0;
+    int zeroleaf = 0;
+    int oneleaf =0;
+
+    string str;
+    cin>>str;
+
+    str = 'a' + str;
+
+    for(int i = 2; i<=n; i++){
+        if(indegree[i] > 1) continue;
+        if(str[i] == '1'){
+            oneleaf++;
         }
-        else{
-            int k;
-            cin>>k;
-            k--;
-            int xx = getsum(0, 0,n-1, k, k);
-            cout<<xx<<endl;
+        else if(str[i] == '0'){
+            zeroleaf++;
         }
+
+        else questionleaf++;
     }
+    debug(zeroleaf);
+    debug(questionleaf);
+    debug(oneleaf);
+
+    if(str[1] == '1'){
+        int ans = zeroleaf + ((questionleaf) / 2 + (questionleaf) % 2);
+        cout<<ans<<endl;
+        return;
+    }
+
+    if(str[1] == '0'){
+        int ans = oneleaf + ((questionleaf) / 2 + (questionleaf) % 2);
+        cout<<ans<<endl;
+        return;
+    }
+
+    // now root is not known to us 
+
+    if(zeroleaf > oneleaf){
+        // cout<<"YES"<<endl;
+        int ans = zeroleaf + (questionleaf/2);
+        cout<<ans<<endl;
+        return;
+    }
+
+    if(oneleaf > zeroleaf){
+        int ans = oneleaf + (questionleaf/2);
+        cout<<ans<<endl;
+        return;
+    }
+
+    // now root is unknown and oneleaf == zeroleaf 
+
+    int cntfaltu = 0;
+    for(int i = 2; i<=n; i++){
+        if(indegree[i] == 1)continue;
+        if(str[i] == '?') cntfaltu++;
+    }
+
+    if(cntfaltu % 2== 0){
+        //iris kaa chance aaya first 
+        int ans = zeroleaf + (questionleaf/2);
+        cout<<ans<<endl;
+        return;
+    }
+    else{
+        //dora kaa chance aaya first 
+        int ans = zeroleaf + (questionleaf/2) + (questionleaf%2);
+        cout<<ans<<endl;
+        return;
+    }
+
+
 }
 /* logic ends */
- 
+
 signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -179,10 +162,11 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }
 return 0;
 }
+
