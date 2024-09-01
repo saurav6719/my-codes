@@ -67,16 +67,38 @@
 using namespace std;
 
 /* write core logic here */
+
+
 void solve(){
-    int l, r; cin >> l >> r;
-    int i = l, diff = 1;
-    int count = 0;
-    while(i<=r){
-        count++;
-        i += diff++;
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
-    cout << count << endl;
+
+    vector<vector<int>> dp(n+5, vector<int> (4,0));
+    for(int i = 0; i<n; i++){
+        dp[i][0] = 0;
+    }
+
+    for(int i = n-1; i>=0; i--){
+        for(int j = 1; j<4; j++){
+            int xx = dp[i+1][j];
+            if(i+1+j > n) xx= 0;
+            int yy = input[i] + dp[i+1][j-1];
+            if(i+1+j-1 > n) yy = 0;
+            dp[i][j] = max(xx,yy);
+        }
+    }
+
+    print2d(dp);
+
+    cout<<dp[0][3]<<endl;
+
 }
+
+
 /* logic ends */
 
 signed main(){
@@ -86,8 +108,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

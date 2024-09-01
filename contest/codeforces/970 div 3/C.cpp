@@ -67,15 +67,30 @@
 using namespace std;
 
 /* write core logic here */
+
 void solve(){
-    int l, r; cin >> l >> r;
-    int i = l, diff = 1;
-    int count = 0;
-    while(i<=r){
-        count++;
-        i += diff++;
-    }
-    cout << count << endl;
+   int l,r;
+   cin>>l>>r;
+   int k = r-l;
+
+   int lo = 1; int hi = 1e9;
+   int res = 0;
+
+   while(lo <= hi){
+        int mid = (lo + hi) / 2;
+
+        int num = mid * (mid +1 )/2;
+
+        if(num <=k){
+            res = mid;
+            lo = mid +1;
+        }
+        else hi = mid - 1;
+   }
+
+   debug(res);
+
+   cout<<res+1<<endl;
 }
 /* logic ends */
 
@@ -86,8 +101,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

@@ -67,15 +67,59 @@
 using namespace std;
 
 /* write core logic here */
+bool isPerfectSquare(int num) {
+    if (num < 0) return false; // Negative numbers can't be perfect squares.
+    
+    int root = static_cast<int>(sqrt(num));
+    return root * root == num;
+}
 void solve(){
-    int l, r; cin >> l >> r;
-    int i = l, diff = 1;
-    int count = 0;
-    while(i<=r){
-        count++;
-        i += diff++;
+    
+    int n;
+    cin>>n;
+    string str;
+    cin>>str;
+
+    if(isPerfectSquare(n) == 0){
+        cout<<"No"<<endl;
+        return;
     }
-    cout << count << endl;
+
+    int xx = sqrt(n);
+    debug(xx);
+
+    vector<vector<int>  > ans(xx , vector<int> (xx));
+
+    for(int i = 0; i<xx; i++){
+        for(int j = 0; j<xx; j++){
+            if(i==0 or j==0 or i==xx-1 or j==xx-1){
+                ans[i][j] = 1;
+            }
+            else ans[i][j] = 0;
+        }
+    }
+
+    print2d(ans);
+
+
+    string cmp= "";
+    for(int i = 0; i<xx; i++){
+        for(int j = 0; j<xx; j++){
+            cmp += std::to_string(ans[i][j]);
+
+        }
+    }
+    print(cmp);
+    if(cmp == str){
+        cout<<"Yes"<<endl;
+        return;
+    }
+
+    cout<<"no"<<endl;
+{
+    
+    
+}
 }
 /* logic ends */
 
@@ -86,8 +130,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

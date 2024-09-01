@@ -68,14 +68,23 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int l, r; cin >> l >> r;
-    int i = l, diff = 1;
-    int count = 0;
-    while(i<=r){
-        count++;
-        i += diff++;
+    
+    int a,b;
+    cin>>a>>b;
+
+    if(a%2 == 0 and a!= 0){
+        cout<<"YES"<<endl;
+        return;
     }
-    cout << count << endl;
+
+    if(a%2 == 0 and a == 0){
+        if(b%2 == 0){
+            cout<<"YES"<<endl;
+            return;
+        }
+    }
+    cout<<"NO"<<endl;
+
 }
 /* logic ends */
 
@@ -86,8 +95,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

@@ -67,15 +67,75 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    int l, r; cin >> l >> r;
-    int i = l, diff = 1;
-    int count = 0;
-    while(i<=r){
-        count++;
-        i += diff++;
+int find(vector<int> &parent, int x){
+    if(parent[x] == x) return x;
+    return parent[x] = find(parent,parent[x]);
+}
+void Union(vector<int> &parent,vector<int> &size, int a, int b){
+    a = find(parent,a);
+    b = find(parent,b);
+    if(a==b) return;
+    if(size[a] >= size[b]){
+        size[a]+= size[b];
+        parent[b] = a;
+        
     }
-    cout << count << endl;
+    else{
+        size[b]+= size[a];
+        parent[a] = b;
+       
+    }
+}
+
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> input(n+1);
+    for(int i = 1; i<=n; i++){
+        cin>>input[i];
+    }
+
+    vector<int> parent(n+1);
+    vector<int> size(n+1,1);
+    for(int i = 0; i<=n ; i++){
+        parent[i] = i;
+    }
+
+   string str;
+   cin>>str;
+
+    for(int i = 1; i<=n; i++){
+        if(parent[i] != i) continue;
+        int j= i;
+        while(true){  
+            if(parent[j] == j ){
+                Union(parent, size, i, j);
+                int newj = input[j];
+                if(newj == j) break;
+                j = input[j];
+            }
+            else break;
+        }
+    }
+
+    vector<int> ans(n+5, 0);
+
+    for(int i = 1; i<=n; i++){
+        int par = parent[i];
+        if(str[i-1] == '0'){
+            ans[par]++;
+        }
+    }
+
+    print(ans);
+
+
+    for(int i = 1; i<=n; i++){
+        cout<<ans[parent[i]]<<" ";
+    }
+    cout<<endl;
+
+
 }
 /* logic ends */
 
@@ -86,8 +146,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }
