@@ -72,29 +72,24 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
+    vector<int> input(n+5);
+    for(int i = 1; i<=n; i++){
         cin>>input[i];
     }
 
-    vector<vector<int>> dp(n+5, vector<int> (4,0));
-    for(int i = 0; i<n; i++){
+
+    vector<vector<int> > dp(n+5, vector<int> (4, 0));
+    for(int i = 1; i<=n; i++){
         dp[i][0] = 0;
+        dp[i][1] = max(dp[i-1][1] , input[i] + i + dp[i-1][0]);
+        dp[i][2] = max(dp[i-1][2] , input[i] + dp[i-1][1]);
+        dp[i][3] = max(dp[i-1][3] , input[i] - i + dp[i-1][2]);
     }
-
-    for(int i = n-1; i>=0; i--){
-        for(int j = 1; j<4; j++){
-            int xx = dp[i+1][j];
-            if(i+1+j > n) xx= 0;
-            int yy = input[i] + dp[i+1][j-1];
-            if(i+1+j-1 > n) yy = 0;
-            dp[i][j] = max(xx,yy);
-        }
-    }
-
     print2d(dp);
 
-    cout<<dp[0][3]<<endl;
+    cout<<dp[n][3]<<endl;
+
+
 
 }
 
