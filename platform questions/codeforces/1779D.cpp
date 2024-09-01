@@ -68,62 +68,59 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int a,b;
-    cin>>a>>b;
-    int ans = 0;
-    for(int x= -1000;x<=1000; x++){
-        //abx
-        int xx1 = b-a;
-        int xx2 = x-b;
-        if(xx1 == xx2){
-            ans++;
-            continue;
-        }
-        //axb
-        int xx3 = x-a;
-        int xx4 = b-x;
-        if(xx3 == xx4){
-            ans++;
-            continue;
-        }
+    int n;
+    cin>>n;
+    vector<int> a(n);
+    vector<int> b(n);
+    for(int i = 0; i<n; i++){
+        cin>>a[i];
+    }
+    for(int i = 0; i<n; i++){
+        cin>>b[i];
+    }
 
-        //bax
-        int xx5 = a-b;
-        int xx6 = x-a;
+    int m;
+    cin>>m;
+    map<int,int> mp;
+    for(int i =0 ; i<m; i++){
+        int ele;
+        cin>>ele;
+        mp[ele]++;
+    }
 
-        if(xx5 == xx6){
-            ans++;
-            continue;
-        }
-
-        //bxa
-
-        int xx7 = x-b;
-        int xx8 = a-x;
-        if(xx7 == xx8){
-            ans++;
-            continue;
-        }
-
-        //xab 
-        int xx9 = a-x;
-        int xx10 =  b-a;
-        if(xx9 == xx10){
-            ans++;
-            continue;
-        }
-
-        //xba
-
-        int xx11 = b-x;
-        int xx12 = a-b;
-        if(xx11 == xx12){
-            ans++;
-            continue;
+    priority_queue<int, vector<int> , greater<int> > pq;
+    for(int i = 0; i<n; i++){
+        if(b[i] > a[i]){
+            cout<<"NO"<<endl;
+            return;
         }
     }
 
-    cout<<ans;
+    for(int i  = 0; i<n; i++){
+        
+        while(!pq.empty() and pq.top() < b[i]){
+            pq.pop();
+        }
+
+        if(!pq.empty() and pq.top() == b[i]){
+            continue;
+        }
+
+        if(a[i] == b[i]) continue;
+
+        if(mp[b[i]] == 0){
+            cout<<"NO"<<endl;
+            return;
+        }
+
+        mp[b[i]]--;
+        pq.push(b[i]);
+
+
+    }
+
+    cout<<"YES"<<endl;
+    return;
 }
 /* logic ends */
 
@@ -134,8 +131,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

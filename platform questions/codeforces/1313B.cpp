@@ -67,63 +67,105 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    int a,b;
-    cin>>a>>b;
-    int ans = 0;
-    for(int x= -1000;x<=1000; x++){
-        //abx
-        int xx1 = b-a;
-        int xx2 = x-b;
-        if(xx1 == xx2){
-            ans++;
-            continue;
+int f1(int n, int a,int b){
+    int sum = a+b;
+    int last = n;
+    int start = 1;
+    int toadd = n;
+    if(toadd == b) toadd--;
+    if(start == a) start++;
+    int ans1 = -1;
+    int ans2 = -1;
+
+    int lo = start;
+    int hi = last ;
+
+    debug(start);debug(last);
+    int res = -1;
+    while(lo<=hi){
+        int mid = (lo+hi)/2;
+        int xx = mid;
+        int yy = toadd;
+        if(xx+yy > sum){
+            res = mid;
+            hi = mid - 1;
         }
-        //axb
-        int xx3 = x-a;
-        int xx4 = b-x;
-        if(xx3 == xx4){
-            ans++;
-            continue;
-        }
-
-        //bax
-        int xx5 = a-b;
-        int xx6 = x-a;
-
-        if(xx5 == xx6){
-            ans++;
-            continue;
-        }
-
-        //bxa
-
-        int xx7 = x-b;
-        int xx8 = a-x;
-        if(xx7 == xx8){
-            ans++;
-            continue;
-        }
-
-        //xab 
-        int xx9 = a-x;
-        int xx10 =  b-a;
-        if(xx9 == xx10){
-            ans++;
-            continue;
-        }
-
-        //xba
-
-        int xx11 = b-x;
-        int xx12 = a-b;
-        if(xx11 == xx12){
-            ans++;
-            continue;
+        else {
+            lo = mid +1;
         }
     }
+    debug(res);
 
-    cout<<ans;
+    if(res==-1){
+        return n;
+    }
+
+    int kitneupr = res-1;
+    debug(kitneupr);
+    if(kitneupr >= a){
+        kitneupr--;
+    }
+    ans1 = kitneupr+1;
+
+    return ans1;
+}
+
+int f2(int n, int a, int b){
+    //last number jisme start add kre to less than equal to sum aaye 
+
+    int sum = a+b;
+    int start = 1;
+    int toadd = 1;
+    if(toadd == b) toadd++;
+    debug(toadd);
+    if(start == a) start++;
+    int last = n;
+    int lo = start;
+    int hi = last;
+    debug(lo);
+    debug(hi);
+    int res = -1;
+    while(lo<=hi){
+        int mid= (lo + hi)/2;
+        if(mid + toadd <= sum){
+            res = mid;
+            lo = mid+1;
+        }
+        else hi = mid - 1;
+    }
+
+    if(res==-1){
+        return 1;
+    }
+
+    int kitneupr = res;
+    debug(kitneupr);
+    if(a > kitneupr){
+        kitneupr++;
+    }
+
+
+    int ans2 = kitneupr;
+    debug(kitneupr);
+
+    return ans2;
+}
+void solve(){
+    int n,a,b;
+    cin>>n>>a>>b;
+    int x = f2(n,a,b);
+    int y = f1(n,a,b);
+    debug(x);
+    cout<<y<<" "<<x<<endl;
+    
+
+    
+
+    
+
+
+
+
 }
 /* logic ends */
 
@@ -134,8 +176,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;it n,a,b;
     while(t--){
         solve();
     }

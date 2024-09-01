@@ -68,62 +68,62 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int a,b;
-    cin>>a>>b;
-    int ans = 0;
-    for(int x= -1000;x<=1000; x++){
-        //abx
-        int xx1 = b-a;
-        int xx2 = x-b;
-        if(xx1 == xx2){
-            ans++;
-            continue;
-        }
-        //axb
-        int xx3 = x-a;
-        int xx4 = b-x;
-        if(xx3 == xx4){
-            ans++;
-            continue;
-        }
-
-        //bax
-        int xx5 = a-b;
-        int xx6 = x-a;
-
-        if(xx5 == xx6){
-            ans++;
-            continue;
-        }
-
-        //bxa
-
-        int xx7 = x-b;
-        int xx8 = a-x;
-        if(xx7 == xx8){
-            ans++;
-            continue;
-        }
-
-        //xab 
-        int xx9 = a-x;
-        int xx10 =  b-a;
-        if(xx9 == xx10){
-            ans++;
-            continue;
-        }
-
-        //xba
-
-        int xx11 = b-x;
-        int xx12 = a-b;
-        if(xx11 == xx12){
-            ans++;
-            continue;
-        }
+    int a,b,c,k;
+    cin>>a>>b>>c>>k;
+    vector<int> nums(8, 0);
+    int curr = 1;
+    for(int i = 1; i<8; i++){
+        nums[i] = curr;
+        curr *= 10;
     }
 
-    cout<<ans;
+    print(nums);
+
+    vector<int> largest(7, 0);
+    for(int i = 1; i<7; i++){
+        largest[i] = nums[i+1]-1;
+    }
+
+    print(largest);
+
+    int asmallest = nums[a];
+    int alargest = largest[a];
+
+    int bsmallest = nums[b];
+    int blargest = largest[b];
+
+    int csmallest = nums[c];
+    int clargest = largest[c];
+
+    
+    int ans1 = -1;
+    int ans2 = -1;
+    for(int i = asmallest ; i<=alargest; i++){
+        int mini = csmallest - i;
+        if(mini < bsmallest) mini = bsmallest;
+        if(mini > blargest) continue;
+
+        int maxi = clargest - i;
+        if(maxi > blargest) maxi = blargest;
+        if(maxi < bsmallest) continue;
+        int curr = maxi - mini + 1;
+        if(curr < k){
+            k-= curr;
+            continue;
+        }
+        else{
+            ans1 = i;
+            ans2 = mini + k-1;
+            break;
+        }
+    }   
+
+    if(ans1==-1 or ans2==-1){
+        cout<<-1<<endl;
+        return;
+    }
+
+    cout<<to_string(ans1)<<" "<<'+'<<" "<<to_string(ans2)<<" "<<'='<<" "<<to_string(ans1+ans2)<<endl;
 }
 /* logic ends */
 
@@ -134,8 +134,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

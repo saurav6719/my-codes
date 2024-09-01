@@ -68,62 +68,47 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int a,b;
-    cin>>a>>b;
-    int ans = 0;
-    for(int x= -1000;x<=1000; x++){
-        //abx
-        int xx1 = b-a;
-        int xx2 = x-b;
-        if(xx1 == xx2){
-            ans++;
-            continue;
-        }
-        //axb
-        int xx3 = x-a;
-        int xx4 = b-x;
-        if(xx3 == xx4){
-            ans++;
-            continue;
-        }
-
-        //bax
-        int xx5 = a-b;
-        int xx6 = x-a;
-
-        if(xx5 == xx6){
-            ans++;
-            continue;
-        }
-
-        //bxa
-
-        int xx7 = x-b;
-        int xx8 = a-x;
-        if(xx7 == xx8){
-            ans++;
-            continue;
-        }
-
-        //xab 
-        int xx9 = a-x;
-        int xx10 =  b-a;
-        if(xx9 == xx10){
-            ans++;
-            continue;
-        }
-
-        //xba
-
-        int xx11 = b-x;
-        int xx12 = a-b;
-        if(xx11 == xx12){
-            ans++;
-            continue;
-        }
+    int u,v;
+    cin>>u>>v;
+    if(u==0 and v==0){
+        cout<<0<<endl;
+        return;
     }
 
-    cout<<ans;
+    if(u==v){
+        cout<<1<<endl;
+        cout<<u<<endl;
+        return;
+    }
+
+    int x = abs(u-v)/2;
+
+    if((x & u) == 0){
+        debug(x);
+        debug(u+x);
+        // cout<<"YSE"<<endl;
+        if((x^(u+x)) != u or x+(u+x) != v){
+            cout<<-1<<endl;
+            return;
+        }
+        cout<<2<<endl;
+        cout<<u+x<<" "<<x<<endl;
+        return;
+    }   
+
+    else{
+        if((x^(u^x)) != u or x+(u+x) != v){
+            cout<<-1<<endl;
+            return;
+        }
+        cout<<3<<endl;
+        cout<<u<<" "<<x<<" "<<x<<endl;
+        return;
+    }
+
+
+
+
 }
 /* logic ends */
 

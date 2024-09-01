@@ -67,63 +67,82 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    int a,b;
-    cin>>a>>b;
-    int ans = 0;
-    for(int x= -1000;x<=1000; x++){
-        //abx
-        int xx1 = b-a;
-        int xx2 = x-b;
-        if(xx1 == xx2){
-            ans++;
-            continue;
-        }
-        //axb
-        int xx3 = x-a;
-        int xx4 = b-x;
-        if(xx3 == xx4){
-            ans++;
-            continue;
-        }
 
-        //bax
-        int xx5 = a-b;
-        int xx6 = x-a;
+string f (string str){
+    int n = str.size();
+    print(str);
+    debug(n);
+    debug(str[0]);
+    if(n==0) return "";
+    if(n==1) {
+        // cout<<"YES";
+        string ans = "";
+        ans += str[0];
+        return ans;
+    }
+    map<char,int> mp;
+    for(auto ele : str){
+        mp[ele]++;
+    }
 
-        if(xx5 == xx6){
-            ans++;
-            continue;
-        }
-
-        //bxa
-
-        int xx7 = x-b;
-        int xx8 = a-x;
-        if(xx7 == xx8){
-            ans++;
-            continue;
-        }
-
-        //xab 
-        int xx9 = a-x;
-        int xx10 =  b-a;
-        if(xx9 == xx10){
-            ans++;
-            continue;
-        }
-
-        //xba
-
-        int xx11 = b-x;
-        int xx12 = a-b;
-        if(xx11 == xx12){
-            ans++;
-            continue;
+    if(mp.size() == 2){
+        auto ele = *mp.begin();
+        auto ele2 = *mp.rbegin();
+        debug(ele2.second);
+        if(ele.second == 1){
+            string ans = "";
+            for(int i = 0; i< (ele2.second / 2 + ele2.second % 2); i++){
+                ans += ele2.first;
+            }
+            ans += ele.first;
+            for(int i = 0; i<ele2.second/2; i++){
+                ans+= ele2.first;
+                
+            }
+            print(ans);
+            return ans;
         }
     }
 
-    cout<<ans;
+    int i = 0;
+
+    string rest = "";
+    if(i+1 < n) rest = str.substr(i+1);
+    rest += str[i];
+    return rest;
+}
+void solve(){
+    string str;
+    cin>>str;
+
+    sort(str.begin(), str.end());
+
+    string left = "";
+    string right = "";
+    int n = str.size();
+
+    int i = 0;
+    while(i<n-1 and str[i] == str[i+1]){
+        left += str[i];
+        right += str[i+1];
+        i+=2;
+    }
+
+    print(left);
+    print(right);
+
+    reverse(right.begin(), right.end());
+
+    if(i==n){
+        cout<<left+right<<endl;
+        return;
+    }
+    debug(i);
+    print(str.substr(i));
+    string rest = f(str.substr(i));
+    print(rest);
+    
+    cout<<left+rest+right<<endl;
 }
 /* logic ends */
 
@@ -134,8 +153,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

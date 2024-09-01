@@ -67,63 +67,46 @@
 using namespace std;
 
 /* write core logic here */
+
+
 void solve(){
-    int a,b;
-    cin>>a>>b;
-    int ans = 0;
-    for(int x= -1000;x<=1000; x++){
-        //abx
-        int xx1 = b-a;
-        int xx2 = x-b;
-        if(xx1 == xx2){
-            ans++;
+    int n;
+    cin>>n;
+    int c;
+    cin>>c;
+    vector<int> input(n);
+    for(int i=0; i<n;i++) cin>>input[i];
+
+    auto cmp_lambda = [&](pp &a, pp &b) {
+        return (a.first - (a.second * c)) < (b.first - (b.second * c));
+    };
+    
+    priority_queue<pp, vector<pp>, decltype(cmp_lambda)> pq(cmp_lambda);
+
+    for(int i = 1; i<n; i++){
+        pq.push({input[i], i+1});
+    }
+
+    int curr = input[0];
+
+    while(!pq.empty()){
+
+        pp ff = pq.top();
+        debug(ff.first);
+        debug(ff.second);
+        if(curr + ff.first >= (ff.second * c)){
+            pq.pop();
+            curr += ff.first;
             continue;
         }
-        //axb
-        int xx3 = x-a;
-        int xx4 = b-x;
-        if(xx3 == xx4){
-            ans++;
-            continue;
-        }
-
-        //bax
-        int xx5 = a-b;
-        int xx6 = x-a;
-
-        if(xx5 == xx6){
-            ans++;
-            continue;
-        }
-
-        //bxa
-
-        int xx7 = x-b;
-        int xx8 = a-x;
-        if(xx7 == xx8){
-            ans++;
-            continue;
-        }
-
-        //xab 
-        int xx9 = a-x;
-        int xx10 =  b-a;
-        if(xx9 == xx10){
-            ans++;
-            continue;
-        }
-
-        //xba
-
-        int xx11 = b-x;
-        int xx12 = a-b;
-        if(xx11 == xx12){
-            ans++;
-            continue;
+        else{
+            cout<<"No"<<endl;
+            return;
         }
     }
 
-    cout<<ans;
+    cout<<"YES"<<endl;
+
 }
 /* logic ends */
 
@@ -134,8 +117,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }

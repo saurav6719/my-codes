@@ -66,64 +66,47 @@
 #define pp pair<int,int>
 using namespace std;
 
-/* write core logic here */
 void solve(){
-    int a,b;
-    cin>>a>>b;
-    int ans = 0;
-    for(int x= -1000;x<=1000; x++){
-        //abx
-        int xx1 = b-a;
-        int xx2 = x-b;
-        if(xx1 == xx2){
-            ans++;
-            continue;
+    int k;
+    cin>>k;
+    int xx = log2(k);
+    xx++;
+    debug(xx);
+    // cout<<endl;
+    int c = (1<<xx);
+    int a = c-1;
+    int b = a+c;
+    int d = c*2;
+    int e = a-k;
+
+    debug(a);
+    debug(b);
+    debug(c);
+    debug(d);
+    debug(e);
+
+    vector<vector<int> > ans(3, vector<int> (4));
+    ans[0][0] = b;
+    ans[0][1] = a;
+    ans[0][2] = a;
+    ans[0][3] = 0;
+    ans[1][0] = c;
+    ans[1][1] = d;
+    ans[1][2] = a;
+    ans[1][3] = e;
+    ans[2][0] = b;
+    ans[2][1] = b;
+    ans[2][2] = b;
+    ans[2][3] = a;
+
+    cout<<3<<" "<<4<<endl;
+    for(int i = 0; i<3; i++){
+        for(int j= 0; j<4; j++){
+            cout<<ans[i][j]<<" ";
         }
-        //axb
-        int xx3 = x-a;
-        int xx4 = b-x;
-        if(xx3 == xx4){
-            ans++;
-            continue;
-        }
-
-        //bax
-        int xx5 = a-b;
-        int xx6 = x-a;
-
-        if(xx5 == xx6){
-            ans++;
-            continue;
-        }
-
-        //bxa
-
-        int xx7 = x-b;
-        int xx8 = a-x;
-        if(xx7 == xx8){
-            ans++;
-            continue;
-        }
-
-        //xab 
-        int xx9 = a-x;
-        int xx10 =  b-a;
-        if(xx9 == xx10){
-            ans++;
-            continue;
-        }
-
-        //xba
-
-        int xx11 = b-x;
-        int xx12 = a-b;
-        if(xx11 == xx12){
-            ans++;
-            continue;
-        }
+        cout<<endl;
     }
 
-    cout<<ans;
 }
 /* logic ends */
 
@@ -134,7 +117,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();

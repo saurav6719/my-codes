@@ -68,62 +68,32 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int a,b;
-    cin>>a>>b;
-    int ans = 0;
-    for(int x= -1000;x<=1000; x++){
-        //abx
-        int xx1 = b-a;
-        int xx2 = x-b;
-        if(xx1 == xx2){
-            ans++;
-            continue;
-        }
-        //axb
-        int xx3 = x-a;
-        int xx4 = b-x;
-        if(xx3 == xx4){
-            ans++;
-            continue;
-        }
+    int m;
+    int k;
+    cin>>m>>k;
 
-        //bax
-        int xx5 = a-b;
-        int xx6 = x-a;
-
-        if(xx5 == xx6){
-            ans++;
-            continue;
-        }
-
-        //bxa
-
-        int xx7 = x-b;
-        int xx8 = a-x;
-        if(xx7 == xx8){
-            ans++;
-            continue;
-        }
-
-        //xab 
-        int xx9 = a-x;
-        int xx10 =  b-a;
-        if(xx9 == xx10){
-            ans++;
-            continue;
-        }
-
-        //xba
-
-        int xx11 = b-x;
-        int xx12 = a-b;
-        if(xx11 == xx12){
-            ans++;
-            continue;
-        }
+    vector<int> dp(1e5+1, 0);
+    dp[0] = 1;
+    for(int i = 0; i<=1e5; i++){
+        if(i-1>=0) dp[i] += dp[i-1];
+        dp[i] %= mod;
+        if(i-k>=0) dp[i] += dp[i-k];
+        dp[i] %= mod;
     }
 
-    cout<<ans;
+    for(int i = 1; i<=1e5; i++){
+        dp[i] += dp[i-1];
+        dp[i] %= mod;
+    }
+
+    // debug()
+
+    while(m--){
+        int a,b;
+        cin>>a>>b;
+        cout<<(dp[b] - dp[a-1] + mod )%mod<<endl;
+        // return;
+    }
 }
 /* logic ends */
 
