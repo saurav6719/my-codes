@@ -67,15 +67,27 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    int l, r; cin >> l >> r;
-    int i = l, diff = 1;
-    int count = 0;
-    while(i<=r){
-        count++;
-        i += diff++;
+bool isPrime(int n) {
+    if (n <= 1) return false; // 0 and 1 are not prime numbers
+    if (n <= 3) return true;  // 2 and 3 are prime numbers
+    
+    // Eliminate multiples of 2 and 3
+    if (n % 2 == 0 || n % 3 == 0) return false;
+    
+    // Check for factors from 5 to sqrt(n)
+    for (int i = 5; i * i <= n; i += 6) {
+        if (n % i == 0 || n % (i + 2) == 0) return false;
     }
-    cout << count << endl;
+    
+    return true;
+}
+void solve(){
+    vector<int> v;
+    for(int i= 1; i<=1e5; i++){
+        if(isPrime(i)) v.push_back(i);
+    }
+
+    cout<<v.size();
 }
 /* logic ends */
 

@@ -1,21 +1,6 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
-
-/* includes and all */
-
 #include<bits/stdc++.h>
+#include <chrono>  // Include the chrono library for time measurement
+
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -66,9 +51,6 @@
 #define pp pair<int,int>
 using namespace std;
 
-/* write core logic here */
-
-
 void solve(){
     int n;
     cin>>n;
@@ -77,37 +59,41 @@ void solve(){
         cin>>input[i];
     }
 
-
-    vector<vector<int> > dp(n+5, vector<int> (4, 0));
+    vector<vector<int>> dp(n+5, vector<int>(4, 0));
     for(int i = 1; i<=n; i++){
         dp[i][0] = 0;
-        dp[i][1] = max(dp[i-1][1] , input[i] + i + dp[i-1][0]);
-        dp[i][2] = max(dp[i-1][2] , input[i] + dp[i-1][1]);
-        dp[i][3] = max(dp[i-1][3] , input[i] - i + dp[i-1][2]);
+        dp[i][1] = max(dp[i-1][1], input[i] + i + dp[i-1][0]);
+        dp[i][2] = max(dp[i-1][2], input[i] + dp[i-1][1]);
+        dp[i][3] = max(dp[i-1][3], input[i] - i + dp[i-1][2]);
     }
     print2d(dp);
-
-    cout<<dp[n][3]<<endl;
-
-
-
+    cout << dp[n][3] << endl;
 }
-
-
-/* logic ends */
 
 signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
+
     #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
+        freopen("Error.txt", "w", stderr);
     #endif
+    
+    // Start measuring time
+    auto start = std::chrono::high_resolution_clock::now();
+
     int t;
-    cin>>t;
+    cin >> t;
     // t = 1;
     while(t--){
         solve();
     }
-return 0;
-}
+    
+    // End measuring time
+    auto end = std::chrono::high_resolution_clock::now();
+    
+    // Calculate the duration
+    std::chrono::duration<double> elapsed = end - start;
+    cout << "Time taken: " << elapsed.count() << " seconds" << endl;
 
+    return 0;
+}
