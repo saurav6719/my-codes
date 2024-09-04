@@ -68,23 +68,62 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int a,b; // let say a = 7 b = 52 
-    cin>>a>>b;
-    // assuming b > a
-    int ans = INT_MAX;
-    for(int i = a; i<=b; i++){
-        int xx = i - a; //  a tak add krne kaa 
-        int bb = b / i;
-        int nextmultiple_of_i ;
-        if(b % i != 0){
-            nextmultiple_of_i = i * (bb+1);
-        }
-        else nextmultiple_of_i = b * bb;
-        int yy = nextmultiple_of_i - b;
-
-        ans = min(ans, xx+yy);
+    int n ;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
+
+    vector<int> dp(n);
+    dp[n-1] = 1;
+    map<int,int> mp;
+    mp[input[n-1]] = 1;
+
+    for(int i = n-2; i>=0; i--){
+        int ele = input[i];
+        if(mp.count(ele+1)){
+            dp[i] = mp[ele+1] + 1;
+        }
+        else dp[i] = 1;
+        if(mp.count(ele)){
+            mp[ele] = max(mp[ele] , dp[i]);
+            debug(ele);
+            debug(mp[ele]);
+        }
+        else {
+            mp[ele] = dp[i];
+            debug(ele);
+            debug(mp[ele]);
+        }
+    }
+
+    int ans = 1;
+    int curridx = -1;
+    for(int i = 0; i<n; i++){
+        if(dp[i] >= ans){
+            ans = dp[i];
+            curridx = i;
+        }   
+    }
+    debug(ans);
+
+    print(dp);
+
     cout<<ans<<endl;
+    cout<<curridx+1<<" ";
+    int currval = input[curridx];
+    debug(currval);
+    for(int i = curridx+1; i<n; i++){
+        if(input[i] == currval+1){
+            cout<<i+1<<" ";
+            currval++;
+        }
+    }
+
+    cout<<endl;
+
+
 }
 /* logic ends */
 
