@@ -68,23 +68,47 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int a,b; // let say a = 7 b = 52 
-    cin>>a>>b;
-    // assuming b > a
-    int ans = INT_MAX;
-    for(int i = a; i<=b; i++){
-        int xx = i - a; //  a tak add krne kaa 
-        int bb = b / i;
-        int nextmultiple_of_i ;
-        if(b % i != 0){
-            nextmultiple_of_i = i * (bb+1);
-        }
-        else nextmultiple_of_i = b * bb;
-        int yy = nextmultiple_of_i - b;
-
-        ans = min(ans, xx+yy);
+    int n,k;
+    cin>>n>>k;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
-    cout<<ans<<endl;
+
+    vector<vector<int> > dp(n+1, vector<int> (k+1, 1e16));
+    // memset(dp, INT_MAX, sizeof dp);
+
+    for(int i = 0; i<=k; i++){
+        dp[0][i] = 0;
+    }
+
+
+    // dp[i][j] = min sum till starting ke i elements pe j operation kr chuke hai 
+
+
+    for(int i = 1; i<=n; i++){
+        for(int j = 0; j<=k; j++){
+            int mini = INT_MAX;
+            for(int c  = 0; c<= j; c++){
+                if(i-1-c < 0) continue;
+                mini = min(mini , input[i-1-c]);
+                int xx = mini * (c+1);
+                if(i-1-c < 0) continue;
+                xx += dp[i-1-c][j - c];
+                dp[i][j] = min(dp[i][j] , xx);
+            }
+        }
+    }
+
+    int asn = 1e16;
+
+    for(int i = 0; i<=k; i++){
+        asn = min(asn, dp[n][i]);
+    }
+
+    cout<<asn<<endl;
+
+
 }
 /* logic ends */
 
@@ -95,8 +119,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
