@@ -68,47 +68,40 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-    }
-
-    vector<vector<int> > dp(n+1, vector<int> (k+1, 1e16));
-    // memset(dp, INT_MAX, sizeof dp);
-
-    for(int i = 0; i<=k; i++){
-        dp[0][i] = 0;
-    }
-
-
-    // dp[i][j] = min sum till starting ke i elements pe j operation kr chuke hai 
-
-
-    for(int i = 1; i<=n; i++){
-        for(int j = 0; j<=k; j++){
-            int mini = INT_MAX;
-            for(int c  = 0; c<= j; c++){
-                if(i-1-c < 0) continue;
-                mini = min(mini , input[i-1-c]);
-                int xx = mini * (c+1);
-                if(i-1-c < 0) continue;
-                xx += dp[i-1-c][j - c];
-                dp[i][j] = min(dp[i][j] , xx);
+    vector<vector<int> >input;
+    input.push_back({1,2});
+    input.push_back({1,2,3,4,5});
+    input.push_back({1,2,3,4,5,6});
+    input.push_back({2});
+    input.push_back({3,4,5,6});
+    input.push_back({4});
+    input.push_back({5,6});
+    int ans = 0;
+    for(int i = 0; i<= 127; i++){
+        vector<int> arr(7, 0);
+        for(int j = 0; j<7; j++){
+            if(i & (1<<(j))){
+                for(auto ele : input[j]){
+                    arr[ele]++;
+                }
             }
+        }
+        int mini = INT_MAX;
+        int maxi = INT_MIN;
+        for(int j = 1;j<=6; j++){
+            maxi = max(maxi , arr[j]);
+            mini = min(mini , arr[j]);
+        }
+
+        ans = max(ans , maxi - mini);
+        if(maxi - mini == 3){
+            cout<<i<<endl;
+            // print(arr);
+            // break;
         }
     }
 
-    int asn = 1e16;
-
-    for(int i = 0; i<=k; i++){
-        asn = min(asn, dp[n][i]);
-    }
-
-    cout<<asn<<endl;
-
-
+    cout<<ans<<endl;
 }
 /* logic ends */
 
