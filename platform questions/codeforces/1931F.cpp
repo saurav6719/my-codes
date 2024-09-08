@@ -67,111 +67,76 @@
 using namespace std;
 
 /* write core logic here */
+bool dfs(int node, vector<int> &visited, vector<vector<int> > &graph, int par, vector<int> &parent){
+    // debug(node);
+    visited[node] = 1;
+    parent[node] = par;
+
+    for(auto neigh : graph[node]){
+        if(visited[neigh] == 1){
+            return true;
+        }
+        if(visited[neigh] == 0){
+            bool xx = dfs(neigh, visited, graph, node, parent);
+            if(xx) return true;
+        }
+    }
+    visited[node] = 2;
+    return false;
+}
 void solve(){
     int n;
-    cin>>n;
-    vector<int> input(n);
-    int maxi = INT_MIN;
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-        maxi = max(maxi , input[i]);
-    }
+    int k;
+    cin>>n>>k;
+    vector<vector<int> > graph(n+5, vector<int>());
+    map<int,set<int> > mp;
 
-    vector<int> newv(n);
-    bool done = false;
-    for(int i = 0; i<n; i++){
-        if(input[i] == maxi and done ){
-            newv[i] = maxi;
-            done = true;
+    for(int i = 0; i<k; i++){
+        vector<int> v;
+
+        bool first = false;
+        for(int j = 0; j<n; j++){
+            int ele;
+            cin>>ele;
+            if(!first){
+                first = true;
+                continue;
+            }
+            v.push_back(ele);
+            // debug(ele);
+            
         }
-        else{
-            newv[i] = input[i];
-        }
-    }
+        print(v);
 
-    int currodd = 1;
-    int curreven = 2;
+        if(v.empty())continue;
 
-    for(int i = 0; i<n; i++){
-        if(input[i] % 2 != maxi % 2){
-            input[i]++;
-            currodd += 2;
-        }
-    }
+        for(int l = 0; l<v.size() - 1; l++){
+            int u = v[l];
+            int vv = v[l+1];
 
-    debug(currodd);
-
-    for(int i = 0; i<n; i++){
-        int diff = maxi - input[i];
-        debug(diff);
-        int daysreq = diff /2;
-        curreven += (daysreq * 2);
-    }
-
-    int lasteven = curreven - 2;
-    debug(lasteven);
-
-    while(currodd + 2 < lasteven){
-        currodd += 4;
-        lasteven -= 2;
-    }
-
-
-    
-
-    int ans1 = max(currodd-2, lasteven);
-
-
-
-
-
-    int currodd2 = 3;
-    int curreven2 = 2;
-    int newmaxi = maxi+1;
-
-    for(int i =0; i<n; i++){
-        if(newv[i] == maxi){
-            newv[i] = newmaxi;
-            break;
+            if(mp[u].count(vv)) continue;
+            graph[u].push_back(vv);
+            mp[u].insert(vv);
         }
     }
 
-    for(int i = 0; i<n; i++){
-        if(newv[i] % 2 != newmaxi % 2){
-            newv[i]++;
-            currodd2 += 2;
+    print2d(graph);
+
+
+    vector<int > visited(n+5, 0);
+    vector<int> parent(n+5, -1);
+
+    for(int i = 1; i<=n; i++){
+        if(visited[i] == 0){
+            bool xx = dfs(i, visited, graph, 0, parent);
+            if(xx){
+                cout<<"NO"<<endl;
+                return;
+            }
         }
     }
 
-    // debug(currodd);
-
-    for(int i = 0; i<n; i++){
-        int diff = newmaxi - newv[i];
-        // debug(diff);
-        int daysreq = diff / 2;
-        curreven2 += (daysreq * 2);
-    }
-
-    int lasteven2 = curreven2 - 2;
-    // debug(lasteven);
-
-    debug(lasteven2);
-
-    while(currodd2 + 2 < lasteven2){
-        debug(currodd2);
-        debug(lasteven2);
-        currodd2 += 4;
-        lasteven2 -= 2;
-    }
-
-    int ans2 = max(currodd2-2, lasteven2);
-    debug(ans1);
-    debug(ans2);
-
-    cout<<min(ans1, ans2)<<endl;
-
-
-
+    cout<<"YES"<<endl;
 
 }
 /* logic ends */

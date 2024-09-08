@@ -68,111 +68,33 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    int maxi = INT_MIN;
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-        maxi = max(maxi , input[i]);
-    }
+    string str;
+    cin>>str;
 
-    vector<int> newv(n);
-    bool done = false;
-    for(int i = 0; i<n; i++){
-        if(input[i] == maxi and done ){
-            newv[i] = maxi;
-            done = true;
-        }
-        else{
-            newv[i] = input[i];
-        }
-    }
-
-    int currodd = 1;
-    int curreven = 2;
-
-    for(int i = 0; i<n; i++){
-        if(input[i] % 2 != maxi % 2){
-            input[i]++;
-            currodd += 2;
+    int n = str.size();
+    for(int len = n/2; len>=1; len--){
+        int i = 0;
+        int j = i + len;
+        bool found = false;
+        int last_incorrect = -1;
+        while(j<n){
+            if(str[i] == str[j] or str[i] == '?' or str[j] == '?'){
+                i++;
+                j++;
+            }
+            else{
+                last_incorrect = i; 
+                i++;
+                j++;
+            }
+            int currlen = i - last_incorrect - 1;
+            if(currlen >= len){
+                cout<<len*2<<endl;
+                return;
+            }
         }
     }
-
-    debug(currodd);
-
-    for(int i = 0; i<n; i++){
-        int diff = maxi - input[i];
-        debug(diff);
-        int daysreq = diff /2;
-        curreven += (daysreq * 2);
-    }
-
-    int lasteven = curreven - 2;
-    debug(lasteven);
-
-    while(currodd + 2 < lasteven){
-        currodd += 4;
-        lasteven -= 2;
-    }
-
-
-    
-
-    int ans1 = max(currodd-2, lasteven);
-
-
-
-
-
-    int currodd2 = 3;
-    int curreven2 = 2;
-    int newmaxi = maxi+1;
-
-    for(int i =0; i<n; i++){
-        if(newv[i] == maxi){
-            newv[i] = newmaxi;
-            break;
-        }
-    }
-
-    for(int i = 0; i<n; i++){
-        if(newv[i] % 2 != newmaxi % 2){
-            newv[i]++;
-            currodd2 += 2;
-        }
-    }
-
-    // debug(currodd);
-
-    for(int i = 0; i<n; i++){
-        int diff = newmaxi - newv[i];
-        // debug(diff);
-        int daysreq = diff / 2;
-        curreven2 += (daysreq * 2);
-    }
-
-    int lasteven2 = curreven2 - 2;
-    // debug(lasteven);
-
-    debug(lasteven2);
-
-    while(currodd2 + 2 < lasteven2){
-        debug(currodd2);
-        debug(lasteven2);
-        currodd2 += 4;
-        lasteven2 -= 2;
-    }
-
-    int ans2 = max(currodd2-2, lasteven2);
-    debug(ans1);
-    debug(ans2);
-
-    cout<<min(ans1, ans2)<<endl;
-
-
-
-
+    cout<<0<<endl;
 }
 /* logic ends */
 

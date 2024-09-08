@@ -67,6 +67,7 @@
 using namespace std;
 
 /* write core logic here */
+
 void solve(){
     int n;
     cin>>n;
@@ -111,15 +112,37 @@ void solve(){
     int lasteven = curreven - 2;
     debug(lasteven);
 
-    while(currodd + 2 < lasteven){
-        currodd += 4;
+
+    int lastodd = currodd - 2;
+
+    int lasteven_copy = lasteven;
+    int lastodd_copy = lastodd;
+    debug(lastodd);
+    int diff = lasteven - lastodd;
+
+    bool notasn1 = false;
+
+    if(diff < -1){
+        notasn1 = true;
+    }
+
+    int times = diff / 6;
+
+    lastodd += (times * 4);
+    lasteven -= (times * 2);
+
+    if(lasteven - lastodd == 5){
+        lastodd += 4;
         lasteven -= 2;
     }
 
 
     
 
-    int ans1 = max(currodd-2, lasteven);
+    int ans1 = max(lastodd, lasteven);
+    if(notasn1) {
+        ans1 = max(lasteven_copy, lastodd_copy);
+    }
 
 
 
@@ -155,18 +178,40 @@ void solve(){
     int lasteven2 = curreven2 - 2;
     // debug(lasteven);
 
-    debug(lasteven2);
+    debug(lasteven2);   
+    bool notasn2 = false;
 
-    while(currodd2 + 2 < lasteven2){
-        debug(currodd2);
-        debug(lasteven2);
-        currodd2 += 4;
+    int lastodd2 = currodd2 - 2;
+
+    int lasteven_copy2 = lasteven2;
+    int lastodd_copy2 = lastodd2;
+
+
+    int diff2 = lasteven2 - lastodd2;
+
+    if(diff2 < -1){
+        notasn2 = true;
+    }
+
+    int times2 = diff2 / 6;
+
+    lastodd2 += (times2 * 4);
+    lasteven2 -= (times2 * 2);
+
+    if(lasteven2 - lastodd2 == 5){
+        lastodd2 += 4;
         lasteven2 -= 2;
     }
 
-    int ans2 = max(currodd2-2, lasteven2);
+    
+
+    int ans2 = max(lastodd2, lasteven2);
     debug(ans1);
     debug(ans2);
+ 
+    if(notasn2) {
+        ans2 = max(lasteven2, lastodd2);
+    }
 
     cout<<min(ans1, ans2)<<endl;
 
