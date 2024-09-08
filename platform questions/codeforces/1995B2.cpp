@@ -16,13 +16,6 @@
 /* includes and all */
 
 #include<bits/stdc++.h>
-
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
- 
-using namespace __gnu_pbds;
-
-
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -73,88 +66,106 @@ using namespace __gnu_pbds;
 #define pp pair<int,int>
 using namespace std;
 
-template <class T> 
-using oset = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-
-
-
 /* write core logic here */
+
+void solvee(){
+    int n,m;
+    cin>>n>>m;
+    vector<int> petals(n);
+    for(int i = 0; i<n; i++){
+        cin>>petals[i];
+    }
+
+    vector<int> quantity(n);
+    for(int i = 0; i<n; i++){
+        cin>>quantity[i];
+    }
+
+    cout<<n<<"-"<<m<<":";
+    for(int i = 0; i<n; i++){
+        cout<<petals[i]<<"-";
+    }
+    cout<<":";
+    for(int i = 0; i<n; i++){
+        cout<<quantity[i]<<"-";
+    }
+    cout<<endl;
+}
+
+int f(int coins , int petal1, int petal2, int quantity1, int quantity2 ){
+    debug(coins);
+    if(((petal1 * quantity1) + (petal2 * quantity2)) <= coins){
+        return (petal1 * quantity1) + (petal2 * quantity2);
+    }
+
+    int smalltaken = min(quantity1, (coins / petal1));
+    debug(smalltaken);
+    int remainingcoin = coins - (smalltaken * petal1);
+
+    int bigtaken = min(quantity2 , (remainingcoin / petal2));
+
+    remainingcoin -= (bigtaken * petal2);
+    debug(remainingcoin);
+    debug(bigtaken);
+
+    int ans = (smalltaken*petal1) + (bigtaken *petal2);
+    if(remainingcoin > 0){
+        int smallcanconvert = min(smalltaken , remainingcoin);
+        int bigcanbecome = quantity2 - bigtaken;
+        ans += min(smallcanconvert, bigcanbecome);
+    }
+    return ans;
+
+}
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> a(n);
+    int n,m;
+    cin>>n>>m;
+    vector<int> petals(n);
     for(int i = 0; i<n; i++){
-        cin>>a[i];
+        cin>>petals[i];
     }
 
-    vector<int> b(n);
+    vector<int> quantity(n);
     for(int i = 0; i<n; i++){
-        cin>>b[i];
+        cin>>quantity[i];
     }
 
-    map<int,int> mp1;
-    map<int,int> mp2;
-
-    for(auto ele : a){
-        mp1[ele]++;
-    }
-
-    for(auto ele : b){
-        mp2[ele]++;
-    }
-
-    for(auto ele : mp1){
-        if(ele.second != mp2[ele.first]){
-            cout<<"NO"<<endl;
-            return;
-        }
-    }
-
-    map<int,set<int> > mpa;
+    vector<pp> flowers;
     for(int i = 0; i<n; i++){
-        mpa[a[i]].insert(i);
+        flowers.push_back({petals[i] , quantity[i]});
     }
 
-    map<int,set<int> > mpb;
-    for(int i = 0; i<n; i++){
-        mpb[b[i]].insert(i);
-    }
-
-    oset<int>st;
-
+    sort(flowers.begin(), flowers.end());
 
     int ans = 0;
 
-    for(int i = 0; i<n; i++){
-        int ele = a[i];
-        
-        int index = *(mpb[ele].begin());
-        debug(index);
-        st.insert(index);
-
-        mpb[ele].erase(mpb[ele].begin());
-        int diff = index - i;
-        debug(diff);
-        int xx =  (st.order_of_key(index));
-        debug(xx);
-        
-        int greater = st.size()-1 - xx;
-        debug(greater);
-        diff += greater;
-        ans += diff;
-
+    for(int i = 0; i<n-1; i++){
+        int total = (flowers[i].first * flowers[i].second);
+        if(total <= m){
+            ans = max(ans , total);
+        }
+        else{
+            int cantake = m / flowers[i].first;
+            int petalstake = cantake * (flowers[i].first);
+            ans = max(ans, petalstake);
+        }
+        if(flowers[i].first == flowers[i+1].first - 1){
+            ans = max(ans, f(m, flowers[i].first, flowers[i+1].first, flowers[i].second, flowers[i+1].second));
+            // ans = max(ans, f(m, flowers[i+1].first, flowers[i].first, flowers[i+1].second, flowers[i].second));
+        }
     }
 
-    debug(ans);
-    if(ans & 1){
-        cout<<"NO"<<endl;
+    int lastnum = (flowers[n-1].first * flowers[n-1].second);
+    if(lastnum <= m){
+        ans = max(ans, lastnum);
     }
-    else cout<<"YES"<<endl;
+    else{
+        int cantake = (m / flowers[n-1].first);
+        int petalstake = (cantake * (flowers[n-1].first));
+        ans = max(ans, petalstake);
+    }
 
-    
-
-
-
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -167,7 +178,7 @@ signed main(){
     int t;
     cin>>t;
     //t = 1;
-    while(t--){
+    for(int i = 1; i<=t; i++){
         solve();
     }
 return 0;

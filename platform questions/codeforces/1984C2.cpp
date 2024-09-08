@@ -16,13 +16,6 @@
 /* includes and all */
 
 #include<bits/stdc++.h>
-
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
- 
-using namespace __gnu_pbds;
-
-
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -67,92 +60,97 @@ using namespace __gnu_pbds;
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+#define mod 998244353
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
-template <class T> 
-using oset = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
+const int MOD = 998244353;
 
+// Function to calculate power in modular arithmetic
+long long power(long long x, long long y) {
+    long long res = 1;
+    x = x % MOD;
+    while (y > 0) {
+        if (y & 1)
+            res = (res * x) % MOD;
+        y = y >> 1; // y = y/2
+        x = (x * x) % MOD;
+    }
+    return res;
+}
 
-/* write core logic here */
+// Function to calculate factorial in modular arithmetic
+long long factorial(int n) {
+    long long res = 1;
+    for (int i = 2; i <= n; ++i)
+        res = (res * i) % MOD;
+    return res;
+}
+
+// Function to calculate nCr in modular arithmetic
+long long nCr(int n, int r) {
+    if (r == 0 || r == n)
+        return 1;
+    long long numerator = factorial(n);
+    long long denominator = (factorial(r) * factorial(n - r)) % MOD;
+    return (numerator * power(denominator, MOD - 2)) % MOD;
+}
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> a(n);
+    int n;cin>>n;
+    vector<int> input(n);
     for(int i = 0; i<n; i++){
-        cin>>a[i];
+        cin>>input[i];
     }
 
-    vector<int> b(n);
+    vector<int> prf(n+5, 0);
+    prf[0] = input[0];
+
+    for(int i = 1; i<n; i++){
+        prf[i] = input[i]+ prf[i-1];
+    }
+    int mini = INT_MAX;
+
+    int mindx = -1;
+
     for(int i = 0; i<n; i++){
-        cin>>b[i];
-    }
-
-    map<int,int> mp1;
-    map<int,int> mp2;
-
-    for(auto ele : a){
-        mp1[ele]++;
-    }
-
-    for(auto ele : b){
-        mp2[ele]++;
-    }
-
-    for(auto ele : mp1){
-        if(ele.second != mp2[ele.first]){
-            cout<<"NO"<<endl;
-            return;
+        if(prf[i] < mini){
+            mini = prf[i];
+            mindx = i;
         }
     }
 
-    map<int,set<int> > mpa;
-    for(int i = 0; i<n; i++){
-        mpa[a[i]].insert(i);
+
+    if(mini >= 0){
+        cout<< power(2, n)<<endl;
+        return;
     }
-
-    map<int,set<int> > mpb;
-    for(int i = 0; i<n; i++){
-        mpb[b[i]].insert(i);
-    }
-
-    oset<int>st;
-
 
     int ans = 0;
+    for(int i = 0; i<mindx; i++){
+        ans += input[i];
+    }
+
+    int ways = 0;
+
+    int mincnt = 0;
 
     for(int i = 0; i<n; i++){
-        int ele = a[i];
-        
-        int index = *(mpb[ele].begin());
-        debug(index);
-        st.insert(index);
-
-        mpb[ele].erase(mpb[ele].begin());
-        int diff = index - i;
-        debug(diff);
-        int xx =  (st.order_of_key(index));
-        debug(xx);
-        
-        int greater = st.size()-1 - xx;
-        debug(greater);
-        diff += greater;
-        ans += diff;
+        if(prf[i] == mini){
+            int x = i - mincnt;
+            int y = n - i - 1;
+            ways += power(2, x+y);
+            ways %= mod;
+            debug(x);
+            debug(y);
+        }
+        if(prf[i] < 0) mincnt++;
 
     }
 
-    debug(ans);
-    if(ans & 1){
-        cout<<"NO"<<endl;
-    }
-    else cout<<"YES"<<endl;
-
-    
-
+    cout<<ways<<endl;
 
 
 }
