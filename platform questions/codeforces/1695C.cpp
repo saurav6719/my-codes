@@ -68,48 +68,62 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,c;
-    cin>>n>>c;
-
-
-    vector<vector<int> > dp(n+5, vector<int> (2));
-
-    dp[0][0] = 0;
-    dp[0][1] = 0;
-
-    cout<<0<<" ";
-    vector<int> a(n+5);
-    for(int i= 1; i<n; i++){
-        cin>>a[i];
-    }
-
-    vector<int> b(n+5);
-    for(int i = 1; i<n; i++){
-        cin>>b[i];
-    }
-
-    print(b);
-
-    for(int i = 1; i<n; i++){
-        dp[i][0] = a[i] + min(dp[i-1][0] , dp[i-1][1]);
-        dp[i][1] = min(b[i] + dp[i-1][0] +  c , b[i] + dp[i-1][1]);
-
-        if(i==1) dp[i][1] = b[i] + dp[i-1][0] + c;
-
-        if(i==1){
-            debug(b[i]);
-            debug(dp[i-1][0]);
-            debug(b[i] + dp[i-1][0] +  c);
-            debug(b[i] + dp[i-1][1]);
+    int n,m;
+    cin>>n>>m;
+    vector<vector<int>> grid(n, vector<int> (m));
+    for(int i=0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            cin>>grid[i][j];
         }
-        debug(i);
-        debug(dp[i][0]);
-        debug(dp[i][1]);
-
-        cout<<min(dp[i][0] , dp[i][1])<<" ";
     }
 
-    cout<<endl;
+
+    if((n+m - 1) & 1){
+        cout<<"NO"<<endl;
+        return;
+    }
+
+    vector<vector<pp> > dp(n, vector<pp> (m, {INT_MAX, INT_MIN}));
+
+    dp[0][0] = {grid[0][0], grid[0][0]};
+
+    for(int j = 1; j<m; j++){
+        dp[0][j].first = dp[0][j-1].first + grid[0][j];
+        dp[0][j].second = dp[0][j-1].second + grid[0][j];
+    }
+
+    for(int j = 1; j<n; j++){
+        dp[j][0].first = dp[j-1][0].first + grid[j][0];
+        dp[j][0].second = dp[j-1][0].second + grid[j][0];
+    }
+
+    for(int i = 1; i<n; i++){
+        for(int j = 1; j<m; j++){
+            dp[i][j].first = min(dp[i-1][j].first + grid[i][j] , dp[i][j-1].first + grid[i][j]);
+            dp[i][j].second = max(dp[i-1][j].second + grid[i][j] , dp[i][j-1].second + grid[i][j]);
+        }
+    }
+
+    // for(int i = 0; i<n; i++){
+    //     for(int j = 0; j<m; j++){
+    //         cout<<dp[i][j].first<<" ";
+    //     }
+    //     cout<<endl;
+    // }
+
+    // for(int i = 0; i<n; i++){
+    //     for(int j = 0; j<m; j++){
+    //         cout<<dp[i][j].second<<" ";
+    //     }
+    //     cout<<endl;
+    // }
+
+
+    int mini = dp[n-1][m-1].first;
+    int maxi = dp[n-1][m-1].second;
+
+    if(mini <=0 and maxi >= 0 ) cout<<"YES"<<endl;
+    else cout<<"NO"<<endl;
 }
 /* logic ends */
 
@@ -120,8 +134,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
