@@ -76,9 +76,7 @@ class Transaction{
     set<string> banksname;
     map<string ,map<int , int> > timestampbalance;
     map<string, int> userscurrentbalance;
-    // set<int> 
     
-
     void initialise(vector<string> names, vector<int> startbalance, vector<vector<string> > banks){
         int n = names.size();
         for(int i = 0; i<n; i++){
