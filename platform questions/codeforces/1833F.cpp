@@ -67,122 +67,80 @@
 using namespace std;
 
 /* write core logic here */
-vector<int>  vectordivide2(vector<int> &v){
-    vector<int> ans;
-    int currrem = 0;
-    for(int i = 0; i<v.size(); i++){
-        int ele = v[i];
-        ele += (currrem*10);
-        ans.push_back(ele/2);
-        
-        currrem = ele % 2;
+vector<int> st;
+void buildTree(vector<int> &arr, int i, int lo, int hi){
+    if(lo==hi){
+        st[i] = arr[lo];
+        return;
     }
-
-
-    vector<int> newans;
-    int lo = 0;
-    while(ans[lo] == 0)lo++;
-    for(int i = lo ; i<ans.size(); i++){
-        newans.push_back(ans[i]);
-    }
-
-    ans = newans;
-
-    return ans;
+    int mid = lo + (hi-lo)/2;
+    buildTree(arr,2*i+1,lo,mid);
+    buildTree(arr,2*i+2,mid+1,hi);
+    st[i] =(st[2*i+1]%mod * st[2*i+2]%mod) %mod;
 }
-
-vector<int> sub(vector<int> a, vector<int> b){
-    int n = a.size();
-    int m = b.size();
-
-    reverse(b.begin(), b.end());
-    while(b.size() < a.size()){
-        b.push_back(0);
-    }
-    reverse(b.begin(), b.end());
-
-    // print(a);
-    // print(b);
-
-    n = a.size();
-
-    vector<int> ans;
-    int carry =0;
-    for(int i = n-1; i>=0; i--){
-        int up = a[i];
-        int down = b[i];
-        if(carry){
-            if(a[i] == 0){
-                up = 9;
-                carry = 1;
-            }   
-            else{
-                up--;
-                carry = 0;
-            }
-        }
-
-        if(down <= up){
-            ans.push_back(up - down);
-            continue;
-        }
-        else{
-            up += 10;
-            ans.push_back(up-down);
-            carry = 1;
-        }
-    }
-
-    reverse(ans.begin(), ans.end());
-    vector<int> newans;
-    int lo = 0;
-    while(ans[lo] == 0)lo++;
-    for(int i = lo ; i<ans.size(); i++){
-        newans.push_back(ans[i]);
-    }
-
-    ans = newans;
-
-    return ans;
-}
-
-int f(int a, vector<int> &b){
-    if(b.size() == 1){
-        int xx = pow(a, b.back());
-        return xx;
-    }
-
-    vector<int> firsthalf = vectordivide2(b);
-    vector<int> secondhalf = sub(b, firsthalf);
-
-
-    return ((f(a,firsthalf) % 1337) * (f(a,secondhalf) % 1337) % 1337);
-}
-
-int superPow(int a, vector<int>& b) {
-    return f(a,b);
+int getSum(int i, int lo, int hi, int l, int r){ // we are finding max in l to r
+    // out of range 
+    if(l>hi or r<lo) return 1;
+    //subset
+    if(lo>=l and hi <=r) return st[i];
+    int mid = lo + (hi-lo)/2;
+    int left = getSum(2*i+1,lo,mid,l,r);
+    int right = getSum(2*i+2,mid+1,hi,l,r);
+    return (left%mod * right%mod)%mod;
 }
 
 void solve(){
+    int n;
+    int m;
+    cin>>n>>m;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
+
+    sort(input.begin(), input.end());
+    map<int,int> mp;
+    for(int i = 0; i<n; i++){
+        mp[input[i]]++;
+    }
+
+    vector<int> values;
+    vector<int> freq;
+
+    for(auto ele : mp){
+        values.push_back(ele.first);
+        freq.push_back(ele.second);
+    }
+
+    print(values);
+    print(freq);
+
+    n = freq.size();
+
+    st.resize(4*n);
+    buildTree(freq,0,0,n-1);
+
+    print(st);
+
+    int ans = 0;
+
+    for(int i = 0; i<n; i++){
+        if(i+m-1 < n){
+            if(values[i+m-1] == values[i] + m-1){
+                debug(input[i]);
+                debug(input[i+m-1]);
+                debug(i);
+                debug(i+m-1);
+                debug(getSum(0,0,n-1,i, i+m-1));
+                ans += getSum(0,0,n-1,i, i+m-1);
+                ans %= mod;
+            }
+        }
+    }
+
+    cout<<ans<<endl;
 
 
-    vector<int> b = {1,0};
-    int a = 2;
-
-    vector<int> firsthalf = vectordivide2(b);
-    print(firsthalf);
-    debug(firsthalf.size());
-
-    vector<int> secondhalf = sub(b, firsthalf);
-
-    print(firsthalf);
-    debug(firsthalf.size());
-
-    print(secondhalf);
-
-
-    vector<int> c = {5};
-    cout<<f(a,firsthalf);
 }
 /* logic ends */
 
@@ -193,8 +151,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }

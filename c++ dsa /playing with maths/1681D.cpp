@@ -67,122 +67,30 @@
 using namespace std;
 
 /* write core logic here */
-vector<int>  vectordivide2(vector<int> &v){
-    vector<int> ans;
-    int currrem = 0;
-    for(int i = 0; i<v.size(); i++){
-        int ele = v[i];
-        ele += (currrem*10);
-        ans.push_back(ele/2);
-        
-        currrem = ele % 2;
+map<int,int> dp;
+int f(int n, int x){
+    string str = to_string(x);
+    if(str.size() == n) return dp[x] = 0;
+    if(dp.count(x)) return dp[x];
+    int ans = 100;
+    for(auto ele : str){
+        if(ele == '1' or ele=='0')continue;
+        ans = min(ans, 1+f(n,x*(int) (ele - '0')));
     }
 
+    return dp[x] = ans;
 
-    vector<int> newans;
-    int lo = 0;
-    while(ans[lo] == 0)lo++;
-    for(int i = lo ; i<ans.size(); i++){
-        newans.push_back(ans[i]);
-    }
-
-    ans = newans;
-
-    return ans;
 }
-
-vector<int> sub(vector<int> a, vector<int> b){
-    int n = a.size();
-    int m = b.size();
-
-    reverse(b.begin(), b.end());
-    while(b.size() < a.size()){
-        b.push_back(0);
-    }
-    reverse(b.begin(), b.end());
-
-    // print(a);
-    // print(b);
-
-    n = a.size();
-
-    vector<int> ans;
-    int carry =0;
-    for(int i = n-1; i>=0; i--){
-        int up = a[i];
-        int down = b[i];
-        if(carry){
-            if(a[i] == 0){
-                up = 9;
-                carry = 1;
-            }   
-            else{
-                up--;
-                carry = 0;
-            }
-        }
-
-        if(down <= up){
-            ans.push_back(up - down);
-            continue;
-        }
-        else{
-            up += 10;
-            ans.push_back(up-down);
-            carry = 1;
-        }
-    }
-
-    reverse(ans.begin(), ans.end());
-    vector<int> newans;
-    int lo = 0;
-    while(ans[lo] == 0)lo++;
-    for(int i = lo ; i<ans.size(); i++){
-        newans.push_back(ans[i]);
-    }
-
-    ans = newans;
-
-    return ans;
-}
-
-int f(int a, vector<int> &b){
-    if(b.size() == 1){
-        int xx = pow(a, b.back());
-        return xx;
-    }
-
-    vector<int> firsthalf = vectordivide2(b);
-    vector<int> secondhalf = sub(b, firsthalf);
-
-
-    return ((f(a,firsthalf) % 1337) * (f(a,secondhalf) % 1337) % 1337);
-}
-
-int superPow(int a, vector<int>& b) {
-    return f(a,b);
-}
-
 void solve(){
+    int n,x;
+    cin>>n>>x;
+    int ans = -1;
 
+    int xx = f(n,x);
+    if(xx == 100) xx = -1;
+    
+    cout<<xx<<endl;
 
-    vector<int> b = {1,0};
-    int a = 2;
-
-    vector<int> firsthalf = vectordivide2(b);
-    print(firsthalf);
-    debug(firsthalf.size());
-
-    vector<int> secondhalf = sub(b, firsthalf);
-
-    print(firsthalf);
-    debug(firsthalf.size());
-
-    print(secondhalf);
-
-
-    vector<int> c = {5};
-    cout<<f(a,firsthalf);
 }
 /* logic ends */
 
