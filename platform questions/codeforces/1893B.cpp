@@ -60,80 +60,81 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 11
+#define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-void enq(stack<pp> &front, stack<pp> &back, int value){
-    if(back.empty()){
-        back.push({value, value % mod});
-        return;
+void solve(){
+    int n;int m;
+    cin>>n>>m;
+    vector<int> a(n);
+
+    for(int i = 0; i<n; i++){
+        cin>>a[i];
     }
 
-    int currmod;
-    currmod = back.top().second;
-    back.push({value, (value%mod * currmod%mod)%mod});
-}
+    vector<int> b(m);
 
-void deq(stack<pp> &front, stack<pp> &back) {
-    if (front.empty()) {
-        int currmod = 1;
-        while (!back.empty()) {
-            auto ele = back.top();
-            back.pop();
-            // Recalculate product mod while pushing into the front stack
-            front.push({ele.first, ((currmod % mod) *( ele.first%mod)) %mod});
-            currmod = (currmod % mod) *( ele.first%mod) %mod;
+    for(int i = 0; i<m; i++){
+        cin>>b[i];
+    }
+
+    set<int> st;
+    for(auto ele : a){
+        st.insert(ele);
+    }
+
+    map<int,vector<int> > mp;
+
+    for(int i = 0; i<n; i++){
+        mp[a[i]].push_back(i);
+    }
+
+    map<int,vector<int> > mp2;
+
+    for(int i = 0; i<n; i++){
+        mp2[i].push_back(a[i]);
+    }
+
+
+
+    for(int i= 0; i<m; i++){
+        int ele = b[i];
+        debug(ele);
+
+        auto it = st.lower_bound(ele);
+        
+        if(it == st.end()){
+            //at begining
+            debug(ele);
+            st.insert(ele);
+            mp2[0].push_back(ele);
+            
+            mp[ele].push_back(0);
+        }
+        else{
+            int justupper = *it;
+            debug(justupper);
+            int lastposition = mp[justupper].back();
+            debug(lastposition);
+            mp[ele].push_back(lastposition) ;
+            mp2[lastposition].push_back(ele);
+            st.insert(ele);
         }
     }
-    front.pop();  // Remove the front element
-}
 
-int getans(stack<pp> &front, stack<pp> &back){
-    if(front.empty()){
-        return back.top().second;
-    }
-    if(back.empty()){
-        return front.top().second;
-    }
-    else{
-        return (front.top().second%mod * back.top().second%mod)%mod;
-    }
-}
-
-void solve(){
-    int n;
-    cin>>n;
-    int k;cin>>k; // size of window
-    vector<int> arr(n);
-    for(int i = 0; i<n; i++){
-        cin>>arr[i];
+    for(auto ele : mp2){
+        vector<int> &v = ele.second;
+        sort(v.begin(), v.end(), greater<int> ());
+        for(auto ele2 : v){
+            cout<<ele2<<" ";
+        }
     }
 
-    stack<pp> front;
-    stack<pp> back;
-
-    vector<int> ans;
-    int currans = 1;
-    for(int i = 0; i<k; i++){ // first window
-        enq(front, back, arr[i]);
-    }
-
-
-
-    ans.push_back(getans(front,back));
-    for(int i = k; i<n; i++){
-        deq(front,back);
-        enq(front,back,arr[i]);
-        ans.push_back(getans(front, back));
-    }
-
-    for(auto ele : ans){
-        cout<<ele<<" ";
-    }
+    cout<<endl;
 
 
 }
