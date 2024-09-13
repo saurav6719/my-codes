@@ -67,55 +67,8 @@
 using namespace std;
 
 /* write core logic here */
-
-
 void solve(){
-    int n;
-    int m;
-    cin>>n>>m;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-    }
-
-    sort(input.begin(), input.end());
-    map<int,int> mp;
-    for(int i = 0; i<n; i++){
-        mp[input[i]]++;
-    }
-
-    vector<int> values;
-    vector<int> freq;
-
-    for(auto ele : mp){
-        values.push_back(ele.first);
-        freq.push_back(ele.second);
-    }
-
     
-    n = freq.size();
-
-    
-
-    int ans = 0;
-
-    for(int i = 0; i<n; i++){
-        if(i+m-1 < n){
-            if(values[i+m-1] == values[i] + m-1){
-                debug(input[i]);
-                debug(input[i+m-1]);
-                debug(i);
-                debug(i+m-1);
-                debug(getSum(0,0,n-1,i, i+m-1));
-                ans += getSum(0,0,n-1,i, i+m-1);
-                ans %= mod;
-            }
-        }
-    }
-
-    cout<<ans<<endl;
-
-
 }
 /* logic ends */
 
@@ -133,4 +86,4 @@ signed main(){
     }
 return 0;
 }
- 
+
