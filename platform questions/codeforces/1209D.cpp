@@ -67,112 +67,75 @@
 using namespace std;
 
 /* write core logic here */
-void solvee(){
-    int n,m;
-    cin>>n>>m;
-    vector<string> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-    }
 
-    for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            cout<<input[i][j];
-        }
-        cout<<"-";
+
+
+int find(vector<int> &parent, int x){
+    if(parent[x] == x) return x;
+    return parent[x] = find(parent,parent[x]);
+}
+void Union(vector<int> &parent,vector<int> &size, int a, int b){
+    a = find(parent,a);
+    b = find(parent,b);
+    if(a==b) return;
+    if(size[a] >= size[b]){
+        size[a]+= size[b];
+        parent[b] = a;
     }
-    cout<<endl;
+    else{
+        size[b]+= size[a];
+        parent[a] = b;
+    }
 }
 void solve(){
-    int n,m;
-    cin>>n>>m;
-    vector<string> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    // n = max(n, k);
+    vector<set<int> > graph(k+5, set<int> ())  ;
+    set<int> mp;
+    vector<pp> v(k+1);
+    for(int i = 1; i<=k; i++){
+        int x,y;
+        cin>>x>>y;
+        v[i] = {x,y};
+        mp.insert(x);
+        mp.insert(y);
     }
 
-    int nmax , kmax, amax, rmax, emax;
-    nmax = INT_MIN;
-    kmax = 0;
-    amax = INT_MIN;
-    rmax = INT_MIN;
-    emax = INT_MIN;
+    vector<int> parent(n+1);
+    vector<int> size(n+1,1);
+    for(int i = 0; i<=n ; i++){
+        parent[i] = i;
+    }
 
-    vector<char> v;
+    for(int i = 1; i<=k; i++){
+        int x = v[i].first;
+        int y = v[i].second;
+        Union(parent, size, x, y);
+    }
 
-    set<char> st;
+    print(parent);
 
-    v.push_back('n');
-    v.push_back('a');
-    v.push_back('r');
+    int ans = 0;
+    set<int> st;
+    int khush =0;
 
-    v.push_back('e');
-
-    v.push_back('k');
-
-    st.insert('n');
-    st.insert('a');
-    st.insert('r');
-
-    st.insert('e');
-
-    st.insert('k');
-
-    vector<int> currmax(5, INT_MIN);
-
-    currmax[4] = 0;
-
-
-    for(int i = 0; i<n; i++){
-        vector<int> newdp = currmax;
-        string str = input[i];
-        debug(i);
-        for(int j = 0; j<5; j++){
-
-            if(i==0 and j>0) continue;
-            //j se shuru 
-            int curr = j;
-            int currans = j>0 ? currmax[j-1] : max(0ll, currmax[4]);
-
-            debug(curr);
-            debug(currans);
-
-            for(int k =0; k<m; k++){
-                if(str[k] == v[curr % 5]){
-                    debug(str[k]);
-                    curr++;
-                    curr%=5;
-                    if(str[k] == 'k') currans+=5;
-                    debug(currans);
-                    continue;
-                }
-                if(st.count(str[k])) currans--;
-            }
-            if(i== n-1){
-                currans -= curr;
-            }
-            debug(curr);
-            debug(currans);
-            if(curr == 0){
-                debug(currans);
-                debug(currmax[4]);
-                newdp[4] = max(newdp[4] , currans);
-                debug(currmax[4]);
-                debug(newdp[4]);
-               
-            }
-            else{
-                newdp[curr-1] = max(newdp[curr-1] , currans);
-                debug(curr);
-                debug(currmax[curr-1]);
-                debug(newdp[curr-1]);
-            }
+    for(int i = 1; i<=n; i++){
+        if(mp.count(i) == 0) continue;
+        int parenti = find(parent, i);
+        if(st.count(parenti)) continue;
+        if(st.count(parenti) == 0) {
+            khush += size[parenti] - 1;
         }
-        currmax = newdp;
+        st.insert(parenti);
     }
+    ans = k - khush;
+    cout<<ans<<endl;
 
-    sort(currmax. begin(), currmax.end());
-    cout<<currmax[4]<<endl;
+    
+
 }
 /* logic ends */
 
@@ -183,11 +146,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
-    for(int i = 1; i<=t;  i++){
-        if(i==14915) solvee();
-        else solve();
+    // cin>>t;
+    t = 1;
+    while(t--){
+        solve();
     }
 return 0;
 }

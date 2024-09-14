@@ -16,6 +16,8 @@
 /* includes and all */
 
 #include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -66,113 +68,106 @@
 #define pp pair<int,int>
 using namespace std;
 
+using namespace __gnu_pbds;
+template <typename T>
+using ordered_multiset = tree<
+    T,                        // Use just 'T' (int in this case) for values
+    null_type,                // No mapped type, because we want set-like behavior
+    less_equal<T>,                  // Less-than comparator for sorting
+    rb_tree_tag,              // Use a red-black tree for ordering
+    tree_order_statistics_node_update // Enables order statistics
+>;
+
+template <typename T>
+using ordered_set = tree<
+    T,                        // Use 'T' for value type (int, double, etc.)
+    null_type,                // No mapped type, because we want set-like behavior
+    less<T>,                  // Less-than comparator for sorting
+    rb_tree_tag,              // Use a red-black tree to maintain the order
+    tree_order_statistics_node_update // Enables order statistics
+>;
+
 /* write core logic here */
-void solvee(){
-    int n,m;
-    cin>>n>>m;
-    vector<string> input(n);
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    ordered_multiset<int>  oset;
     for(int i = 0; i<n; i++){
-        cin>>input[i];
+        int x;
+        cin>>x;
+        input[i] = x;
+        oset.insert(x);
     }
 
-    for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            cout<<input[i][j];
+    map<int,int> mp;
+    for(int i= 0; i<n; i++){
+        mp[input[i]]++;
+    }
+
+    printmap(mp);
+
+    vector<int> sum(n+5,0);
+
+    sum[0] = 0;
+    sum[1] = 0;
+    for(int i = 2; i<=n; i++){
+        sum[i] = sum[i-1]+mp[i-1]*(i-1);
+    }
+
+    map<int,int> extrafreq;
+    ordered_set<int> extra;
+    for(auto ele : mp){
+        if(ele.second > 1){
+            extrafreq.insert({ele.first, ele.second - 1});
+            extra.insert(ele.first);
         }
-        cout<<"-";
+    }
+
+    vector<int> dp(n+5, 0);
+
+
+
+    vector<int> ans(n+1, -1);
+    ans[0] = mp[0];
+    dp[0] = 0;
+
+    debug(mp[5]);
+
+    for(int i = 1; i<=n; i++){
+        int currans =0;
+        currans += mp[i];
+        currans += dp[i-1];
+        if(mp[i-1] > 0){
+            debug(i);
+            dp[i] = dp[i-1];
+        }
+        else{
+            int chote = extra.order_of_key(i-1);
+            debug(i);
+            debug(chote);
+            if(chote == 0) break;
+            else{
+                int xx = *extra.find_by_order(chote- 1);
+                debug(xx);
+                extrafreq[xx]--;
+                if(extrafreq[xx] == 0){ 
+                    extra.erase(xx);
+                }
+                currans += i-1 -xx;
+                dp[i] = dp[i-1] + i-1 -xx;
+            }
+        }
+
+        ans[i] = currans;
+
+
+    }
+    print(dp);
+    for(int i = 0; i<=n; i++){
+        cout<<ans[i]<<" ";
     }
     cout<<endl;
-}
-void solve(){
-    int n,m;
-    cin>>n>>m;
-    vector<string> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-    }
-
-    int nmax , kmax, amax, rmax, emax;
-    nmax = INT_MIN;
-    kmax = 0;
-    amax = INT_MIN;
-    rmax = INT_MIN;
-    emax = INT_MIN;
-
-    vector<char> v;
-
-    set<char> st;
-
-    v.push_back('n');
-    v.push_back('a');
-    v.push_back('r');
-
-    v.push_back('e');
-
-    v.push_back('k');
-
-    st.insert('n');
-    st.insert('a');
-    st.insert('r');
-
-    st.insert('e');
-
-    st.insert('k');
-
-    vector<int> currmax(5, INT_MIN);
-
-    currmax[4] = 0;
-
-
-    for(int i = 0; i<n; i++){
-        vector<int> newdp = currmax;
-        string str = input[i];
-        debug(i);
-        for(int j = 0; j<5; j++){
-
-            if(i==0 and j>0) continue;
-            //j se shuru 
-            int curr = j;
-            int currans = j>0 ? currmax[j-1] : max(0ll, currmax[4]);
-
-            debug(curr);
-            debug(currans);
-
-            for(int k =0; k<m; k++){
-                if(str[k] == v[curr % 5]){
-                    debug(str[k]);
-                    curr++;
-                    curr%=5;
-                    if(str[k] == 'k') currans+=5;
-                    debug(currans);
-                    continue;
-                }
-                if(st.count(str[k])) currans--;
-            }
-            if(i== n-1){
-                currans -= curr;
-            }
-            debug(curr);
-            debug(currans);
-            if(curr == 0){
-                debug(currans);
-                debug(currmax[4]);
-                newdp[4] = max(newdp[4] , currans);
-                debug(currmax[4]);
-                debug(newdp[4]);
-               
-            }
-            else{
-                newdp[curr-1] = max(newdp[curr-1] , currans);
-                debug(curr);
-                debug(currmax[curr-1]);
-                debug(newdp[curr-1]);
-            }
-        }
-        currmax = newdp;
-    }
-
-    sort(currmax. begin(), currmax.end());
-    cout<<currmax[4]<<endl;
 }
 /* logic ends */
 
@@ -185,9 +180,8 @@ signed main(){
     int t;
     cin>>t;
     //t = 1;
-    for(int i = 1; i<=t;  i++){
-        if(i==14915) solvee();
-        else solve();
+    while(t--){
+        solve();
     }
 return 0;
 }
