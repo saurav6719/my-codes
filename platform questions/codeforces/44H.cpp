@@ -67,49 +67,87 @@
 using namespace std;
 
 /* write core logic here */
+int dp[55][10][2];  
 
-vector<vector<int> > dp;
-int ans = 1e9;
-    void f(vector<string> &words, string &target, int start, int cnt){
+int f(int i, int last, bool apna, string &str, int n){
+    //base case {}
+
+    debug(i);
+    debug(last);
+    debug(apna);
+
+    if(i== n){
+        if(apna) return 0;
+        return 1;
+    }   
+
+    if(dp[i][last][apna] != -1) return dp[i][last][apna];
+
+    int sum = str[i] - '0';
+    debug(sum);
+    sum += last;
+
+    debug(sum);
+
+    bool newapna = true;
+    if(apna == false) newapna = false;
+    int sum_copy = sum;
+
+    debug(sum);
+    debug(sum % 2);
+    debug((sum & 1));
+    int xx = sum%2;
+    debug(xx);
+    if(xx != 0){
+        // cout<<"gaya"<<endl;
+        debug(sum);
+        debug(sum % 2);
+        debug((sum & 1));
+        debug(sum);
         
-        if(start == target.size()) {
-            ans = min(ans, cnt);
-            return;
-        }
+        // cout<<sum<<"is "<<"odd"<<endl;
+        int xx = sum/2;
+        if(xx == str[i]- '0' and apna == true) newapna = true;
+        else newapna = false; 
 
-        for(int i = start; i<target.size(); i++){
-            int length = i-start+1;
-            string prf = target.substr(start , length);
-            print(prf);
-            for(int j = 0; j<words.size(); j++){
-                if(words[j].size() < length) continue;
-                bool cantake = true;
-                for(int k = 0; k<length; k++){
-                    if(words[j][k] != prf[k]) {
-                        cantake = false;
-                        break;
-                    }
-                }
-                if(cantake) {
-                    debug(j);
-                    (f(words, target , i+1, cnt+1));
-                }
-            }
-        }
+        
+        int aa =  f(i+1, xx , newapna, str, n) ;
+
+        int yy = sum/2+1;
+        if(yy == str[i]- '0' and apna == true) newapna = true;
+        else newapna = false; 
+
+        int bb = f(i+1, yy , newapna, str, n) ;
+
+        return dp[i][last][apna] = aa + bb;
     }
-    int minValidStrings(vector<string>& words, string target) {
-        vector<int> visited(words.size(), 0);
-        f(words, target , 0, 0);
-        if(ans == 1e9) return -1;
-        return ans;
+    else{
+        int xx = sum/2;
+        if(xx == str[i]- '0' and apna == true) newapna = true;
+        else newapna = false;
+        int aa =  f(i+1, xx , newapna, str, n) ;
+        return dp[i][last][apna] = aa;
     }
-void solve(){
-
-    vector<string> words = {"cbb","ddacebad","badadccbddacdedebddadcacabcaceedcecbddccedeca","adac","babceccd","acdecaec","dee","caeca"};
-    string target = "dbabbaabcacdabbedaeebecbe";
-
-    cout<<minValidStrings(words, target);
     
+}
+void solve(){
+    string str;
+    cin>>str;
+
+    memset(dp, -1,sizeof dp);
+    int ans = 0;
+
+    int first = str[0] - '0';
+    for(int i = 0; i<=9; i++){
+        if(i==first){
+            ans += f(1,i,true,str,str.size());
+        }
+        else{
+            ans += f(1,i,false,str,str.size());
+        }
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 

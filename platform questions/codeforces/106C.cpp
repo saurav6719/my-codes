@@ -67,49 +67,39 @@
 using namespace std;
 
 /* write core logic here */
+int n, m;
+int a[16], b[16], c[16], d[16];
+int dp[16][1024];
 
-vector<vector<int> > dp;
-int ans = 1e9;
-    void f(vector<string> &words, string &target, int start, int cnt){
-        
-        if(start == target.size()) {
-            ans = min(ans, cnt);
-            return;
-        }
+int rec(int pos, int left){
+    if(pos > m) return 0;
+    if(left <= 0) return 0;
 
-        for(int i = start; i<target.size(); i++){
-            int length = i-start+1;
-            string prf = target.substr(start , length);
-            print(prf);
-            for(int j = 0; j<words.size(); j++){
-                if(words[j].size() < length) continue;
-                bool cantake = true;
-                for(int k = 0; k<length; k++){
-                    if(words[j][k] != prf[k]) {
-                        cantake = false;
-                        break;
-                    }
-                }
-                if(cantake) {
-                    debug(j);
-                    (f(words, target , i+1, cnt+1));
-                }
-            }
-        }
-    }
-    int minValidStrings(vector<string>& words, string target) {
-        vector<int> visited(words.size(), 0);
-        f(words, target , 0, 0);
-        if(ans == 1e9) return -1;
-        return ans;
-    }
+    if(dp[pos][left] != -1) return dp[pos][left];
+    int res = 0;
+
+    for(int C=0, B=0, D=0; C<=left && B<=a[pos]; C+=c[pos], B+=b[pos], D+=d[pos])
+		res = max(res, rec(pos+1, left-C) +D);
+
+    return dp[pos][left] = res;
+
+}
 void solve(){
 
-    vector<string> words = {"cbb","ddacebad","badadccbddacdedebddadcacabcaceedcecbddccedeca","adac","babceccd","acdecaec","dee","caeca"};
-    string target = "dbabbaabcacdabbedaeebecbe";
+    cin>>n>>m>>c[0]>>d[0];
 
-    cout<<minValidStrings(words, target);
-    
+    a[0] = 0;
+    b[0] = 0;
+
+    memset(dp, -1, sizeof dp);
+
+    for(int i = 1; i<=m; i++){
+        cin>>a[i]>>b[i]>>c[i]>>d[i];
+    }
+
+    cout<<rec(0,n);
+
+
 }
 /* logic ends */
 
@@ -120,7 +110,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
+    // cin>t;
     t = 1;
     while(t--){
         solve();
