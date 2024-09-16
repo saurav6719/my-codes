@@ -1,130 +1,103 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
+/*input
+2 4 1 1
+ 
 */
-
-/* includes and all */
-
-#include<bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
-
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#endif
-#define endl "\n"
-#define int long long int
-#define mod 1000000007
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int>
+#include <bits/stdc++.h>
+#include <stdlib.h>
 using namespace std;
-
-/* write core logic here */
-
-vector<vector<int> > dp;
-int ans = 1e9;
-    void f(vector<string> &words, string &target, int start, int cnt){
-        
-        if(start == target.size()) {
-            ans = min(ans, cnt);
-            return;
-        }
-
-        for(int i = start; i<target.size(); i++){
-            int length = i-start+1;
-            string prf = target.substr(start , length);
-            print(prf);
-            for(int j = 0; j<words.size(); j++){
-                if(words[j].size() < length) continue;
-                bool cantake = true;
-                for(int k = 0; k<length; k++){
-                    if(words[j][k] != prf[k]) {
-                        cantake = false;
-                        break;
-                    }
-                }
-                if(cantake) {
-                    debug(j);
-                    (f(words, target , i+1, cnt+1));
-                }
-            }
-        }
+long long mod=1e9+7;
+ 
+typedef long long unsigned llu;
+typedef long long int lld;
+typedef long ld;
+#define rep(i,a,n) for(long long int i = (a); i <= (n); ++i)
+#define repI(i,a,n) for(int i = (a); i <= (n); ++i)
+#define repD(i,a,n) for(long long int i = (a); i >= (n); --i)
+#define repDI(i,a,n) for(int i = (a); i >= (n); --i)
+ 
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define sc(a) scanf("%lld",&a)
+#define sc2(a,b) scanf("%lld%lld",&a,&b)
+#define sc3(a,b,c) scanf("%lld%lld%lld",&a,&b,&c)
+#define scd(a) scanf("%d",&a)
+#define scd2(a,b) scanf("%d%d",&a,&b)
+#define scd3(a,b,c) scanf("%d%d%d",&a,&b,&c)
+#define scf(a) scanf("%lf",&a)
+#define scf2(a,b) scanf("%lf%lf",&a,&b)
+#define scf3(a,b,c) scanf("%lf%lf%lf",&a,&b,&c)
+#define prL(a) printf("%lld\n",a)
+#define prS(a) printf("%lld ",a)
+#define prdL(a) printf("%d\n",a)
+#define prdS(a) printf("%d ",a)
+#define prfL(a) printf("%lf\n",a)
+#define prfS(a) printf("%lf ",a)
+#define popcount __builtin_popcountll
+#define swap(a,b,t) t=a;a=b;b=t
+typedef pair<lld,lld> PA;
+ 
+#define lim 1000003
+#define lim2 3003
+inline lld sqr(lld x) { return x * x; }
+// map<pair<PA,PA>,lld> M;
+// map<lld,lld> M,Mn;
+// map<lld,lld>::iterator it;
+// std::ios::sync_with_stdio(false);
+// string S[lim],T[lim],Q[lim];
+ 
+// multiset<lld> S;
+// set<PA> H,V;
+// string S[lim];
+vector<lld> V[lim],Vf[lim],X,Y;
+// vector<PA> IN[lim];
+ 
+// bool dp[1002][12][12];
+// priority_queue<PA> Q;
+lld A[lim],P[lim],dp[103][103][13][13];
+// lld A[lim];
+// PA A[lim];
+// char S[lim];
+// double dp[1<<18];
+// lld countV=0,op;
+lld one,zero,ansR,numNodes;
+ 
+ 
+ 
+int main(){
+    // std::ios::sync_with_stdio(false);
+    lld T,i,j,h,l,r,k,s,a,b,c,d,n,m,w,x,y,v,z,t,p,q,curr,prev,sum,ans,pos,val,countA,secondMin,indicator;
+    mod=1e8;
+    lld n1,n2,k1,k2;
+    sc2(n1,n2);sc2(k1,k2);
+    rep(i,0,n1){
+    	rep(j,0,n2){
+    		rep(l,0,k1){
+    			rep(r,0,k2){
+    				if(i+j==0){
+    					dp[i][j][l][r]=1;
+    					continue;
+    				}
+    				if(l==0 && r==0) dp[i][j][l][r]=0;
+    				else if(l==0){
+    						if(j!=0) dp[i][j][l][r]=dp[i][j-1][k1][r-1];
+    						else dp[i][j][l][r]=0;
+    				}
+    				else if(r==0){
+    						if(i!=0) dp[i][j][l][r]=dp[i-1][j][l-1][k2];
+    						else dp[i][j][l][r]=0;
+    				}
+    				else{
+    					if(j!=0) dp[i][j][l][r]=dp[i][j-1][k1][r-1];
+    					else dp[i][j][l][r]=0;
+    					if(i!=0) dp[i][j][l][r]=(dp[i-1][j][l-1][k2]+dp[i][j][l][r])%mod;
+    				}
+    				// printf("dp[%lld][%lld][%lld][%lld]=%lld\n",i,j,l,r,dp[i][j][l][r] );
+    			}
+    		}
+    	}
     }
-    int minValidStrings(vector<string>& words, string target) {
-        vector<int> visited(words.size(), 0);
-        f(words, target , 0, 0);
-        if(ans == 1e9) return -1;
-        return ans;
-    }
-void solve(){
-
-    vector<string> words = {"cbb","ddacebad","badadccbddacdedebddadcacabcaceedcecbddccedeca","adac","babceccd","acdecaec","dee","caeca"};
-    string target = "dbabbaabcacdabbedaeebecbe";
-
-    cout<<minValidStrings(words, target);
-    
+    prL(dp[n1][n2][k1][k2]);
+	return 0;
 }
-/* logic ends */
-
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
-    int t;
-    // cin>>t;
-    t = 1;
-    while(t--){
-        solve();
-    }
-return 0;
-}
-
