@@ -68,7 +68,20 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
+    int n,m;
+    cin>>n>>m;
     
+    if(n<m) {
+        cout<<"NO"<<endl;
+        return;
+    }
+
+    if((n-m) % 2 == 0){
+        cout<<"YES"<<endl;
+        return;
+    }
+
+    cout<<"NO"<<endl;
 }
 /* logic ends */
 
