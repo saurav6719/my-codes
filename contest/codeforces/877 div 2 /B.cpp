@@ -68,7 +68,70 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+
+    cin>>n;
+    vector<int> input(n+1);
+    map<int,int> mp;
+    for(int i = 0; i<n; i++){
+        cin>>input[i+1];
+        mp[input[i+1]] = i+1;
+    }
+
+    if(mp[1] == 1){
+        cout<<mp[2]<<" "<<n<<endl;
+        return;
+    }
+
+    else{
+        if(mp[2] == 1){
+            cout<<mp[1]<<" "<<n<<endl;
+            return;
+        }
+
+        if(mp[1] == n){
+            cout<<mp[2]<<" "<<1<<endl;
+            return;
+        }
+
+        if(mp[2] == n){
+            cout<<mp[1]<<" "<<1<<endl;
+            return;
+        }
+
+        int pos1 = mp[1];
+        int pos2 = mp[2];
+
+        int mini = min(pos1, pos2);
+        int maxi = max(pos1, pos2);
+        
+        if(mp[n] > mini and mp[n] < maxi){
+            cout<<mp[1]<<" "<<mp[1]<<endl;
+            return;
+        }
+
+        int a = mp[1];
+        int b = mp[2];
+        int c = mp[n];
+
+        if(c < a and a < b){
+            cout<<c<<" "<<a<<endl;
+            return;
+        }
+        if(c > b and b > a){
+            cout<<b<<" "<<c<<endl;
+            return;
+        }
+        if(c > a and a > b){
+            cout<<c<<" "<<a<<endl;
+            return;
+        }
+
+        if(c < b and b < a){
+            cout<<b<<" "<<c<<endl;
+            return;
+        }
+    }
 }
 /* logic ends */
 
