@@ -68,59 +68,16 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,d,k;
-    cin>>n>>d>>k;
-    map<int,int> start;
-    map<int, int> end;
-
-    while(k--){
-        int l,r;
-        cin>>l>>r;
-        start[l]++;
-        end[r]++;
-    }
-
-    vector<int> ans;
-    vector<int> zz;
-    int curr = 0;
-    for(int i = 1; i<=d; i++){
-        if(start.count(i))curr++;
-    }
-    debug(curr);
-
-    int take = 1;
-    zz.push_back(take);
-
-
-    ans.push_back(curr);
-
-    for(int i = d+1; i<=n; i++){
-        take++;
-        if(end[i-d] > 0) curr-= end[i-d];
-        if(start[i] > 0) curr+= start[i];
-        ans.push_back(curr);
-        zz.push_back(take);
-    }
-
-    print(ans);
-    int ansmin =-1;
-    int ansmax = -1;
-    int aa = INT_MAX;
-    int bb = INT_MIN;
-    for(int i = 0; i<ans.size(); i++){
-        if(ans[i] < aa){
-            aa = ans[i];
-            ansmax = i;
+    string str;
+    cin>>str;
+    string ans = "";
+    for(int i = 0; i<str.size(); i++){
+        if(str[i] != '.'){
+            ans += str[i];
         }
-        if(ans[i] > bb){
-            bb = ans[i];
-            ansmin = i;
-        }
-    }   
+    }
 
-    cout<<ansmin+1<<" "<<ansmax+1<<endl;
-
-
+    cout<<ans;
 }
 /* logic ends */
 
@@ -131,8 +88,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

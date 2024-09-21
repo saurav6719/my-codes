@@ -68,59 +68,24 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,d,k;
-    cin>>n>>d>>k;
-    map<int,int> start;
-    map<int, int> end;
-
-    while(k--){
-        int l,r;
-        cin>>l>>r;
-        start[l]++;
-        end[r]++;
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
+    if(n==2){
+        cout<<input[1] - input[0]<<endl;
+        return;
+    }
+    int last = input.back();
+    int xx = input[n-2];
+    for(int i = n-3; i>=0; i--){
+        xx -= input[i];
     }
 
-    vector<int> ans;
-    vector<int> zz;
-    int curr = 0;
-    for(int i = 1; i<=d; i++){
-        if(start.count(i))curr++;
-    }
-    debug(curr);
-
-    int take = 1;
-    zz.push_back(take);
-
-
-    ans.push_back(curr);
-
-    for(int i = d+1; i<=n; i++){
-        take++;
-        if(end[i-d] > 0) curr-= end[i-d];
-        if(start[i] > 0) curr+= start[i];
-        ans.push_back(curr);
-        zz.push_back(take);
-    }
-
-    print(ans);
-    int ansmin =-1;
-    int ansmax = -1;
-    int aa = INT_MAX;
-    int bb = INT_MIN;
-    for(int i = 0; i<ans.size(); i++){
-        if(ans[i] < aa){
-            aa = ans[i];
-            ansmax = i;
-        }
-        if(ans[i] > bb){
-            bb = ans[i];
-            ansmin = i;
-        }
-    }   
-
-    cout<<ansmin+1<<" "<<ansmax+1<<endl;
-
-
+    cout<<last-xx<<endl;
+    return;
 }
 /* logic ends */
 

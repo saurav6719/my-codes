@@ -68,59 +68,56 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,d,k;
-    cin>>n>>d>>k;
-    map<int,int> start;
-    map<int, int> end;
-
-    while(k--){
-        int l,r;
-        cin>>l>>r;
-        start[l]++;
-        end[r]++;
-    }
-
-    vector<int> ans;
-    vector<int> zz;
-    int curr = 0;
-    for(int i = 1; i<=d; i++){
-        if(start.count(i))curr++;
-    }
-    debug(curr);
-
-    int take = 1;
-    zz.push_back(take);
-
-
-    ans.push_back(curr);
-
-    for(int i = d+1; i<=n; i++){
-        take++;
-        if(end[i-d] > 0) curr-= end[i-d];
-        if(start[i] > 0) curr+= start[i];
-        ans.push_back(curr);
-        zz.push_back(take);
-    }
-
-    print(ans);
-    int ansmin =-1;
-    int ansmax = -1;
-    int aa = INT_MAX;
-    int bb = INT_MIN;
-    for(int i = 0; i<ans.size(); i++){
-        if(ans[i] < aa){
-            aa = ans[i];
-            ansmax = i;
+    int n,q;
+    cin>>n>>q;
+    string str;
+    cin>>str;
+    set<int> curr;
+    for(int i = 0; i+2<n; i++){
+        if(str[i] == 'A' and str[i+1] == 'B' and str[i+2] == 'C'){
+            curr.insert(i);
         }
-        if(ans[i] > bb){
-            bb = ans[i];
-            ansmin = i;
+    }
+
+
+    while(q--){
+        int x;
+        cin>>x;
+        x--;
+        char c;
+        cin >> c;
+
+        if(str[x] == c) {
+            cout<<curr.size()<<endl;
+            continue;
         }
-    }   
+        str[x] = c;
 
-    cout<<ansmin+1<<" "<<ansmax+1<<endl;
+        if(curr.count(x)){
+            curr.erase(x);
+        }
 
+        if(curr.count(x-1)){
+            curr.erase(x-1);
+        }
 
+        if(curr.count(x-2)){
+            curr.erase(x-2);
+        }
+
+        if(x+2 < n and str[x] == 'A' and str[x+1] == 'B' and str[x+2] == 'C'){
+            curr.insert(x);
+        }
+
+        if(x-2 >= 0 and str[x-2] == 'A' and str[x-1] == 'B' and str[x] == 'C'){
+            curr.insert(x-2);
+        }
+        if(x-1 >= 0 and str[x-1] == 'A' and str[x] == 'B' and x+1 < n and str[x+1] == 'C'){
+            curr.insert(x-1);
+        }
+
+        cout<<curr.size()<<endl;
+    }
 }
 /* logic ends */
 
@@ -131,8 +128,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

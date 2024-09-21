@@ -67,59 +67,86 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    int n,d,k;
-    cin>>n>>d>>k;
-    map<int,int> start;
-    map<int, int> end;
 
-    while(k--){
-        int l,r;
-        cin>>l>>r;
-        start[l]++;
-        end[r]++;
-    }
+bool poss(int mid, vector<int> &input_copy){
 
-    vector<int> ans;
-    vector<int> zz;
+    debug(mid);
+    
+    int n = input_copy.size();
+    vector<int> input = input_copy;
+
+    int rangel = input[0];
+    int ranger = input[0] + mid;
+
+    debug(rangel);
+    debug(ranger);
     int curr = 0;
-    for(int i = 1; i<=d; i++){
-        if(start.count(i))curr++;
+    for(int i = 0;i<n; i++){
+        if(input[i] < rangel){
+            curr += rangel-input[i];
+            input[i] = rangel;
+        }
+        else if(input[i] > ranger){
+            curr -= input[i] - ranger;
+            input[i] = ranger;
+        }
     }
+
     debug(curr);
 
-    int take = 1;
-    zz.push_back(take);
+    int req = -curr;
+
+    debug(req);
 
 
-    ans.push_back(curr);
-
-    for(int i = d+1; i<=n; i++){
-        take++;
-        if(end[i-d] > 0) curr-= end[i-d];
-        if(start[i] > 0) curr+= start[i];
-        ans.push_back(curr);
-        zz.push_back(take);
+    if(req == 0) return true;
+    if(req < 0){
+        if(mid >= 1) return true;
+        if(mid == 0 and (abs(req) % n) == 0) return true;
+        return false;
     }
 
-    print(ans);
-    int ansmin =-1;
-    int ansmax = -1;
-    int aa = INT_MAX;
-    int bb = INT_MIN;
-    for(int i = 0; i<ans.size(); i++){
-        if(ans[i] < aa){
-            aa = ans[i];
-            ansmax = i;
+    else{
+        if(mid == 2) print(input);
+        for(int i = 2; i<n; i++){
+            int xx = input[i];
+            if(xx < ranger){
+                debug(xx);
+                req -= min(ranger - xx , req);
+            }
+            if(req == 0) return true;
         }
-        if(ans[i] > bb){
-            bb = ans[i];
-            ansmin = i;
+    }
+
+
+
+    return false;
+}
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
+
+    int lo = 0;
+    int hi = 1e15;
+    int res = -1;
+    while(lo <= hi){
+        int mid = (lo + (hi - lo )/ 2);
+
+        if(poss(mid, input)){
+            res = mid;
+            hi = mid - 1;
         }
-    }   
+        else lo = mid + 1;
+    }
 
-    cout<<ansmin+1<<" "<<ansmax+1<<endl;
+    // debug(poss(4, input));
 
+
+    cout<<res<<endl;
 
 }
 /* logic ends */
