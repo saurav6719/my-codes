@@ -179,14 +179,7 @@ void solve(){
             else if(hashoorse.count(neigh.first) and hashoorse[neigh.first] <= currlen + (hashorse ? (neigh.second/2) : (neigh.second)))continue;
             else if(hashorse or horses.count(neigh.first)){
                 pq.push(xx{neigh.first, currlen + (hashorse ? (neigh.second/2) : (neigh.second)), (hashorse ? (1) : (horses.count(neigh.first) ? 1 : 0))});
-                
-                if(hashoorse.count(neigh.first)){
-                    hashoorse[neigh.first] = min(hashoorse[neigh.first] , currlen + (hashorse ? (neigh.second/2) : (neigh.second)));
-                }
-                else{
-                    hashoorse[neigh.first] = currlen + (hashorse ? (neigh.second/2) : (neigh.second));
-                }
-                
+                hashoorse[neigh.first] = currlen + (hashorse ? (neigh.second/2) : (neigh.second));
             } 
         }
     }
@@ -220,24 +213,12 @@ void solve(){
             if(distfn[neigh.first] > currlen + (hashorse ? (neigh.second/2) : (neigh.second))){
                 distfn[neigh.first] = currlen + (hashorse ? (neigh.second/2) : (neigh.second));
                 pqn.push(xx{neigh.first, currlen + (hashorse ? (neigh.second/2) : (neigh.second)), (hashorse ? (1) : (horses.count(neigh.first) ? 1 : 0))});
-                if(hashorse == 1 or horses.count(neigh.first)){
-                    if(hashoorsen.count(neigh.first)){
-                        hashoorsen[neigh.first] = min(hashoorsen[neigh.first] , distfn[neigh.first]);
-                    }
-                }
             }
 
             else if(hashoorsen.count(neigh.first) and hashoorsen[neigh.first] <= currlen + (hashorse ? (neigh.second/2) : (neigh.second)))continue;
             else if(hashorse or horses.count(neigh.first)){
                 pqn.push(xx{neigh.first, currlen + (hashorse ? (neigh.second/2) : (neigh.second)), (hashorse ? (1) : (horses.count(neigh.first) ? 1 : 0))});
-                
-                if(hashoorsen.count(neigh.first)){
-                    hashoorsen[neigh.first] = min(hashoorsen[neigh.first] , currlen + (hashorse ? (neigh.second/2) : (neigh.second)));
-                }
-                else{
-                    hashoorsen[neigh.first] =  currlen + (hashorse ? (neigh.second/2) : (neigh.second));
-                }
-                
+                hashoorsen[neigh.first] = currlen + (hashorse ? (neigh.second/2) : (neigh.second));
             } 
         }
     }
@@ -290,4 +271,4 @@ signed main(){
     cerr << "Time measured: " << elapsed.count() * 1e-9 << " seconds.\n"; 
     return 0;
 }
-
+ 
