@@ -1,27 +1,41 @@
-import java.net.*;  // For networking
+import java.io.*;      // For input/output handling
+import java.net.*;     // For networking classes like DatagramSocket and InetAddress
 
-public class UDPClient {
-    public static void main(String[] args) {
-        try {
-            // 1. Create a DatagramSocket for sending data
-            DatagramSocket socket = new DatagramSocket();
-            
-            // 2. Prepare the message to be sent
-            byte[] buffer = "Hello, UDP server!".getBytes();  // Convert message to bytes
-            
-            // 3. Specify the server's address and port
-            InetAddress address = InetAddress.getByName("localhost");  // Server is localhost
-            
-            // 4. Create a DatagramPacket with the message, address, and port
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 9876);
-            
-            // 5. Send the packet to the server
-            socket.send(packet);  // Send the data
-            
-            // 6. Close the socket after sending the message
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();  // Handle exceptions
+class UDPServer {
+    public static void main(String args[]) throws Exception {
+        // Creating a DatagramSocket to receive data on port 9876
+        DatagramSocket serverSocket = new DatagramSocket(9876);
+
+        // Arrays to store data being received and sent
+        byte[] receiveData = new byte[1024];
+        byte[] sendData = new byte[1024];
+
+        // Server runs indefinitely to listen for incoming data from clients
+        while (true) {
+            // Create a packet to receive data from the client
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+            // Receive data from the client (this blocks until data is received)
+            serverSocket.receive(receivePacket);
+
+            // Convert the received byte data into a string (this is the client's message)
+            String sentence = new String(receivePacket.getData());
+
+            // Get the IP address and port of the client (to send the response back)
+            InetAddress IPAddress = receivePacket.getAddress();
+            int port = receivePacket.getPort();
+
+            // Convert the received sentence to uppercase
+            String capitalizedSentence = sentence.toUpperCase();
+
+            // Convert the capitalized sentence back into bytes to send back to the client
+            sendData = capitalizedSentence.getBytes();
+
+            // Create a packet to send the response to the client
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+
+            // Send the packet (containing the uppercase sentence) to the client
+            serverSocket.send(sendPacket);
         }
     }
 }
