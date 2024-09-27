@@ -68,7 +68,26 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
+
+    int ans = -1;
+
+    for(int i = 0; i<n; i++){
+        int left = i;
+        int right = n-i-1;
+        debug(left);
+        debug(right);
+        int curr = left/2 + right/2;    
+        ans = max(ans, input[i] + curr);
+
+    }
+
+    cout<<ans+1<<endl;
 }
 /* logic ends */
 

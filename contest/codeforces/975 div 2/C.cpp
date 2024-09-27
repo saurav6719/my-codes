@@ -67,8 +67,67 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
+
+bool poss(int k, int rem, int sum, int req, int n,int mid){
+    debug(mid);
+        debug(req);
+
+    debug(rem);
+    debug(sum);
     
+    if(rem<0){
+        if(req - sum <=k) return true;
+        return false;
+    }
+    else if(rem == 0) return true;
+    else {
+        int chahiye = rem % mid;
+        if(chahiye != 0) chahiye = mid - chahiye;
+        if(chahiye <= k) return true;
+        return false;
+    }
+
+    return false;
+
+
+}
+void solve(){
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    vector<int> input(n);
+
+    int maxi = -5;
+    int sum = 0;
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+        sum += input[i];
+        maxi = max(maxi, input[i]);
+    }
+
+    int losize = 1;
+    int hisize = n;
+    int res = -1;
+    
+    for(int i = n; i>=1; i--) {
+        int mid = i;
+        int req = maxi * mid;
+        int rem = sum - req;
+
+        if(poss(k,rem,sum,req, n, mid)){
+            res = mid;
+            break;
+        }
+        else hisize = mid -1;
+    }
+    debug(res);
+    if(res == -1) res = 1;
+    cout<<res<<endl;
+
+
+
+
 }
 /* logic ends */
 

@@ -68,7 +68,47 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    int q;
+    cin>>q;
+    vector<int> input(n+5);
+    for(int i = 1; i<=n; i++){
+        cin>>input[i];
+    }
+
+    map<int,int> mp;
+
+    for(int i = 1; i<=n; i++){
+        int currele = input[i];
+        int currco = (i-1) * (n-i+1);
+        currco += (n-i);
+        debug(currele);
+        debug(currco);
+        mp[currco]++;
+    }
+
+    for(int i =2; i<=n; i++){
+        int pichla = input[i-1];
+        int now = input[i];
+        int chute = now - pichla -1;
+        debug(chute);
+
+        int chutecon = (i-1) * (n-i+1);
+        debug(chutecon);
+
+        mp[chutecon] += chute;
+    }
+
+    while(q--){
+        int k;
+        cin>>k;
+        cout<<mp[k]<<" ";
+    }
+
+    cout<<endl;
+
+
 }
 /* logic ends */
 
