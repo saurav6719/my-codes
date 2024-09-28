@@ -68,32 +68,144 @@ using namespace std;
 
 /* write core logic here */
 
-void bfs(vector<vector<int> > &graph, int r,int c, vector<vector<int> > &visited){
 
-    // up 
+vector<int> validSequence(string word1, string word2) {
+    map<char,vector<int> > mp;
 
-    if(r-1 >= 0 and visited[r-1][c] == 0 ){
-        visited[r-1][c] = 1;
-        bfs(graph, r-1, c, visited);
+    for(int i = 0; i<word1.size(); i++){
+        mp[word1[i]].push_back(i);
     }
-    // down
-    if(r+1 < r and visited[r+1][c] == 0){
-        visited[r+1][c] = 1;
-        bfs(graph, r+1, c, visited);
+
+    int last = 0;
+    int tochange = -1;
+    for(int i = 1; i<word2.size(); i++){
+        char ch = word2[i];
+        // debug(ch);
+        vector<int> &v = mp[ch];
+        int lb = lower_bound(v.begin(), v.end(), last+1) - v.begin();
+
+        if(lb == v.size()){
+            // nhi hai 
+            tochange = i;
+            break;
+        }
+        else{
+            last = v[lb];
+        }
     }
-    // left
-    if(c-1 >= 0 and visited[r][c-1] == 0){
-        visited[r][c-1] = 1;
-        bfs(graph, r, c-1, visited);
+    debug(tochange);
+    if(tochange != -1){
+        int last2 = -1;
+
+        for(int i = tochange ; i>=0; i--){
+            if(word2[i] != word2[tochange]){
+                tochange = i+1;
+                break;
+            }
+        }
+        debug(tochange);
+
+
+        vector<int> ans;
+        for(int i = 0; i<word2.size(); i++){
+            char ch = word2[i];
+            if(i==tochange){
+                if(word1[ans.back()+1] == word2[tochange])tochange++;
+                ans.push_back(ans.back() + 1);
+                last2 = ans.back();
+            }
+            else{
+                vector<int> &v = mp[ch];
+                int lb = lower_bound(v.begin(), v.end(), last2+1) - v.begin();
+
+                if(lb == v.size()){
+                    return {};
+                }
+                else{
+                    ans.push_back(v[lb]);
+                    last2 = v[lb];
+                }
+            }
+        }
+
+        return ans;
     }
-    // right
-    if(c+1 < c and visited[r][c+1] == 0){
-        visited[r][c+1] = 1;
-        bfs(graph, r, c+1, visited);
+    else{
+        int last2 = -1;
+        
+        vector<int> ans;
+        if(word1[0] == word2[0]){
+
+            int kahabreak = -1;
+            for(int i = 0; i<word2.size(); i++){
+                if(word1[i] == word2[i]){
+                    ans.push_back(i);
+                    last2 = i;
+                }
+                else{
+                    kahabreak = i;
+                    ans.push_back(i);
+                    last2 = i;
+                    break;
+                }
+            }
+
+            // debug(kahabreak);
+
+            if(kahabreak != -1){
+
+                for(int i = kahabreak+1; i<word2.size(); i++){
+                    char ch = word2[i];
+                    vector<int> &v = mp[ch];
+                    int lb = lower_bound(v.begin(), v.end(), last2+1) - v.begin();
+                    // print(ans);
+
+
+                    if(lb == v.size()){
+                        return {};
+                    }
+
+
+                    else{
+                        ans.push_back(v[lb]);
+                        last2 = v[lb];
+                    }
+                }
+            }
+
+            // print(ans);
+        }
+        else{
+            ans.push_back(0);
+            last2 = 0;
+
+            for(int i = 1; i<word2.size(); i++){
+                char ch = word2[i];
+                vector<int> &v = mp[ch];
+                int lb = lower_bound(v.begin(), v.end(), last2+1) - v.begin();
+
+                if(lb == v.size()){
+                    return {};
+                }
+
+                else{
+                    ans.push_back(v[lb]);
+                    last2 = v[lb];
+                }
+            }
+
+        }
+        return ans;
     }
 }
+
+
 void solve(){
-    
+    string a = "effgiihrhhagiie";
+    string b = "ihihh";
+
+    vector<int> ans = validSequence(a,b);
+    print(ans);
 }
 /* logic ends */
 
@@ -104,8 +216,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
