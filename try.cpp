@@ -67,200 +67,38 @@
 using namespace std;
 
 /* write core logic here */
-void generate_test_case(int n = 100000, int m = 100000, int h = 1000, int max_weight = 100) {
-    srand(time(0)); // Initialize random seed
-    
-    vector<pair<pair<int, int>, int>> edges; // To store the edges (u, v, weight)
-    set<pair<int, int>> edge_set; // To avoid duplicate edges
-
-    // Step 1: Ensure the graph is connected (we create a spanning tree first)
-    for (int i = 2; i <= n; ++i) {
-        int u = rand() % (i - 1) + 1; // Randomly connect to a previous node to form a tree
-        int v = i;
-        int w = rand() % max_weight + 1; // Random weight between 1 and max_weight
-        edges.push_back({{u, v}, w});
-        edge_set.insert({min(u, v), max(u, v)}); // To avoid duplicates
-    }
-
-    // Step 2: Add remaining edges to reach exactly m edges
-    while (edges.size() < m) {
-        int u = rand() % n + 1;
-        int v = rand() % n + 1;
-        if (u == v || edge_set.count({min(u, v), max(u, v)})) continue; // Skip self-loops and duplicates
-        int w = rand() % max_weight + 1; // Random weight
-        edges.push_back({{u, v}, w});
-        edge_set.insert({min(u, v), max(u, v)});
-    }
-
-    // Step 3: Generate h special vertices
-    vector<int> special_vertices;
-    while (special_vertices.size() < h) {
-        int vertex = rand() % n + 1;
-        if (find(special_vertices.begin(), special_vertices.end(), vertex) == special_vertices.end()) {
-            special_vertices.push_back(vertex);
-        }
-    }
-
-    // Output the test case
-    cout << n << " " << m << endl; // Number of vertices and edges
-    cout << h << endl; // Number of special vertices
-    for (int v : special_vertices) {
-        cout << v << " ";
-    }
-    cout << endl;
-
-    for (auto &edge : edges) {
-        cout << edge.first.first << " " << edge.first.second << " " << edge.second << endl;
-    }
-
-    
-}
-
-struct xx{
-    int dest;
-    int dist;
-    int horse;
-    bool operator<(const xx& other) const {
-        return dist > other.dist;  // This ensures that the priority_queue behaves like a min-heap
-    }
-};
 void solve(){
-    int n,m,h;
-    cin>>n>>m>>h;
-    set<int>horses;
+    vector<int> v;
+    int x = 2^5;
+    v.push_back(x);
+    v.push_back(v.back() ^ 6);
+    v.push_back(v.back() ^ 5);
+    v.push_back(v.back() ^ 2);
+    v.push_back(v.back() ^ 1);
+    v.push_back(v.back() ^ 7);
+    print(v);
 
-    for(int i = 0 ;i<h; i++){
-        int ele;
-        cin>>ele;
-        horses.insert(ele);
-    }
-
-    vector<vector<pp> > graph(n+5, vector<pp> ());
-    for(int i = 0; i<m; i++){
-        int u,v,w;
-        cin>>u>>v>>w;
-        graph[u].push_back({v,w});
-        graph[v].push_back({u,w});
-    }
-
-    vector<int> distf1(n+5, 1e15);
-
-    priority_queue<xx, vector<xx>> pq;  // Removed std::greater<xx>
-
-    pq.push(xx{1, 0, (horses.count(1) ? 1 : 0)});
-
-    distf1[1] = 0;
-
-    map<int,int> hashoorse;
-
-    if(horses.count(1)){
-        hashoorse[1] = 0;
-    }
-
-    while(!pq.empty()){
-        xx ff = pq.top();
-        pq.pop();
-        int currnode = ff.dest;
-        int currlen = ff.dist;
-        int hashorse = ff.horse;
-
-        if(distf1[currnode] < currlen and hashorse == 0) continue;
-
-        for(auto neigh : graph[currnode]){
-            if(distf1[neigh.first] > currlen + (hashorse ? (neigh.second/2) : (neigh.second))){
-                distf1[neigh.first] = currlen + (hashorse ? (neigh.second/2) : (neigh.second));
-                pq.push(xx{neigh.first, currlen + (hashorse ? (neigh.second/2) : (neigh.second)), (hashorse ? (1) : (horses.count(neigh.first) ? 1 : 0))});
-                if(hashorse == 1 or horses.count(neigh.first)){
-                    if(hashoorse.count(neigh.first)){
-                        hashoorse[neigh.first] = min(hashoorse[neigh.first] , distf1[neigh.first]);
-                    }
-                }
-            }
-            else if(hashoorse.count(neigh.first) and hashoorse[neigh.first] <= currlen + (hashorse ? (neigh.second/2) : (neigh.second)))continue;
-            else if(hashorse or horses.count(neigh.first)){
-                pq.push(xx{neigh.first, currlen + (hashorse ? (neigh.second/2) : (neigh.second)), (hashorse ? (1) : (horses.count(neigh.first) ? 1 : 0))});
-                
-                if(hashoorse.count(neigh.first)){
-                    hashoorse[neigh.first] = min(hashoorse[neigh.first] , currlen + (hashorse ? (neigh.second/2) : (neigh.second)));
-                }
-                else{
-                    hashoorse[neigh.first] = currlen + (hashorse ? (neigh.second/2) : (neigh.second));
-                }
-                
-            } 
-        }
-    }
-
-    print(distf1);
-
-    vector<int> distfn(n+5, 1e15);
-
-    priority_queue<xx, vector<xx>> pqn;  // Removed std::greater<xx>
-
-    pqn.push(xx{n, 0, (horses.count(n) ? 1 : 0)});
-
-    distfn[n] = 0;
-
-    map<int,int> hashoorsen;
-
-    if(horses.count(1)){
-        hashoorsen[n] = 0;
-    }
-
-    while(!pqn.empty()){
-        xx ff = pqn.top();
-        pqn.pop();
-        int currnode = ff.dest;
-        int currlen = ff.dist;
-        int hashorse = ff.horse;
-
-        if(distfn[currnode] < currlen and hashorse == 0) continue;
-
-        for(auto neigh : graph[currnode]){
-            if(distfn[neigh.first] > currlen + (hashorse ? (neigh.second/2) : (neigh.second))){
-                distfn[neigh.first] = currlen + (hashorse ? (neigh.second/2) : (neigh.second));
-                pqn.push(xx{neigh.first, currlen + (hashorse ? (neigh.second/2) : (neigh.second)), (hashorse ? (1) : (horses.count(neigh.first) ? 1 : 0))});
-                if(hashorse == 1 or horses.count(neigh.first)){
-                    if(hashoorsen.count(neigh.first)){
-                        hashoorsen[neigh.first] = min(hashoorsen[neigh.first] , distfn[neigh.first]);
-                    }
-                }
-            }
-
-            else if(hashoorsen.count(neigh.first) and hashoorsen[neigh.first] <= currlen + (hashorse ? (neigh.second/2) : (neigh.second)))continue;
-            else if(hashorse or horses.count(neigh.first)){
-                pqn.push(xx{neigh.first, currlen + (hashorse ? (neigh.second/2) : (neigh.second)), (hashorse ? (1) : (horses.count(neigh.first) ? 1 : 0))});
-                
-                if(hashoorsen.count(neigh.first)){
-                    hashoorsen[neigh.first] = min(hashoorsen[neigh.first] , currlen + (hashorse ? (neigh.second/2) : (neigh.second)));
-                }
-                else{
-                    hashoorsen[neigh.first] =  currlen + (hashorse ? (neigh.second/2) : (neigh.second));
-                }
-                
-            } 
-        }
-    }
-
-    print(distfn);
+    vector<int> w;
+    int y = 5^6;
+    w.push_back(y);
+    w.push_back(w.back() ^ 5);
+    w.push_back(w.back() ^ 2);
+    w.push_back(w.back() ^ 1);
+    w.push_back(w.back() ^ 7);
+    print(w);
 
 
-    int mini = INT_MAX;
+    int a = (5^6) + (5^6^5) + (5^6^5^2) + (5^6^5^2^1) + (5^6^5^2^1^7);
+    debug(a);
 
-    for(int i = 1;i<=n; i++){
-        int x = distf1[i];
-        int y = distfn[i];
+    int b = a ^ 2;
+    debug(b);
 
-        mini = min(mini, max(x,y));
-    }
+    b+= (2^5);
+    debug(b);
 
-    if(mini > 1e9) mini = -1;
-
-    cout<<mini<<endl;
-
-
-
-
+    int c = (2^5) + (2^5^6) + (2^5^6^5) + (2^5^6^5^2) + (2^5^6^5^2^1) + (2^5^6^5^2^1^7);
+    debug(c);
 
 
 
@@ -271,23 +109,17 @@ void solve(){
 /* logic ends */
 
 signed main(){
-    auto begin = std::chrono::high_resolution_clock::now();
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     #ifndef ONLINE_JUDGE
         freopen("Error.txt" , "w" , stderr);
     #endif
-    stringstream input;
-    // generate_test_case();
     int t;
-    cin>>t;
-    // t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
-    auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
-    cerr << "Time measured: " << elapsed.count() * 1e-9 << " seconds.\n"; 
-    return 0;
+return 0;
 }
 
