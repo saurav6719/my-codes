@@ -67,33 +67,102 @@
 using namespace std;
 
 /* write core logic here */
-
-void bfs(vector<vector<int> > &graph, int r,int c, vector<vector<int> > &visited){
-
-    // up 
-
-    if(r-1 >= 0 and visited[r-1][c] == 0 ){
-        visited[r-1][c] = 1;
-        bfs(graph, r-1, c, visited);
-    }
-    // down
-    if(r+1 < r and visited[r+1][c] == 0){
-        visited[r+1][c] = 1;
-        bfs(graph, r+1, c, visited);
-    }
-    // left
-    if(c-1 >= 0 and visited[r][c-1] == 0){
-        visited[r][c-1] = 1;
-        bfs(graph, r, c-1, visited);
-    }
-    // right
-    if(c+1 < c and visited[r][c+1] == 0){
-        visited[r][c+1] = 1;
-        bfs(graph, r, c+1, visited);
-    }
-}
-void solve(){
+int findJustSmallerElement(const vector<int>& arr, int x) {
+    // Find the first element that is not less than x
+    int it = lower_bound(arr.begin(), arr.end(), x) - arr.begin();
     
+
+    if(it != arr.size()-1){
+        if(arr[it+1] == arr[it]) return arr[it+1];
+    }
+    // If iterator points to the first element, no smaller element exists
+    if (it == 0) {
+        return 0; // No smaller element exists
+    }
+
+
+    
+    // Move back to get the just smaller element
+    --it;
+    return arr[it];
+}
+bool comparator(const pair<int, int>& a, const pair<int, int>& b) {
+    return a.first < b.first;  // Sort in ascending order based on the first element
+}
+
+void solve(){
+    int n,m,k;
+    cin>>n>>m>>k;
+
+    vector<int> input(n);
+    int sum = 0;
+    for(int i = 0; i < n; i++){
+        cin>>input[i];
+        sum += input[i];
+    }
+
+    int bachavote = k - sum;
+
+    debug(bachavote);
+
+    vector<pp> inputidx;
+
+    for(int i = 0; i < n; i++){
+        inputidx.push_back({input[i], i});
+    }
+
+    sort(inputidx.begin(), inputidx.end(), comparator);
+
+    for(auto ele : inputidx){
+        cout<<ele.first<<" "<<ele.second<<endl;
+    }
+
+    vector<int> ans(n);
+
+    vector<int> input_copy = input;
+
+    sort(input_copy.begin(), input_copy.end());
+
+    int secondmax = 0;
+    int i = n-1;
+    while(i>=0 and input_copy[i] == input_copy[n-1])i--;
+
+    if(i>=0) secondmax = input_copy[i];
+    debug(secondmax);
+
+
+    int pahuchna = input_copy[n-m];
+    debug(pahuchna);
+
+    for(int i = 0; i<n; i++){
+        int xx = pahuchna - inputidx[i].first;
+        debug(xx);
+        if(xx > bachavote) {
+            ans[inputidx[i].second] = -1;
+            continue;
+        }
+        int bach = bachavote - xx;
+        debug(bach);
+        int toadd = bach / 2+ bach % 2;
+        ans[inputidx[i].second] = xx + toadd;
+
+        if(xx<0) xx=0;
+
+
+        if(xx==0){
+            int zz = findJustSmallerElement(input_copy, inputidx[i].first);
+            debug(zz);
+            int diff = inputidx[i].first - zz;
+            debug(diff);
+            int bach = bachavote - diff;
+            int toadd = bach / 2+ bach % 2;
+            ans[inputidx[i].second] = xx + toadd;
+        }
+    }
+
+    print(ans);
+
+
 }
 /* logic ends */
 
@@ -104,8 +173,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

@@ -67,32 +67,17 @@
 using namespace std;
 
 /* write core logic here */
-
-void bfs(vector<vector<int> > &graph, int r,int c, vector<vector<int> > &visited){
-
-    // up 
-
-    if(r-1 >= 0 and visited[r-1][c] == 0 ){
-        visited[r-1][c] = 1;
-        bfs(graph, r-1, c, visited);
-    }
-    // down
-    if(r+1 < r and visited[r+1][c] == 0){
-        visited[r+1][c] = 1;
-        bfs(graph, r+1, c, visited);
-    }
-    // left
-    if(c-1 >= 0 and visited[r][c-1] == 0){
-        visited[r][c-1] = 1;
-        bfs(graph, r, c-1, visited);
-    }
-    // right
-    if(c+1 < c and visited[r][c+1] == 0){
-        visited[r][c+1] = 1;
-        bfs(graph, r, c+1, visited);
-    }
-}
 void solve(){
+    vector<string> input(12);
+    for(int i = 0; i<12; i++){
+        cin>>input[i];
+    }
+
+    int ans = 0;
+    for(int i = 0; i<12; i++){
+        if(input[i].size() == i+1) ans++;
+    }
+    cout<<ans<<endl;
     
 }
 /* logic ends */
@@ -104,8 +89,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

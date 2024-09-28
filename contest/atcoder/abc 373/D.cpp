@@ -68,32 +68,114 @@ using namespace std;
 
 /* write core logic here */
 
-void bfs(vector<vector<int> > &graph, int r,int c, vector<vector<int> > &visited){
+void topoSortWithWeights(int n, vector<vector<pair<int, int>>>& adj, vector<int> &ans) {
+    vector<int> indegree(n, 0);  // Indegree array and result array
+    queue<int> q;
 
-    // up 
+    // Calculate indegree of each vertex
+    for (int u = 0; u < n; ++u) {
+        for (auto& [v, w] : adj[u]) {
+            indegree[v]++;
+        }
+    }
 
-    if(r-1 >= 0 and visited[r-1][c] == 0 ){
-        visited[r-1][c] = 1;
-        bfs(graph, r-1, c, visited);
+    set<int> st;
+    int start = -1;
+
+    // Initialize vertices with indegree 0 and set their ans to 0
+    for (int i = 0; i < n; ++i) {
+        if (indegree[i] == 0) {
+            debug(i);
+            q.push(i);
+            start = i;
+            ans[i] = 0;  // Assign 0 to vertices with indegree 0
+            break;
+        }
     }
-    // down
-    if(r+1 < r and visited[r+1][c] == 0){
-        visited[r+1][c] = 1;
-        bfs(graph, r+1, c, visited);
+
+    // Perform topological sort and update ans array
+    while (!q.empty()) {
+        int u = q.front();
+        if(st.count(u)) {
+            q.pop();
+            continue;
+        }
+
+        st.insert(u);
+        q.pop();
+
+        for (auto& [v, w] : adj[u]) {
+
+            indegree[v]--;
+            debug(v);
+            // Update ans for vertex v based on the edge weight 
+            ans[v] = ans[u] + w;  // Update with the minimum possible value
+            debug(ans[u]);
+            debug(ans[v]);
+
+            if (indegree[v] == 0) {
+                q.push(v);
+            }
+        }
     }
-    // left
-    if(c-1 >= 0 and visited[r][c-1] == 0){
-        visited[r][c-1] = 1;
-        bfs(graph, r, c-1, visited);
+
+    for(int i = 0; i<n; i++){
+        if(ans[i] == 0 and i!= start){
+            for(auto &[v,w] : adj[i]){
+                if(ans[v] == 0 and v!= start) continue;
+                ans[i] = ans[v]  - w;
+            }
+        }
     }
-    // right
-    if(c+1 < c and visited[r][c+1] == 0){
-        visited[r][c+1] = 1;
-        bfs(graph, r, c+1, visited);
+    
+}
+
+void dfs(vector<vector<pp> > &graph, vector<int> &ans, vector<int> &visited, int node){
+    visited[node] = 1;
+
+    for(auto child : graph[node]){
+        if(visited[child.first] == 0){
+            ans[child.first] = ans[node] + child.second;
+            dfs(graph, ans, visited, child.first);
+        }
     }
+
 }
 void solve(){
+    int n,m;
+    cin>>  n>>m;
+
+    vector<vector<pp> > graph(n+5, vector<pp> ());
+
+
+    for(int i = 1; i<=m; i++){
+        int u,v,w;
+        cin>>u>>v>>w;
+        u--;v--;
+        graph[u].push_back({v,w});
+        graph[v].push_back({u,-w});
+    }
+
+
+
+    vector<int> visited(n+5, 0);
+
+    vector<int> ans(n+5, 0);
+
     
+    // topoSortWithWeights(n, graph,ans);
+
+    for(int i = 0 ; i<n; i++){
+        if(visited[i] ==0 ){
+            dfs(graph, ans, visited, i);
+        }
+    }
+
+    print(ans);
+
+    for(int i = 0; i<n; i++){
+        cout<<ans[i]<<" ";
+    }
 }
 /* logic ends */
 
@@ -104,8 +186,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
