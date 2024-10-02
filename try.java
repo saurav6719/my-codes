@@ -1,41 +1,58 @@
-import java.io.*;      // For input/output handling
-import java.net.*;     // For networking classes like DatagramSocket and InetAddress
+import java.sql.*;  // Import the SQL package for database connectivity
 
-class UDPServer {
-    public static void main(String args[]) throws Exception {
-        // Creating a DatagramSocket to receive data on port 9876
-        DatagramSocket serverSocket = new DatagramSocket(9876);
+public class EmployeeDatabaseHandler {
+    public static void main(String[] args) {
+        // Define database connection details
+        final String dbUrl = "jdbc:mysql://localhost:3306/CompanyDB";
+        final String dbUser = "admin";
+        final String dbPass = "Saurav@3456";
 
-        // Arrays to store data being received and sent
-        byte[] receiveData = new byte[1024];
-        byte[] sendData = new byte[1024];
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+             Statement stmt = conn.createStatement()) {
 
-        // Server runs indefinitely to listen for incoming data from clients
-        while (true) {
-            // Create a packet to receive data from the client
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+            // Step 1: Fetch and display employee details
+            String fetchQuery = "SELECT * FROM staff";
+            ResultSet resultSet = stmt.executeQuery(fetchQuery);
+            System.out.println("Employees in the system:");
 
-            // Receive data from the client (this blocks until data is received)
-            serverSocket.receive(receivePacket);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("staff_id") + " | " +
+                                   resultSet.getString("full_name") + " | " +
+                                   resultSet.getString("job_title") + " | " +
+                                   resultSet.getDouble("monthly_salary") + " | " +
+                                   resultSet.getString("team"));
+            }
 
-            // Convert the received byte data into a string (this is the client's message)
-            String sentence = new String(receivePacket.getData());
+            // Step 2: Update salary for an employee (ID = 2)
+            String updateSalaryQuery = "UPDATE staff SET monthly_salary = monthly_salary * 1.15 WHERE staff_id = 2";
+            int updatedRows = stmt.executeUpdate(updateSalaryQuery);
+            System.out.println(updatedRows + " record(s) updated with new salary.");
 
-            // Get the IP address and port of the client (to send the response back)
-            InetAddress IPAddress = receivePacket.getAddress();
-            int port = receivePacket.getPort();
+            // Step 3: Insert a new employee record
+            String insertEmployeeQuery = "INSERT INTO staff (staff_id, full_name, job_title, monthly_salary, team) " +
+                                         "VALUES (4, 'Michael Brown', 'UX Designer',70000.0, 'Design')";
+            int insertedRows = stmt.executeUpdate(insertEmployeeQuery);
+            System.out.println(insertedRows + " new record(s) inserted into the database.");
 
-            // Convert the received sentence to uppercase
-            String capitalizedSentence = sentence.toUpperCase();
+            // Step 4: Delete an employee record (ID = 4)
+            String deleteEmployeeQuery = "DELETE FROM staff WHERE staff_id = 4";
+            int deletedRows = stmt.executeUpdate(deleteEmployeeQuery);
+            System.out.println(deletedRows + " record(s) deleted.");
 
-            // Convert the capitalized sentence back into bytes to send back to the client
-            sendData = capitalizedSentence.getBytes();
+            // Step 5: Fetch and display updated employee details
+            resultSet = stmt.executeQuery(fetchQuery);
+            System.out.println("\nUpdated list of employees:");
 
-            // Create a packet to send the response to the client
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("staff_id") + " | " +
+                                   resultSet.getString("full_name") + " | " +
+                                   resultSet.getString("job_title") + " | " +
+                                   resultSet.getDouble("monthly_salary") + " | " +
+                                   resultSet.getString("team"));
+            }
 
-            // Send the packet (containing the uppercase sentence) to the client
-            serverSocket.send(sendPacket);
+        } catch (SQLException e) {
+            e.printStackTrace();  // Print error stack trace for debugging
         }
     }
 }

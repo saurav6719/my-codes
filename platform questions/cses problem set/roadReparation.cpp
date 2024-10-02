@@ -67,80 +67,73 @@
 using namespace std;
 
 /* write core logic here */
+
 int find(vector<int> &parent, int x){
-    if(parent[x] == x) return x;
-    return parent[x] = find(parent,parent[x]);
+    return parent[x] == x ? x : find(parent, parent[x]);
 }
 
-void Union(vector<int> &parent,vector<int> &size, int a, int b){
+void Union(vector<int> &parent,vector<int> &rank, int a, int b){
     a = find(parent,a);
     b = find(parent,b);
-    if(a==b) return;
-    if(size[a] >= size[b]){
-        size[a]+= size[b];
+    if(rank[a] >= rank[b]){
+        rank[a]++;
         parent[b] = a;
     }
     else{
-        size[b]+= size[a];
+        rank[b]++;
         parent[a] = b;
     }
 }
 
+struct edges{
+    int u,v,w;
+};
+
 void solve(){
-    int n;
-    cin>>n;
-    int m;
-    cin>>m;
-    vector<map<int,int> > mp(n+1);
+    int n,m;
+    cin>>n>>m;
+
+    vector<edges> edge(m);
+
+    for(int i=0; i<m; i++){
+        cin>>edge[i].u>>edge[i].v>>edge[i].w;
+    }
+
+    sort(edge.begin(), edge.end(), [&](edges a, edges b){
+        return a.w < b.w;
+    });
+
+    int ans = 0;
+
     vector<int> parent(n+1);
-    vector<int> size(n+1,1);
+
+    vector<int> rank(n+1,0);
+
     for(int i = 0; i<=n ; i++){
         parent[i] = i;
     }
-        int cnt=0;
+
     for(int i = 0; i<m; i++){
-        int a,d,k;
-        cin>>a>>d>>k;
-        int currstart = a;
-        int currend  = a + k*d;
-        debug(currend);
-        debug(currstart);
-        int j = currstart;
-        while(j<=currend){
-            if(mp[j].count(d)){
-                int thatend = mp[j][d];
-                mp[j][d] = max(currend, thatend);
-                if(currend > thatend){
-                    j = thatend + d;
-                    Union(parent,size,currend,j);
-                    Union(parent,size,currstart,j); 
-                    Union(parent,size,currend,thatend);
-                    Union(parent,size,currstart,thatend);
-                    continue;
-                }
-                else{
-                    Union(parent,size,currend,j);
-                    Union(parent,size,currstart,j);
-                    break;
-                }
-            }
-            else{
-                mp[j][d] = currend;
-                Union(parent,size,currend,j);
-                Union(parent,size,currstart,j);
-            }
-            j+=d;
+        if(find(parent, edge[i].u) != find(parent, edge[i].v)){
+            Union(parent, rank, edge[i].u, edge[i].v);
+            ans += edge[i].w;
         }
     }
-    print(parent);
-    //now i need to find number of connected components 
-    int ans = 0;
-    for(int i = 1; i<=n; i++){
-        if(parent[i] == i){
-            ans++;
-        }
+
+    int noofconnectedcomponnets = 0;
+
+    for(int i=1; i<=n; i++){
+        if(parent[i] == i) noofconnectedcomponnets++;
     }
+
+    if(noofconnectedcomponnets > 1) cout<<"IMPOSSIBLE"<<endl;
+    else 
+
     cout<<ans<<endl;
+
+    
+
+
 }
 /* logic ends */
 
@@ -151,8 +144,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

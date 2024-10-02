@@ -71,7 +71,7 @@ void solve(){
     int n;
     cin>>n;
     int prev = n;
-    int next = prev + sqrtl(prev);
+    int next = prev + sqrt(prev);
     debug(prev);
     debug(next);
     int xx = (int)(sqrtl(prev));

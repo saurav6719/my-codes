@@ -12,9 +12,9 @@
   
   Happy coding! 
 */
-
+ 
 /* includes and all */
-
+ 
 #include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
@@ -43,7 +43,7 @@
                     } \
                     cout << "map-- ends" << endl; \
                 } while(0)
-
+ 
 #define printpp(v) do { \
                     cout << "vect--" << " = [ "; \
                     for (int i = 0; i < v.size(); i++) { \
@@ -65,85 +65,92 @@
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
-
+ 
 /* write core logic here */
-int find(vector<int> &parent, int x){
-    if(parent[x] == x) return x;
-    return parent[x] = find(parent,parent[x]);
-}
-
-void Union(vector<int> &parent,vector<int> &size, int a, int b){
-    a = find(parent,a);
-    b = find(parent,b);
-    if(a==b) return;
-    if(size[a] >= size[b]){
-        size[a]+= size[b];
-        parent[b] = a;
+vector<int> dp;
+int dfs(int node, vector<vector<int> > &graph, vector<int> &visited,set<int> &cycle, set<int> &newcycle){
+    visited[node] = 1;
+    cycle.insert(node);
+    for(auto child: graph[node]){
+        if(!visited[child]){
+            int xx = dfs(child, graph, visited, cycle, newcycle);
+            if(newcycle.count(node) == 0){
+                return dp[node] = -1;
+            }
+            return dp[node] = xx;
+        }
     }
-    else{
-        size[b]+= size[a];
-        parent[a] = b;
-    }
-}
 
+    int startcyle = node;
+    int endcycle = graph[node][0];
+
+    if(cycle.count(endcycle) == 0) return -1;
+
+
+    vector<int> v;
+    
+    while(startcyle != endcycle){
+        v.push_back(endcycle);
+        newcycle.insert(endcycle);
+        endcycle = graph[endcycle][0];
+    }
+
+    v.push_back(startcyle);
+    newcycle.insert(startcyle);
+
+ 
+    return dp[node] = v.size();
+}
+ 
+int f(int x, vector<int> &dp, vector<vector<int> > &graph){
+    if(dp[x] != -1) return dp[x];
+ 
+    return dp[x] = 1 + f(graph[x][0], dp, graph);
+}
 void solve(){
     int n;
     cin>>n;
-    int m;
-    cin>>m;
-    vector<map<int,int> > mp(n+1);
-    vector<int> parent(n+1);
-    vector<int> size(n+1,1);
-    for(int i = 0; i<=n ; i++){
-        parent[i] = i;
+ 
+    dp.resize(n+1, -1);
+ 
+ 
+ 
+    vector<int> input(n+1);
+    vector<vector<int> > graph(n+5, vector<int>());
+ 
+    for(int i=1; i<=n; i++){
+        cin>>input[i];
+        graph[i].push_back(input[i]);
     }
-        int cnt=0;
-    for(int i = 0; i<m; i++){
-        int a,d,k;
-        cin>>a>>d>>k;
-        int currstart = a;
-        int currend  = a + k*d;
-        debug(currend);
-        debug(currstart);
-        int j = currstart;
-        while(j<=currend){
-            if(mp[j].count(d)){
-                int thatend = mp[j][d];
-                mp[j][d] = max(currend, thatend);
-                if(currend > thatend){
-                    j = thatend + d;
-                    Union(parent,size,currend,j);
-                    Union(parent,size,currstart,j); 
-                    Union(parent,size,currend,thatend);
-                    Union(parent,size,currstart,thatend);
-                    continue;
-                }
-                else{
-                    Union(parent,size,currend,j);
-                    Union(parent,size,currstart,j);
-                    break;
-                }
-            }
-            else{
-                mp[j][d] = currend;
-                Union(parent,size,currend,j);
-                Union(parent,size,currstart,j);
-            }
-            j+=d;
-        }
-    }
-    print(parent);
-    //now i need to find number of connected components 
-    int ans = 0;
+ 
+    vector<int> visited(n+1, 0);
+ 
     for(int i = 1; i<=n; i++){
-        if(parent[i] == i){
-            ans++;
+        if(dp[i] == -1){
+            set<int> cycle;
+            set<int> newcycle;
+            int yy = dfs(i, graph, visited, cycle, newcycle);
         }
     }
-    cout<<ans<<endl;
+ 
+ 
+ 
+    print(dp);
+ 
+    for(int i=1; i<=n; i++){
+        if(dp[i] == -1){
+            int yy = f(i, dp, graph);
+        }
+    }
+ 
+    for(int i=1; i<=n; i++){
+        cout<<dp[i]<<" ";
+    }
+ 
+ 
 }
 /* logic ends */
-
+ 
 signed main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -151,11 +158,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
 return 0;
 }
-
