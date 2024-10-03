@@ -67,32 +67,83 @@
 using namespace std;
 
 /* write core logic here */
-char* customSubstring(int m, char* str) {
+struct node{
+    int kitnatimefuel;
+    int remainingfuel;
+    int currnode;
+    bool operator<(const node &other) const {
+        return kitnatimefuel > other.kitnatimefuel; // Min-heap based on dist (ascending order)
+    }
+};
 
-    if(m==0) return str;
-    // Get the length of the string
-    int len = strlen(str);
+int djikastra(vector<vector<pp> > &graph, int start, int end, int n, int capacity){
 
-    // If m is greater than the length of the string, return NULL
-    if (m > len) {
-        return NULL;
+    vector<int> dist(n+1, 1e15);
+    priority_queue<node> pq;
+    pq.push({0, capacity, start});
+
+    dist[start] = 0;
+
+    while(!pq.empty()){
+        auto front = pq.top();
+        pq.pop();
+        int currnode = front.currnode;
+        int remainingfuel = front.remainingfuel;
+        int kitnatimefuel = front.kitnatimefuel;
+
+        if(dist[currnode] < kitnatimefuel) continue;
+        // dist[currnode] = kitnatimefuel;
+
+        for(auto neigh : graph[currnode]){
+            int nextnode = neigh.first;
+            int roadlenght = neigh.second;
+
+            if(roadlenght > capacity) continue;
+
+            if(remainingfuel >= roadlenght){
+                if(dist[nextnode] >= kitnatimefuel){
+                    dist[nextnode] = kitnatimefuel;
+                    pq.push({dist[nextnode], remainingfuel - roadlenght, nextnode});
+                }
+            }
+            else{
+                // we need refueling 
+                if(dist[nextnode] >= kitnatimefuel + 1){
+                    dist[nextnode] = kitnatimefuel + 1;
+                    pq.push({dist[nextnode], capacity - roadlenght, nextnode});
+                }
+            }
+        }
     }
 
-    
-    // Sort the string in descending order
-    std::sort(str, str + len, std::greater<char>());
+    if(dist[end] > 1e14) return -1;
+    return dist[end];
 
-
-    // Create a substring from m-1 to the end
-
-
-    char* result = strdup(str + (m - 1));
-
-    return result;  // Return the dynamically allocated substring
 }
 void solve(){
-    char str[] = "good";
-    cout<<customSubstring(3, str)<<endl;
+    int n;
+    cin>>n;
+    int m;
+    cin>>m;
+    int capacity ;
+    cin>>capacity;
+
+    vector<vector<pp> > graph(n+1, vector<pp> ());
+    for(int i=0; i<m; i++){
+        int a, b, c;
+        cin>>a>>b>>c;
+        graph[a].push_back({b, c});
+        graph[b].push_back({a, c});
+    }
+
+    int q;
+    cin>>q;
+    for(int i=0; i<q; i++){
+        int start, end;
+        cin>>start>>end;
+        int ans = djikastra(graph, start, end, n, capacity);
+        cout<<ans<<endl;
+    }
 }
 /* logic ends */
 

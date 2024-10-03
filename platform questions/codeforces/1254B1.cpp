@@ -67,32 +67,101 @@
 using namespace std;
 
 /* write core logic here */
-char* customSubstring(int m, char* str) {
+int f(int n){
+    if(n&1){
+        int x = n/2;
+        //sum of first x even numbers
+        return x*(x+1);
+    }
+    else{
+        int x = (n/2)-1;
+        return x*(x+1) + x+1;
 
-    if(m==0) return str;
-    // Get the length of the string
-    int len = strlen(str);
-
-    // If m is greater than the length of the string, return NULL
-    if (m > len) {
-        return NULL;
+    }
+}
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> a(n);
+    for(int i=0;i<n;i++){
+        cin>>a[i];
     }
 
     
-    // Sort the string in descending order
-    std::sort(str, str + len, std::greater<char>());
+    int sum = 0;
+    for(int i=0;i<n;i++){
+        sum += a[i];
+    }
+    if(sum==1){
+        cout<<-1<<endl;
+        return;
+    }
+    vector<int> factors;
+    for(int i=1;i*i<=sum;i++){
+        if(sum%i==0){
+            if(i!=1) factors.push_back(i);
+            if(i!=sum/i){
+                if(sum/i != 1) factors.push_back(sum/i);
+            }
+        }
+    }
+
+    sort(factors.begin(),factors.end());
+    print(factors);
+
+    vector<int> ones;
+    for(int i = 0; i<n; i++){
+        if(a[i] == 1)ones.push_back(i);
+    }
+
+    print(ones);
 
 
-    // Create a substring from m-1 to the end
+    int ans = 1e15;
+    for(auto ele : factors){
+        int curr =0 ;
+        int tomake = ele;
+        int start = tomake/2;
 
+        debug(start);
 
-    char* result = strdup(str + (m - 1));
+        while(start < ones.size()){
+            if(ele & 1){
+                for(int i = 1; i<=ele/2; i++){
+                    int currenltypresent = ones[start-i];
+                    int requiredtopresent = ones[start] - i;
+                    curr += abs(currenltypresent - requiredtopresent);
+                }
+                for(int i = 1; i<=ele/2; i++){
+                    int currenltypresent = ones[start+i];
+                    int requiredtopresent = ones[start] + i;
+                    curr += abs(currenltypresent - requiredtopresent);
+                }
+            }
+            else{
+                for(int i = 1; i<=ele/2; i++){
+                    int currenltypresent = ones[start-i];
+                    debug(currenltypresent);
+                    int requiredtopresent = ones[start] - i;
+                    debug(requiredtopresent);
+                    curr += abs(currenltypresent - requiredtopresent);
+                }
+                for(int i = 1; i<ele/2; i++){
+                    int currenltypresent = ones[start+i];
+                    int requiredtopresent = ones[start] + i;
+                    curr += abs(currenltypresent - requiredtopresent);
+                }
+            }
 
-    return result;  // Return the dynamically allocated substring
-}
-void solve(){
-    char str[] = "good";
-    cout<<customSubstring(3, str)<<endl;
+            curr += f(ele);
+            start += tomake;
+        }
+
+        ans = min(ans,curr);
+
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 
