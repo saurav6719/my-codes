@@ -67,70 +67,71 @@
 using namespace std;
 
 /* write core logic here */
+int dp[100005][16];
+int f(string &str, int mask, int idx, vector<int> &cost){
+    if(mask == 15) return 1e17;
+    if(idx == str.size()) return 0;
+
+    if(dp[idx][mask] != -1) return dp[idx][mask];
+    int ans = 1e17;
+    //remove it 
+    ans = min(ans, cost[idx] + f(str, mask, idx+1, cost));
+
+    //keep it 
+    if(str[idx] == 'h'){
+        ans = min(ans, f(str, (mask|1) , idx+1, cost));
+    }
+
+    else if(str[idx] == 'a'){
+        if((mask & 1) == 1){
+            ans = min(ans, f(str, (mask | 2), idx+1, cost));
+        }
+        else{
+            ans = min(ans , f(str, mask, idx+1, cost));
+        }
+    }
+
+    else if(str[idx] == 'r'){
+        if((mask & 3) == 3){
+            ans = min(ans, f(str, (mask | 4), idx+1, cost));
+        }
+        else{
+            ans = min(ans , f(str, mask, idx+1, cost));
+        }
+    }
+
+    else if(str[idx] == 'd'){
+        if((mask & 7 )== 7){
+            ans = min(ans, f(str, (mask | 8), idx+1, cost));
+        }
+        else{
+            ans = min(ans , f(str, mask, idx+1, cost));
+        }
+    }
+
+    else ans= min(ans, f(str, mask, idx+1, cost));
+
+
+    return dp[idx][mask] = ans;
+
+}
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n+1);
-    for(int i = 1; i<=n; i++){
-        cin>>input[i];
+    string str;
+    cin>>str;
+
+    memset(dp, -1, sizeof dp);
+    vector<int> cost(n);
+    for(int i = 0; i<n; i++){
+        cin>>cost[i];
     }
 
-    vector<int> prevsmaller(n+1);
-    vector<int> nextsmaller(n+1);
-
-    prevsmaller[1] = 0;
-    stack<pp> st;
-    st.push({input[1], 1});
-
-    for(int i = 2; i<=n; i++){
-        while(!st.empty() and st.top().first >= input[i]) st.pop();
-        if(st.empty()){
-            prevsmaller[i] = 0;
-        }
-        else prevsmaller[i] = st.top().second;
-
-        st.push({input[i], i});
-    }
-
-    print(prevsmaller);
-
-    nextsmaller[n] = n+1;
-    stack<pp> st2;
-    st2.push({input[n], n});
-
-    for(int i = n-1; i>=1; i--){
-        while(!st2.empty() and st2.top().first >= input[i]) st2.pop();
-        if(st2.empty()){
-            nextsmaller[i] = n+1;
-        }
-        else nextsmaller[i] = st2.top().second;
-
-        st2.push({input[i], i});
-    }
-
-    print(nextsmaller);
-
-    int ans = 0;
-
-    for(int i = 1; i<=n; i++){
-        int left = i-prevsmaller[i]-1;
-        int right = nextsmaller[i]-i-1;
-        debug(i);
-        debug(left);    
-        debug(right);
-
-        int curr = (left + right +1 ) * input[i];
-
-        ans = max(ans, curr);
-
-    }
-
-    cout<<ans<<endl;
+    cout<<f(str, 0,0,cost);
 
 
 
 
-    
 }
 /* logic ends */
 
@@ -141,7 +142,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();

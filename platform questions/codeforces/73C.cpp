@@ -64,73 +64,84 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
+#define ppc pair<char,char> 
 using namespace std;
 
 /* write core logic here */
+int dp[101][27][101];
+
+int f(int idx, int k, string &str, map<ppc, int> &mp, int j){
+    
+
+
+    // change 
+
+    if(k<0) return -1e17;
+
+    if(idx == str.size()-1) return 0;
+
+
+    if(dp[idx][j][k] != -1) return dp[idx][j][k];
+    int ans = -1e17;
+
+    char ch = j + 'a' - 1;
+
+    for(int js = 1; js<=26; js++){
+        char newch = js + 'a' - 1;
+
+        if(str[idx+1] != newch){
+            ans = max(ans, f(idx+1, k-1, str, mp, js) + mp[{ch, newch}]);
+        }
+        else{
+            ans = max(ans , f(idx+1, k, str, mp, js) + mp[{ch, newch}]);
+        }
+    }
+
+    return dp[idx][j][k] = ans;
+
+
+}
+
 void solve(){
+    string str;
+    cin>>str;
+    int ks;cin>>ks;
+    map<ppc, int> mp;
     int n;
     cin>>n;
-    vector<int> input(n+1);
-    for(int i = 1; i<=n; i++){
-        cin>>input[i];
+    for(int i = 0; i<n; i++){
+        char c1,c2;
+        cin>>c1>>c2;
+        int val;
+        cin>>val;
+
+        mp[{c1,c2}] = val;
     }
 
-    vector<int> prevsmaller(n+1);
-    vector<int> nextsmaller(n+1);
+    memset(dp, -1, sizeof dp);
 
-    prevsmaller[1] = 0;
-    stack<pp> st;
-    st.push({input[1], 1});
+    int ans = -1e17;
+    for(int j = 1; j<=26; j++){
+        char ch = j+'a' - 1;
 
-    for(int i = 2; i<=n; i++){
-        while(!st.empty() and st.top().first >= input[i]) st.pop();
-        if(st.empty()){
-            prevsmaller[i] = 0;
+        if(ch == str[0]){
+            ans = max(ans , f(0, ks, str, mp, j));
         }
-        else prevsmaller[i] = st.top().second;
-
-        st.push({input[i], i});
-    }
-
-    print(prevsmaller);
-
-    nextsmaller[n] = n+1;
-    stack<pp> st2;
-    st2.push({input[n], n});
-
-    for(int i = n-1; i>=1; i--){
-        while(!st2.empty() and st2.top().first >= input[i]) st2.pop();
-        if(st2.empty()){
-            nextsmaller[i] = n+1;
+        else{
+            ans = max(ans,f(0, ks-1, str, mp, j));
         }
-        else nextsmaller[i] = st2.top().second;
-
-        st2.push({input[i], i});
-    }
-
-    print(nextsmaller);
-
-    int ans = 0;
-
-    for(int i = 1; i<=n; i++){
-        int left = i-prevsmaller[i]-1;
-        int right = nextsmaller[i]-i-1;
-        debug(i);
-        debug(left);    
-        debug(right);
-
-        int curr = (left + right +1 ) * input[i];
-
-        ans = max(ans, curr);
-
     }
 
     cout<<ans<<endl;
 
-
-
-
     
+
+
+
+
+
+
+
 }
 /* logic ends */
 
@@ -141,7 +152,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();

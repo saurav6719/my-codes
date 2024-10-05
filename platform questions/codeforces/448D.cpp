@@ -67,70 +67,32 @@
 using namespace std;
 
 /* write core logic here */
+bool f(int mid, int k, int n, int m){
+    int cnt = 0;
+
+    for(int i=1; i<=n; i++){
+        cnt += min(m, mid/i);
+    }
+
+    return cnt>=k;
+}
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n+1);
-    for(int i = 1; i<=n; i++){
-        cin>>input[i];
-    }
-
-    vector<int> prevsmaller(n+1);
-    vector<int> nextsmaller(n+1);
-
-    prevsmaller[1] = 0;
-    stack<pp> st;
-    st.push({input[1], 1});
-
-    for(int i = 2; i<=n; i++){
-        while(!st.empty() and st.top().first >= input[i]) st.pop();
-        if(st.empty()){
-            prevsmaller[i] = 0;
+    int n,m,k;
+    cin>>n>>m>>k;
+    int lo =1;
+    int hi = n*m;
+    int res = -1;
+    while(lo<=hi){
+        int mid = lo + (hi-lo)/2;
+        if(f(mid, k, n, m)){
+            res = mid;
+            hi = mid-1;
         }
-        else prevsmaller[i] = st.top().second;
-
-        st.push({input[i], i});
-    }
-
-    print(prevsmaller);
-
-    nextsmaller[n] = n+1;
-    stack<pp> st2;
-    st2.push({input[n], n});
-
-    for(int i = n-1; i>=1; i--){
-        while(!st2.empty() and st2.top().first >= input[i]) st2.pop();
-        if(st2.empty()){
-            nextsmaller[i] = n+1;
+        else{
+            lo = mid+1;
         }
-        else nextsmaller[i] = st2.top().second;
-
-        st2.push({input[i], i});
     }
-
-    print(nextsmaller);
-
-    int ans = 0;
-
-    for(int i = 1; i<=n; i++){
-        int left = i-prevsmaller[i]-1;
-        int right = nextsmaller[i]-i-1;
-        debug(i);
-        debug(left);    
-        debug(right);
-
-        int curr = (left + right +1 ) * input[i];
-
-        ans = max(ans, curr);
-
-    }
-
-    cout<<ans<<endl;
-
-
-
-
-    
+    cout<<res<<endl;
 }
 /* logic ends */
 
@@ -141,7 +103,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();

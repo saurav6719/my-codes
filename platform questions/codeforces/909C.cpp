@@ -70,67 +70,45 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n+1);
-    for(int i = 1; i<=n; i++){
+    vector<char> input(n);
+    for(int i = 0; i<n; i++){
         cin>>input[i];
     }
-
-    vector<int> prevsmaller(n+1);
-    vector<int> nextsmaller(n+1);
-
-    prevsmaller[1] = 0;
-    stack<pp> st;
-    st.push({input[1], 1});
-
-    for(int i = 2; i<=n; i++){
-        while(!st.empty() and st.top().first >= input[i]) st.pop();
-        if(st.empty()){
-            prevsmaller[i] = 0;
-        }
-        else prevsmaller[i] = st.top().second;
-
-        st.push({input[i], i});
+    vector<vector<int> > dp(n+1, vector<int> (n+1, 0));
+    for(int j = 0; j<n; j++){
+        dp[n][j] = 1;
     }
-
-    print(prevsmaller);
-
-    nextsmaller[n] = n+1;
-    stack<pp> st2;
-    st2.push({input[n], n});
-
     for(int i = n-1; i>=1; i--){
-        while(!st2.empty() and st2.top().first >= input[i]) st2.pop();
-        if(st2.empty()){
-            nextsmaller[i] = n+1;
+        vector<int> temp = dp[i+1];
+        for(int i = 1; i<temp.size(); i++){
+            temp[i]+= temp[i-1];
+            temp[i] %= mod;
         }
-        else nextsmaller[i] = st2.top().second;
-
-        st2.push({input[i], i});
+        if(input[i-1] == 'f'){
+            for(int j = 0; j<n; j++){
+                if(input[i] == 'f'){
+                    dp[i][j] = dp[i+1][j+1];
+                }
+                else{
+                    dp[i][j] = dp[i+1][j];
+                }
+            }
+        }
+        else{
+            for(int j = 0; j<n; j++){
+                if(input[i] == 's') dp[i][j] = temp[j];
+                else{
+                    dp[i][j] = (temp[j+1] % mod  - temp[0] % mod + mod)%mod ;
+                    
+                }
+            }
+        }
     }
-
-    print(nextsmaller);
-
-    int ans = 0;
-
-    for(int i = 1; i<=n; i++){
-        int left = i-prevsmaller[i]-1;
-        int right = nextsmaller[i]-i-1;
-        debug(i);
-        debug(left);    
-        debug(right);
-
-        int curr = (left + right +1 ) * input[i];
-
-        ans = max(ans, curr);
-
+    print2d(dp);
+    if(input[0] == 's'){
+        cout<<dp[1][0];
     }
-
-    cout<<ans<<endl;
-
-
-
-
-    
+    else cout<<dp[1][1];
 }
 /* logic ends */
 
@@ -141,7 +119,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();

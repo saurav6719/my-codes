@@ -68,69 +68,74 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n+1);
-    for(int i = 1; i<=n; i++){
-        cin>>input[i];
+    string str;
+    cin>>str;
+    int n= str.size();
+    int q;
+    cin>>q;
+
+    vector<vector<int> > v(n+5, vector<int> (26,0));
+
+    for(int i = 0; i<n; i++){
+        char ch = str[i];
+        int idx = ch - 'a';
+
+        v[i][idx]++;
     }
 
-    vector<int> prevsmaller(n+1);
-    vector<int> nextsmaller(n+1);
-
-    prevsmaller[1] = 0;
-    stack<pp> st;
-    st.push({input[1], 1});
-
-    for(int i = 2; i<=n; i++){
-        while(!st.empty() and st.top().first >= input[i]) st.pop();
-        if(st.empty()){
-            prevsmaller[i] = 0;
+    for(int i = 1; i<n; i++){
+        for(int j= 0; j<26; j++){
+            v[i][j] += v[i-1][j];
         }
-        else prevsmaller[i] = st.top().second;
-
-        st.push({input[i], i});
     }
 
-    print(prevsmaller);
+    print2d(v);
+    while(q--){
+        int l,r;
+        cin>>l>>r;
+        l--;
+        r--;
 
-    nextsmaller[n] = n+1;
-    stack<pp> st2;
-    st2.push({input[n], n});
-
-    for(int i = n-1; i>=1; i--){
-        while(!st2.empty() and st2.top().first >= input[i]) st2.pop();
-        if(st2.empty()){
-            nextsmaller[i] = n+1;
+        if(l==r) {
+            cout<<"Yes"<<endl;
+            continue;
         }
-        else nextsmaller[i] = st2.top().second;
+        map<int,int> mp;
+        for(int i =0; i<26; i++){
+            int ele = i;
+            int val = v[r][i];
+            mp[ele] = val;
+        }
 
-        st2.push({input[i], i});
+        if(l>0){
+            for(int i =0; i<26; i++){
+                int ele = i;
+                int val = v[l-1][i];
+                mp[ele] -= val;
+                if(mp[ele] == 0) mp.erase(ele);
+            }
+        }
+
+        for(int i = 0; i<26; i++){
+            if(mp[i] == 0) mp.erase(i);
+        }
+        debug(mp.size());
+
+        if(mp.size() == 1){
+            cout<<"No"<<endl;
+            continue;
+        }
+        else if(mp.size() > 2){
+            cout<<"Yes"<<endl;
+            continue;
+        }
+        else{
+            if(str[l] == str[r]){
+                cout<<"No"<<endl;
+            }
+            else cout<<"Yes"<<endl;
+        }
     }
-
-    print(nextsmaller);
-
-    int ans = 0;
-
-    for(int i = 1; i<=n; i++){
-        int left = i-prevsmaller[i]-1;
-        int right = nextsmaller[i]-i-1;
-        debug(i);
-        debug(left);    
-        debug(right);
-
-        int curr = (left + right +1 ) * input[i];
-
-        ans = max(ans, curr);
-
-    }
-
-    cout<<ans<<endl;
-
-
-
-
-    
 }
 /* logic ends */
 
@@ -141,7 +146,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();
