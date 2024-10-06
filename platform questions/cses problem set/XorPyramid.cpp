@@ -67,44 +67,42 @@
 using namespace std;
 
 /* write core logic here */
-int dp[501][501];
+string getbinary(int x){
+    bitset<30> b(x);
+    return b.to_string();
+}
 
-int f(int i, int j, string &str){
-    debug(i);
-    debug(j);
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
 
-    if(i>=j) return 1;
+    string str1 = getbinary(n-1);
 
-    if(j - i == 1 and str[j] == str[i]) return 1;
-
-    if(dp[i][j] != -1)return dp[i][j];
 
 
     int ans = 0;
+    ans ^= input[0];
+    ans ^= input[n-1];
 
-    for(int l = i+1; l<=j; l++){
-        if(str[i] == str[l]){
-            int curr = 1;
-            curr *= f(i+1, l-1, str);
-            curr %= mod;
-            curr *= f(l+1, j, str);
-            curr %= mod;
-            ans += curr;
-            ans %= mod;
+    for(int i = 1; i<n-1; i++){
+        string xx = getbinary(i);
+        bool even = false;
+
+        for(int j = 0; j<30; j++){
+            if(str1[j] == '0' and xx[j] == '1'){
+                even = true;
+                break;
+            }
         }
-        
+        if(!even) ans ^= input[i];
     }
-    return dp[i][j] = ans;
-}
-void solve(){
-    string str;
-    cin>>str;
 
+    cout<<ans<<endl;
 
-    memset(dp , -1 , sizeof dp);
-
-    cout<<f(0,str.size() - 1, str);
-    
 }
 /* logic ends */
 

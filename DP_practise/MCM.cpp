@@ -67,44 +67,35 @@
 using namespace std;
 
 /* write core logic here */
-int dp[501][501];
-
-int f(int i, int j, string &str){
-    debug(i);
-    debug(j);
-
-    if(i>=j) return 1;
-
-    if(j - i == 1 and str[j] == str[i]) return 1;
-
-    if(dp[i][j] != -1)return dp[i][j];
-
-
-    int ans = 0;
-
-    for(int l = i+1; l<=j; l++){
-        if(str[i] == str[l]){
-            int curr = 1;
-            curr *= f(i+1, l-1, str);
-            curr %= mod;
-            curr *= f(l+1, j, str);
-            curr %= mod;
-            ans += curr;
-            ans %= mod;
-        }
-        
-    }
-    return dp[i][j] = ans;
-}
 void solve(){
-    string str;
-    cin>>str;
-
-
-    memset(dp , -1 , sizeof dp);
-
-    cout<<f(0,str.size() - 1, str);
-    
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    vector<int> input(n+1);
+    input[0] = 0;
+    for(int i = 1; i<=n; i++){
+        cin>>input[i];
+    }
+    int dp[301][301];
+    for(int i = 0; i < 301; i++){
+        for(int j = 0; j < 301; j++){
+            dp[i][j] = 1e17;  // Initialize to a large value manually
+        }
+    }
+    dp[0][0] = 0;
+    for(int j = 1; j<=k; j++){
+        for(int i = j; i<=n; i++){
+            int minl = j-1;
+            int maxl = i-1;
+            int currmaxi = input[i];
+            for(int l = maxl; l>=minl; l--){
+                currmaxi = max(currmaxi , input[l]);
+                dp[j][i] = min(dp[j][i] , dp[j-1][l] + currmaxi);
+            }
+        }
+    }
+    cout<< dp[k][n];
 }
 /* logic ends */
 

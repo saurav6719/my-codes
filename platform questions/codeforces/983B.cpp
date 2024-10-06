@@ -67,44 +67,49 @@
 using namespace std;
 
 /* write core logic here */
-int dp[501][501];
-
-int f(int i, int j, string &str){
-    debug(i);
-    debug(j);
-
-    if(i>=j) return 1;
-
-    if(j - i == 1 and str[j] == str[i]) return 1;
-
-    if(dp[i][j] != -1)return dp[i][j];
 
 
-    int ans = 0;
-
-    for(int l = i+1; l<=j; l++){
-        if(str[i] == str[l]){
-            int curr = 1;
-            curr *= f(i+1, l-1, str);
-            curr %= mod;
-            curr *= f(l+1, j, str);
-            curr %= mod;
-            ans += curr;
-            ans %= mod;
-        }
-        
-    }
-    return dp[i][j] = ans;
-}
 void solve(){
-    string str;
-    cin>>str;
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
+
+    vector<vector<int>> m1(n+1, vector<int> (n+1, -1));
+
+    for(int i = 0; i<n; i++){
+        m1[0][i] = input[i];
+    }
+
+    for(int i = 1; i<=n; i++){
+        for(int j = 0; j<n-i; j++){
+            m1[i][j] = m1[i-1][j] ^ m1[i-1][j+1];
+        }
+    }
+    print2d(m1);
 
 
-    memset(dp , -1 , sizeof dp);
+    for(int i = 1; i<=n; i++){
+        for(int j = 0; j<n-i; j++){
+            m1[i][j] = mx(m1[i][j] , m1[i-1][j+1], m1[i-1][j]);
+        }
+    }
+    print2d(m1);
 
-    cout<<f(0,str.size() - 1, str);
-    
+    int q;
+    cin>>q;
+    while(q--){
+        int l,r;
+        cin>>l>>r;
+        l--;r--;
+
+        cout<<m1[r-l][l]<<endl;
+    }
+
+
+
 }
 /* logic ends */
 
