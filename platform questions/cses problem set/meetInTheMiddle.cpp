@@ -67,55 +67,73 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    int n;
-    cin>>n;
-
-    int m = n;
-
-    if(n & 1) n++;
-    vector<int> input(n, n);
-    int xx = n/2 ;
-    input[0] -= xx;
-    input[n-1] += xx;
-    print(input);
-
-    // if(n&1) {
-    //     input[n-1]++;
-    //     input[n/2]--;
-    // }
-
-    int i = 1; int j = n-2;
-    int cnt =1;
-    while(i<j){
-        input[i] -= cnt;
-        input[j] += cnt;
-        i++; j--;
-        cnt++;
-    }
-
-    sort(input.begin(), input.end());
-
-    if(m != n){
-        int low = input[0];
-        int j = n-1;
-        for(int i = 0; i<low; i++){
-            input[j]++;
-            j--;
-        }
-        for(int i = 1; i<input.size(); i++){
-            cout<<input[i]<<" ";
-        }
-        cout<<endl;
+void f(vector<int> &input, vector<int> &mp, int idx, int sum){
+    if(idx == input.size()) {
+        mp.push_back(sum);
         return;
     }
 
+    //take
 
-    for(auto ele : input){
-        cout<<ele<<" ";
+    f(input, mp, idx+1, sum+input[idx]);
+
+    // not take 
+
+    f(input, mp, idx+1, sum);
+}
+void solve(){
+    int n;
+    int x;
+    cin>>n>>x;
+    vector<int> input(n);
+    for(int i = 0;i<n; i++){
+        cin>>input[i];
     }
 
-    cout<<endl;
+    vector<int> left;
+    vector<int> right;
+
+    for(int i = 0; i<n/2; i++){
+        left.push_back(input[i]);
+    }
+    for(int i = n/2; i<n; i++){
+        right.push_back(input[i]);
+    }
+
+    vector<int>  lefty;
+    vector<int>  righty;
+
+    f(left, lefty, 0, 0);
+    f(right, righty, 0,0);
+
+    int ans = 0;
+
+    sort(righty.begin(), righty.end());
+    print(righty);
+
+    for(auto ele : lefty){
+        debug(ele);
+        int req = x - ele;
+        debug(req);
+
+        int lb = lower_bound(righty.begin(), righty.end(), req) - righty.begin();
+
+        if(lb == righty.size()) continue;
+
+        int xx = righty[lb];
+        if(xx != req) continue;
+
+        int up = upper_bound(righty.begin(), righty.end(), req) - righty.begin();
+        debug(up);
+        debug(lb);
+        up--;
+
+        ans +=( up - lb + 1);
+
+    }
+
+    cout<<ans;
+
 }
 /* logic ends */
 
@@ -126,8 +144,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

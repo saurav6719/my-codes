@@ -67,55 +67,97 @@
 using namespace std;
 
 /* write core logic here */
+string getbinary(int x){
+    bitset<32> b(x);
+    return b.to_string();
+}
+
+long long binaryToDecimal(const std::string& bin) {
+    return std::bitset<64>(bin).to_ullong();
+}
+
 void solve(){
-    int n;
-    cin>>n;
 
-    int m = n;
+    vector<int> fibonacci;
 
-    if(n & 1) n++;
-    vector<int> input(n, n);
-    int xx = n/2 ;
-    input[0] -= xx;
-    input[n-1] += xx;
-    print(input);
-
-    // if(n&1) {
-    //     input[n-1]++;
-    //     input[n/2]--;
-    // }
-
-    int i = 1; int j = n-2;
-    int cnt =1;
-    while(i<j){
-        input[i] -= cnt;
-        input[j] += cnt;
-        i++; j--;
-        cnt++;
+    int n,p;
+    cin>>n>>p;
+    vector<int> arr(n);
+    for(int i = 0; i<n; i++){
+        cin>>arr[i];
     }
 
-    sort(input.begin(), input.end());
+    fibonacci.push_back(1);
+    fibonacci.push_back(1);
+    fibonacci.push_back(2);
+    for(int i = 0; i<p; i++){
+        int a = fibonacci.back();
+        int b = fibonacci[fibonacci.size() - 2];
+        int xx = a + b;
+        xx %= mod;
+        fibonacci.push_back(xx);
+    }
 
-    if(m != n){
-        int low = input[0];
-        int j = n-1;
-        for(int i = 0; i<low; i++){
-            input[j]++;
-            j--;
+    for(int i = 1; i<fibonacci.size(); i++){
+        fibonacci[i] += fibonacci[i-1];
+        fibonacci[i] %= mod;
+    }
+
+
+    sort(arr.begin(), arr.end());
+    set<int> st;
+    set<int> avail;
+
+    avail.insert(0);
+
+    st.insert(arr[0]);
+    for(int i = 1; i<n; i++){
+
+        string xx = getbinary(arr[i]);
+        int toput = true;
+
+        print(xx);
+
+        while(xx.size() > 2){
+            // debug(binaryToDecimal(xx));
+            if(st.count(binaryToDecimal(xx))) {
+                toput = false;
+                break;
+            }
+
+            if(xx.back() == '0'){
+                if(xx[xx.size() - 2] != '0'){
+                    break;
+                }
+                else{
+                    xx.pop_back();
+                    xx.pop_back();
+                }
+            }
+
+            else{
+                xx.pop_back();
+            }
         }
-        for(int i = 1; i<input.size(); i++){
-            cout<<input[i]<<" ";
+
+        if(toput){
+            avail.insert(i);
+            st.insert((arr[i]));
         }
-        cout<<endl;
-        return;
+    }
+    int ans = 0;
+
+
+    for(auto ele : st){
+        // cout<<ele<<endl;
+        int xx = log2(ele);
+        int times = p - xx;
+        if(times<=0) continue; 
+        ans += fibonacci[times-1];
+        ans %= mod;
     }
 
-
-    for(auto ele : input){
-        cout<<ele<<" ";
-    }
-
-    cout<<endl;
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -126,8 +168,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
