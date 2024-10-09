@@ -66,71 +66,78 @@
 #define pp pair<int,int>
 using namespace std;
 
-int dfs(int node, vector<int> adj[], vector<int> &dp){
-    if(adj[node].size() == 0) return 0;
-
-    for(auto &child : adj[node]){
-        if(dp[child] == -1){
-            dp[node] = max(dp[node], 1 + dfs(child, adj, dp));
-        }
-        else{
-            dp[node] = max(dp[node], 1 + dp[child]);
-        }
-    }
-
-    return dp[node];
+/* write core logic here */
+string getbinary(int x){
+    bitset<64> b(x);
+    return b.to_string();
 }
 
-/* write core logic here */
+long long binaryToDecimal(const std::string& bin) {
+    return std::bitset<64>(bin).to_ullong();
+}
 void solve(){
-    int n, m; cin >> n >> m;
-    vector<vector<int>> edges;
-    for(int i = 1; i <= m; i++){
-        int u, v; cin >> u >> v;
-        edges.push_back({u, v});
-    }
+    int l,r;
+    scanf("%l" , &l);
+    scanf("%l" , &r);
+    string ll = getbinary(l);
+    string rr = getbinary(r);
 
-    vector<int> adj[n + 1];
-    for(auto edge : edges){
-        int u = edge[0];
-        int v = edge[1];
+    int i = 0;
 
-        adj[u].push_back(v);
-    }
+    string ans(64, 0);
+    int idx = -1;
 
-    for(auto v : adj){
-        print(v);
-    }
+    print(ll);
+    print(rr);
 
-    vector<int> dp(n + 1, -1);
-    int curr = 1;
-    
-    for(int i = 1; i <= n; i++){
-        if(dp[i] == -1){
-            int temp = dfs(i, adj, dp);
+
+    while(i<64){
+        if(rr[i] == '1' and ll[i] == '0'){
+            idx = i;
+            break;
         }
+        i++;
     }
 
-    // for(int i = 1; i <= n; i++){
-    //     cout << dp[i] << " ";
-    // }cout << endl;
+    if(idx == -1){
+        cout<<0<<endl;
+        return;
+    }
 
-    cout << *max_element(dp.begin(), dp.end()) << endl;
-}   
+
+    debug(idx);
+
+    for(int i = 0; i<idx; i++){
+        ans[i] = '0';
+    }
+
+    for(int i = idx; i<64; i++){
+        ans[i] = '1';
+    }
+
+    print(ans);
+
+    int res = binaryToDecimal(ans);
+    cout<<res<<endl;
+
+
+
+
+}
 /* logic ends */
 
 signed main(){
-    ios_base::sync_with_stdio(false);
+    // ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     #ifndef ONLINE_JUDGE
         freopen("Error.txt" , "w" , stderr);
     #endif
-    int t = 1;
+    int t;
     // cin>>t;
-    //t = 1;
+    t = 1;
     while(t--){
         solve();
     }
-    
-    return 0;
+return 0;
 }
+

@@ -66,57 +66,89 @@
 #define pp pair<int,int>
 using namespace std;
 
-int dfs(int node, vector<int> adj[], vector<int> &dp){
-    if(adj[node].size() == 0) return 0;
-
-    for(auto &child : adj[node]){
-        if(dp[child] == -1){
-            dp[node] = max(dp[node], 1 + dfs(child, adj, dp));
-        }
-        else{
-            dp[node] = max(dp[node], 1 + dp[child]);
-        }
-    }
-
-    return dp[node];
-}
-
 /* write core logic here */
 void solve(){
-    int n, m; cin >> n >> m;
-    vector<vector<int>> edges;
-    for(int i = 1; i <= m; i++){
-        int u, v; cin >> u >> v;
-        edges.push_back({u, v});
-    }
+    string str;
+    cin>>str;
 
-    vector<int> adj[n + 1];
-    for(auto edge : edges){
-        int u = edge[0];
-        int v = edge[1];
-
-        adj[u].push_back(v);
-    }
-
-    for(auto v : adj){
-        print(v);
-    }
-
-    vector<int> dp(n + 1, -1);
-    int curr = 1;
     
-    for(int i = 1; i <= n; i++){
-        if(dp[i] == -1){
-            int temp = dfs(i, adj, dp);
+
+    map<char,int> mp;
+
+    for(auto ele : str){
+        mp[ele]++;
+    }
+
+
+    if(mp.size() == 1) {
+        cout<<str<<endl;
+        return;
+    }
+
+
+    string str2 = "";
+
+    for(auto ele : mp){
+        if(ele.second & 1) {
+            str2 += ele.first;
+            mp[ele.first]--;
         }
     }
 
-    // for(int i = 1; i <= n; i++){
-    //     cout << dp[i] << " ";
-    // }cout << endl;
+    sort(str2.begin(), str2.end());
 
-    cout << *max_element(dp.begin(), dp.end()) << endl;
-}   
+    print(str2);
+
+    int i = 0;
+    int j = str2.size() - 1;
+
+    while((str.size() &1) ?  (j-i >= 2)  : (j-i >= 1)){
+        str2[j] = str2[i];
+        i++;
+        j--;
+    }
+
+    for(auto ele : str2){
+        mp[ele]++;
+    }
+
+
+
+    string left;
+    string right;
+
+    char ch = '0';
+
+    for(auto ele : mp){
+        if(ele.second & 1){
+            int cnt2 = ele.second;
+            while(cnt2 > 1){
+                left.push_back(ele.first);
+                right.push_back(ele.first);
+                cnt2--;
+                cnt2--;
+            }
+            ch = ele.first;
+            continue;
+        }
+
+        int cnt = 0;
+
+        while(cnt< ele.second){
+            left.push_back(ele.first);
+            right.push_back(ele.first);
+            cnt+=2;
+        }
+    }
+
+    if(str.size() & 1) left.push_back(ch);
+
+    reverse(right.begin(),right.end());
+
+    string ans = left+right;
+
+    cout<<ans;
+}
 /* logic ends */
 
 signed main(){
@@ -125,12 +157,12 @@ signed main(){
     #ifndef ONLINE_JUDGE
         freopen("Error.txt" , "w" , stderr);
     #endif
-    int t = 1;
+    int t;
     // cin>>t;
-    //t = 1;
+    t = 1;
     while(t--){
         solve();
     }
-    
-    return 0;
+return 0;
 }
+

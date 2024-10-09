@@ -66,57 +66,53 @@
 #define pp pair<int,int>
 using namespace std;
 
-int dfs(int node, vector<int> adj[], vector<int> &dp){
-    if(adj[node].size() == 0) return 0;
+/* write core logic here */
 
-    for(auto &child : adj[node]){
-        if(dp[child] == -1){
-            dp[node] = max(dp[node], 1 + dfs(child, adj, dp));
-        }
-        else{
-            dp[node] = max(dp[node], 1 + dp[child]);
+int f(vector<vector<int>> &tree, int node, int par, vector<int> &height){
+    int h = 1;
+    for(auto neigh : tree[node]){
+        if(neigh != par){
+            h = max(h , f(tree, neigh, node, height) + 1);
         }
     }
 
-    return dp[node];
+    return height[node] = h;
 }
 
-/* write core logic here */
-void solve(){
-    int n, m; cin >> n >> m;
-    vector<vector<int>> edges;
-    for(int i = 1; i <= m; i++){
-        int u, v; cin >> u >> v;
-        edges.push_back({u, v});
-    }
+int dfs(vector<vector<int> > &tree, int node, int par, vector<int> &height){
+    int ans = height[node];
 
-    vector<int> adj[n + 1];
-    for(auto edge : edges){
-        int u = edge[0];
-        int v = edge[1];
+    int curr = 0;
 
-        adj[u].push_back(v);
-    }
-
-    for(auto v : adj){
-        print(v);
-    }
-
-    vector<int> dp(n + 1, -1);
-    int curr = 1;
-    
-    for(int i = 1; i <= n; i++){
-        if(dp[i] == -1){
-            int temp = dfs(i, adj, dp);
+    for(auto neigh : tree[node]){
+        if(neigh != par){
+            curr += dfs(tree, neigh , node, height);
         }
     }
 
-    // for(int i = 1; i <= n; i++){
-    //     cout << dp[i] << " ";
-    // }cout << endl;
+    ans = max(ans , curr);
+    return ans;
+}
+void solve(){
+    int n;
+    cin>>n;
+    vector<vector<int>> tree(n+5, vector<int> ());
 
-    cout << *max_element(dp.begin(), dp.end()) << endl;
-}   
+    for(int i = 0; i<n-1; i++){
+        int ele;
+        cin>>ele;
+        tree[i+2].push_back(ele);
+        tree[ele].push_back(i+2);
+    }
+
+    print2d(tree);
+    vector<int> height(n+5);
+
+    int xx = f(tree, 1, 0, height);
+    int yy= dfs(tree, 1, 0, height);
+
+    cout<<yy<<endl;
+}
 /* logic ends */
 
 signed main(){
@@ -125,12 +121,12 @@ signed main(){
     #ifndef ONLINE_JUDGE
         freopen("Error.txt" , "w" , stderr);
     #endif
-    int t = 1;
+    int t;
     // cin>>t;
-    //t = 1;
+    t = 1;
     while(t--){
         solve();
     }
-    
-    return 0;
+return 0;
 }
+

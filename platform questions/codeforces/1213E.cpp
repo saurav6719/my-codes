@@ -66,57 +66,119 @@
 #define pp pair<int,int>
 using namespace std;
 
-int dfs(int node, vector<int> adj[], vector<int> &dp){
-    if(adj[node].size() == 0) return 0;
+/* write core logic here */
 
-    for(auto &child : adj[node]){
-        if(dp[child] == -1){
-            dp[node] = max(dp[node], 1 + dfs(child, adj, dp));
-        }
-        else{
-            dp[node] = max(dp[node], 1 + dp[child]);
-        }
+int find(vector<int> &parent, int x){
+    if(parent[x] == x) return x;
+    return parent[x] = find(parent,parent[x]);
+}
+void Union(vector<int> &parent,vector<int> &size, int a, int b){
+    a = find(parent,a);
+    b = find(parent,b);
+    if(a==b) return;
+    if(size[a] >= size[b]){
+        size[a]+= size[b];
+        parent[b] = a;
+        
     }
-
-    return dp[node];
+    else{
+        size[b]+= size[a];
+        parent[a] = b;
+    }
 }
 
-/* write core logic here */
+
 void solve(){
-    int n, m; cin >> n >> m;
-    vector<vector<int>> edges;
-    for(int i = 1; i <= m; i++){
-        int u, v; cin >> u >> v;
-        edges.push_back({u, v});
+    int n;
+    int m;
+    cin>>n>>m;
+    vector<vector<pp>> input(200006);
+
+    vector<int> v;
+    set<int> stl;
+    for(int i = 0; i<n-1; i++){
+        int a,b,w;
+        cin>>a>>b>>w;
+
+        input[w].push_back({a,b});
+        
+        stl.insert(w);
+    } 
+
+    for(auto ele : stl){
+        v.push_back(ele);
     }
 
-    vector<int> adj[n + 1];
-    for(auto edge : edges){
-        int u = edge[0];
-        int v = edge[1];
+    sort(v.begin(), v.end());
 
-        adj[u].push_back(v);
+    print(v);
+
+    vector<int> parent(n+1);
+    vector<int> size(n+1,1);
+    for(int i = 0; i<=n ; i++){
+        parent[i] = i;
     }
 
-    for(auto v : adj){
-        print(v);
-    }
+    vector<int> ans(200006, 0);
+    int curr = 0;
 
-    vector<int> dp(n + 1, -1);
-    int curr = 1;
-    
-    for(int i = 1; i <= n; i++){
-        if(dp[i] == -1){
-            int temp = dfs(i, adj, dp);
+    set<int> st;
+
+    int currtotal = 0;
+
+    for(int i = 1; i<=200005; i++){
+        for(auto ele : input[i]){
+            int a = ele.first;
+            int b = ele.second;
+            debug(a);
+            debug(b);
+            a = find(parent, a);
+            b = find(parent , b);
+
+            int sizea = size[a];
+            int sizeb = size[b];
+
+            currtotal += (sizea * sizeb);
+            Union(parent , size, a, b);
         }
+        ans[i] = currtotal;
     }
 
-    // for(int i = 1; i <= n; i++){
-    //     cout << dp[i] << " ";
-    // }cout << endl;
+    while(m--){
+        int a;
+        cin>>a;
 
-    cout << *max_element(dp.begin(), dp.end()) << endl;
-}   
+
+        if(v.empty()){
+            cout<<0<<" ";
+            continue;
+        }
+
+        if(a<v[0]){
+            cout<<0<<" ";
+            continue;
+        }
+
+        int xx = upper_bound(v.begin(), v.end(), a)- v.begin();
+        xx--;
+
+        xx = v[xx];
+
+        
+
+        // if(xx == v.size()) xx = v.back();
+        // else if(v[xx] > a){
+        //     xx--;
+        //     xx = v[xx];
+        // }
+        // else xx = v[xx];
+
+        // debug(a);
+        // debug(xx);
+
+        cout<<ans[xx]<<" ";
+    }
+}
 /* logic ends */
 
 signed main(){
@@ -125,12 +187,12 @@ signed main(){
     #ifndef ONLINE_JUDGE
         freopen("Error.txt" , "w" , stderr);
     #endif
-    int t = 1;
+    int t;
     // cin>>t;
-    //t = 1;
+    t = 1;
     while(t--){
         solve();
     }
-    
-    return 0;
+return 0;
 }
+
