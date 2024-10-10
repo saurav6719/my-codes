@@ -68,30 +68,75 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
+
+    int k = 0;
+
     int n;
     cin>>n;
-    vector<int> b(n);
-    for(int i =0; i<n; i++){
-        cin>>b[i];
+    int curr = n;
+
+    vector<int> ans(n);
+
+    while(k==0){
+        vector<int> query(n, curr);
+        query[n-1] = 1;
+        cout<<"?";
+        for(int i =0; i<n;i++){
+            cout<<" "<<query[i];
+        }
+
+        cout<<endl;
+        cout<<flush;
+        cin>>k;
+
+        if(k!=0){
+            ans[n-1] = query[0];
+            ans[k-1] = 1;
+            break;
+        }
+        curr--;
+
+        if(curr == 0){
+            ans[n-1] = 1;
+            break;
+        }
     }
 
-    vector<int> a(n);
-    a[0] = 2e6;
-    int sum = a[0];
-    int maxi = a[0];
-    for(int i = 1; i<n; i++){
-        int ele;
-        ele = b[i] + maxi - sum;
-        a[i] = ele;
-        sum += a[i];
+    int last = ans[n-1];
+
+    int now = 2;
+    while(now <= n){
+        if(now == last){
+            now ++;
+            continue;
+        }
+        vector<int> query(n);
+        for(int i = 0; i<n-1; i++){
+            query[i] = n+1-now;
+        }
+
+        query[n-1] = n+1-last;
+
+        cout<<"?";
+        for(int i =0; i<n;i++){
+            cout<<" "<<query[i];
+        }
+
+        cout<<endl;
+        cout<<flush;
+        cin>>k;
+        ans[k-1] = now;
+        now++;
     }
 
+    cout<<"!";
 
-    for(auto ele : a){
-        cout<<ele<<" ";
+    for(auto ele : ans){
+        cout<<" "<<ele;
     }
-
     cout<<endl;
+    cout<<flush;
+
 }
 /* logic ends */
 
@@ -102,8 +147,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

@@ -67,31 +67,86 @@
 using namespace std;
 
 /* write core logic here */
+
+int f(vector<int> &v){
+    int n = v.size();
+    vector<bool> ok(n);
+    int cntfalse = 0;
+    for(int i =0; i<n; i++){
+        if(v[i] <= v[(i+1) % n]) ok[i] = true;
+        else {
+            ok[i] = false;
+            cntfalse++;
+        }
+    }
+
+    if( cntfalse == 0 ) return 0;
+    if(cntfalse >= 2) return 1e15;
+
+
+    for(int i = 0; i<n; i++){
+        if(ok[i] == false){
+            return n-i-1;
+        }
+    }
+}
+
+int f2(vector<int> &v){
+    int n = v.size();
+    vector<bool> ok(n);
+    int cntfalse = 0;
+    for(int i =0; i<n; i++){
+        if(v[i] >= v[(i+1) % n]) ok[i] = true;
+        else {
+            ok[i] = false;
+            cntfalse++;
+        }
+    }
+
+    if( cntfalse == 0 ) return 0;
+    if(cntfalse >= 2) return 1e15;
+
+
+    for(int i = 0; i<n; i++){
+        if(ok[i] == false){
+            return n-i-1;
+        }
+    }
+}
+
+
 void solve(){
     int n;
     cin>>n;
-    vector<int> b(n);
-    for(int i =0; i<n; i++){
-        cin>>b[i];
-    }
-
-    vector<int> a(n);
-    a[0] = 2e6;
-    int sum = a[0];
-    int maxi = a[0];
-    for(int i = 1; i<n; i++){
-        int ele;
-        ele = b[i] + maxi - sum;
-        a[i] = ele;
-        sum += a[i];
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
 
 
-    for(auto ele : a){
-        cout<<ele<<" ";
+    int xx = f(input);
+    int zz = f2(input);
+    reverse(input.begin(), input.end());
+
+    int yy = f(input);
+
+
+
+    int ans = min(xx, 1+yy);
+
+    
+    int ww = f2(input);
+    ans = mn(ans, ww+2, zz+1);
+    debug(xx);
+    debug(yy);
+    debug(ww);
+    debug(zz);
+    if(ans>1e14) {
+        cout<<-1<<endl;
+        return;
     }
 
-    cout<<endl;
+    cout<<ans<<endl;
 }
 /* logic ends */
 

@@ -68,30 +68,39 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> b(n);
-    for(int i =0; i<n; i++){
-        cin>>b[i];
+    int n,c;
+    cin>>n>>c;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
 
-    vector<int> a(n);
-    a[0] = 2e6;
-    int sum = a[0];
-    int maxi = a[0];
-    for(int i = 1; i<n; i++){
-        int ele;
-        ele = b[i] + maxi - sum;
-        a[i] = ele;
-        sum += a[i];
+    int ans = ((c+1) * (c+2)) / 2;
+
+    int tosub = 0;
+
+    for(auto ele : input){
+        tosub += (ele /2)+1;
+        tosub += c - ele;
     }
 
+    ans -= tosub;
 
-    for(auto ele : a){
-        cout<<ele<<" ";
+    int odd = 0;
+    int even = 0;
+
+    for(int i = 0; i<n; i++){
+        if(input[i]&1){
+            ans+= odd;
+            odd++;
+        }
+        else{
+            ans += even;
+            even++;
+        }
     }
 
-    cout<<endl;
+    cout<<ans<<endl;
 }
 /* logic ends */
 

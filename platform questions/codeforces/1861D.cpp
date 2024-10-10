@@ -70,28 +70,40 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    vector<int> b(n);
-    for(int i =0; i<n; i++){
-        cin>>b[i];
+    vector<int> input(n);
+    for(int i = 0; i < n; i++) {
+        cin >> input[i];
+    }
+    vector<int> prefix_inversion(n+1, 0);
+
+    for(int i = 2; i<=n; i++){
+        prefix_inversion[i] += prefix_inversion[i-1];
+        if(i<n) prefix_inversion[i] += (input[i-1] >= input[i-2]);
     }
 
-    vector<int> a(n);
-    a[0] = 2e6;
-    int sum = a[0];
-    int maxi = a[0];
-    for(int i = 1; i<n; i++){
-        int ele;
-        ele = b[i] + maxi - sum;
-        a[i] = ele;
-        sum += a[i];
+    vector<int> suffix_inversion(n+1, 0);
+
+    for(int i = n-2; i>=0; i--){
+        suffix_inversion[i] += suffix_inversion[i+1];
+        suffix_inversion[i] += (input[i] >= input[i+1]);
     }
 
-
-    for(auto ele : a){
-        cout<<ele<<" ";
+    int ans = 0;
+    for(int i = 0; i<n-1; i++){
+        ans += (input[i] >= input[i+1]);
     }
 
-    cout<<endl;
+    print(prefix_inversion);
+    print(suffix_inversion);
+
+    for(int i = 1; i<=n; i++){
+        ans = min(ans , prefix_inversion[i]+ suffix_inversion[i] + 1);
+    }
+
+    cout<<ans<<endl;
+
+
+
 }
 /* logic ends */
 
