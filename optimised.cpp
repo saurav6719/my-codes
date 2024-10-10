@@ -1,112 +1,58 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
-
-/* includes and all */
 #include <iostream>
-#include <vector>
-#include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <string>
 #include <fstream>
+#include <string>
+#include <vector>
+#include<set>
 
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
-
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#endif
-#define endl "\n"
-#define int long long int
-#define mod 1000000007
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int>
+#pragma GCC optimize("Ofast")
 using namespace std;
-
-/* write core logic here */
-void solve(){
-    int n;
-    cin>>n;
-
-	// cout<<-1<<endl;
-	// return;
-
-	if(n==1){
-		cout<<-1<<endl;
-		return;
+typedef long long ll;
+const int pw[]={1,10,100,1000,10000};
+int val(char c){
+	return pw[c-'A'];
+}
+int calc(string&s){
+	int res=0,mx=0;
+	for(int i=s.size()-1;i>=0;i--){
+		mx=max(mx,(int)s[i]);
+		if(s[i]==mx)res+=val(s[i]);
+		else res-=val(s[i]);
 	}
-
-	vector<int> input(n);
-    for(int i =0; i<n; i++){
-        cin>>input[i];
-    }
-    
-    sort(input.begin(), input.end());
-    cout<<input[n-2]<<endl;
+	return res;
 }
-/* logic ends */
-
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
-    int t;
-    // cin>>t;
-    t = 1;
-    while(t--){
-        solve();
-    }
-return 0;
+int main()
+{
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	int t;
+	cin>>t;
+	while(t--){
+		string s;
+		cin>>s;
+		vector<int>v[5];
+		for(int i=0;i<s.size();i++){
+			v[s[i]-'A'].push_back(i);
+		}
+		set<int>st;
+		for(int i=0;i<5;i++){
+			if(v[i].empty())continue;
+			st.insert(v[i][0]);
+			st.insert(v[i].back());
+		}
+		int res=calc(s);
+		for(auto x:st){
+			char c=s[x];
+			for(int i=0;i<5;i++){
+				s[x]='A'+i;
+				if(s[x]==c)continue;
+				res=max(res,calc(s));
+			}
+			s[x]=c;
+		}
+		cout<<res<<"\n";
+	}
+	return 0;
 }
-

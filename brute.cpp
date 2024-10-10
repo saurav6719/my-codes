@@ -16,13 +16,11 @@
 /* includes and all */
 
 #include <iostream>
-#include <vector>
-#include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <string>
 #include <fstream>
-
+#include <string>
+#include <vector>
 
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
@@ -75,28 +73,86 @@
 using namespace std;
 
 /* write core logic here */
+map<char,int> mp;
 void solve(){
-    int n;
-    cin>>n;
+    string str;
+    cin>>str;
+    int n = str.size();
 
-    vector<int> input(n);
+    map<char,int> freq;
+
+    for(int i= 0; i<n; i++){
+        freq[str[i]] = i;
+    }
+
+    int ans = 0;
+
+
+
+    vector<bool> posneg(n+5);
 
     for(int i =0; i<n; i++){
-        cin>>input[i];
-    }
+        char ch = str[i];
+        bool aagebada = false;
+        for(char x = ch+1; x<='E'; x++){
+            if(freq[x] > i) aagebada = true;
+        }
 
-    int first = -1;
-    int second = -1;
-    for(int i = 0; i<n; i++){
-        first = max(first , input[i]);
-    }
-    for(int i = 0; i<n; i++){
-        if(first != input[i]){
-            second = max(second, input[i]);
+        if(aagebada){
+            ans -= mp[ch];
+            posneg[i] = 0;
+            
+        }
+        else{
+            posneg[i] = 1;
+            ans += mp[ch];
         }
     }
 
-    cout<<second<<endl;
+    print(posneg);
+
+    debug(ans);
+
+    int ghatana = 0;
+    int badhana = 0;
+
+    int orginalans = ans;
+
+    for(int i = 0; i<n; i++){
+
+        if(str[i] == 'E') continue;
+
+        int curr = orginalans;
+        debug(curr);
+        
+
+        
+
+        debug(ghatana);
+        
+        // i pe change 
+
+        if(posneg[i] == 1){
+            curr -= 2*ghatana;
+            curr -= mp[str[i]];
+            curr += mp['E'];
+        }
+        else{
+            curr -= 2*ghatana;
+            curr += mp[str[i]];
+            curr += mp['E'];
+        }
+
+        if(posneg[i] == true){
+            ghatana += mp[str[i]];
+        }
+
+        ans = max(ans, curr);
+        debug(i);
+        debug(curr);
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -107,8 +163,14 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+
+    mp['A'] = 1;
+    mp['B'] = 10;
+    mp['C'] = 100;
+    mp['D'] = 1000;
+    mp['E'] = 10000;
+    //t = 1;
     while(t--){
         solve();
     }

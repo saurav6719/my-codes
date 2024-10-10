@@ -60,55 +60,69 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+#define mod 998244353
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-// Example using BFS
-bool canReachEnd(vector<int> &input, int k) {
-    int n = input.size();
-    vector<bool> visited(n, false);
-    queue<pair<int, long long>> q; // Pair of position and current sum
-    q.push({k, input[k]});
-    visited[k] = true;
+int dp[5001];
+map<int,int> mp;
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+    }
 
-    while(!q.empty()) {
-        auto [pos, sum] = q.front(); q.pop();
+    sort(input.begin(), input.end());
 
-        if(pos == 0 || pos == n-1) return true;
+    memset(dp, 0, sizeof dp);
+    dp[0] = 1;
 
-        // Move Left
-        if(pos > 0 && !visited[pos-1] && sum + input[pos-1] >= 0){
-            q.push({pos-1, sum + input[pos-1]});
-            visited[pos-1] = true;
-        }
-
-        // Move Right
-        if(pos < n-1 && !visited[pos+1] && sum + input[pos+1] >= 0){
-            q.push({pos+1, sum + input[pos+1]});
-            visited[pos+1] = true;
+    for(auto ele : input){
+        for(int x= 5000; x>=ele; x--){
+            if(x-ele>=0) {
+                dp[x] += dp[x-ele];
+                dp[x] %= mod;
+            }
         }
     }
 
-    return false;
+
+    // for(int i = 0; i<16; i++){
+    //     cout<<dp[i]<<" ";
+    // }
+    // cout<<endl;
+
+
+    int ans = 0;
+
+    for(int i = 0; i<=5000; i++){
+        ans += (dp[i] * (i/2 + i%2));
+        ans %= mod;
+    }
+    debug(ans);
+
+    for(int i = 0; i<=5000; i++){
+        if(dp[i] == 0) continue;
+        for(int j = 0; j<n; j++){
+            if(input[j] > i){
+                ans -= dp[i] * ((input[j] + i )/2 + (input[j] + i )%2);
+                ans %= mod;
+                ans += dp[i]*input[j];
+                ans %=mod;
+            }
+        }
+    }
+
+    cout<<ans<<endl;
+
+
+
 }
-
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    // Adjust k based on indexing
-    k--;
-
-    vector<int> input(n);
-    for(auto &ele : input) cin >> ele;
-
-    if(canReachEnd(input, k)) cout << "YES\n";
-    else cout << "NO\n";
-}
-
 /* logic ends */
 
 signed main(){
@@ -118,8 +132,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

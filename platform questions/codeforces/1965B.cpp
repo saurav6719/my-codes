@@ -67,48 +67,49 @@
 using namespace std;
 
 /* write core logic here */
-// Example using BFS
-bool canReachEnd(vector<int> &input, int k) {
-    int n = input.size();
-    vector<bool> visited(n, false);
-    queue<pair<int, long long>> q; // Pair of position and current sum
-    q.push({k, input[k]});
-    visited[k] = true;
+void solve(){
+    int n,k;
+    cin>>n>>k;
+    int kless = k-1;
 
-    while(!q.empty()) {
-        auto [pos, sum] = q.front(); q.pop();
+    int currsum = 0;
+    int currnum = 1;
 
-        if(pos == 0 || pos == n-1) return true;
+    vector<int> ans;
 
-        // Move Left
-        if(pos > 0 && !visited[pos-1] && sum + input[pos-1] >= 0){
-            q.push({pos-1, sum + input[pos-1]});
-            visited[pos-1] = true;
-        }
-
-        // Move Right
-        if(pos < n-1 && !visited[pos+1] && sum + input[pos+1] >= 0){
-            q.push({pos+1, sum + input[pos+1]});
-            visited[pos+1] = true;
-        }
+    while(currsum + currnum <= kless){
+        ans.push_back(currnum);
+        currsum += currnum;
+        currnum *= 2;
     }
 
-    return false;
+    if(currsum < kless){
+        ans.push_back(kless - currsum);
+        currsum = kless;
+    }
+
+    int kmore = k+1;
+
+    currsum = kless;
+
+    while(currsum < n){
+        ans.push_back(kmore);
+        currsum += kmore;
+        kmore = currsum+1;
+    }
+
+    print(ans);
+
+    ans.push_back(k * 2);
+
+    cout<<ans.size()<<endl;
+    for(auto ele : ans){
+        cout<<ele<<" ";
+    }
+
+    cout<<endl;
+
 }
-
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    // Adjust k based on indexing
-    k--;
-
-    vector<int> input(n);
-    for(auto &ele : input) cin >> ele;
-
-    if(canReachEnd(input, k)) cout << "YES\n";
-    else cout << "NO\n";
-}
-
 /* logic ends */
 
 signed main(){

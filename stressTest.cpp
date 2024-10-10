@@ -4,24 +4,28 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <cstdio>
 
 using namespace std;
 
+// Function to generate a random string of capital English letters 'A' to 'E'
+string generate_random_string(int length) {
+    string test_string;
+    for (int i = 0; i < length; ++i) {
+        char random_char = 'A' + rand() % 5; // Random letter from 'A' to 'E'
+        test_string += random_char;
+    }
+    return test_string;
+}
+
 // Function to generate a random test case
 string generate_test_case() {
-    int n = rand() % 10 + 1; // random number between 1 and 1000 (adjust as needed)
-    vector<int> arr(n);
-    for (int i = 0; i < n; ++i) {
-        arr[i] = rand() % 50 + 1; // random number between 1 and 100
+    int t = rand() % 5 + 1; // Random number of test cases between 1 and 5 (adjust as needed)
+    
+    string test_case = to_string(t) + "\n"; // Start with the number of test cases
+    for (int i = 0; i < t; ++i) {
+        int string_length = rand() % 20 + 1; // Random string length between 1 and 20
+        test_case += generate_random_string(string_length) + "\n";
     }
-
-    // Creating a string in the format of a test case (adjust according to your problem)
-    string test_case = to_string(n) + "\n";
-    for (int i = 0; i < n; ++i) {
-        test_case += to_string(arr[i]) + " ";
-    }
-    test_case += "\n";
     
     return test_case;
 }
@@ -72,7 +76,7 @@ int main() {
         return 1;
     }
 
-    for (int i = 1; i <= 10; ++i) { // Run the test for a large number of iterations
+    for (int i = 1; i <= 1000; ++i) { // Run the test for a large number of iterations
         cout << "Running test case #" << i << endl;
 
         // Generate a random test case

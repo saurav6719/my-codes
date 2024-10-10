@@ -67,48 +67,123 @@
 using namespace std;
 
 /* write core logic here */
-// Example using BFS
-bool canReachEnd(vector<int> &input, int k) {
+bool left(vector<int> &input, int k){
     int n = input.size();
-    vector<bool> visited(n, false);
-    queue<pair<int, long long>> q; // Pair of position and current sum
-    q.push({k, input[k]});
-    visited[k] = true;
-
-    while(!q.empty()) {
-        auto [pos, sum] = q.front(); q.pop();
-
-        if(pos == 0 || pos == n-1) return true;
-
-        // Move Left
-        if(pos > 0 && !visited[pos-1] && sum + input[pos-1] >= 0){
-            q.push({pos-1, sum + input[pos-1]});
-            visited[pos-1] = true;
-        }
-
-        // Move Right
-        if(pos < n-1 && !visited[pos+1] && sum + input[pos+1] >= 0){
-            q.push({pos+1, sum + input[pos+1]});
-            visited[pos+1] = true;
-        }
+    if(k==0) {
+        return true;
     }
+
+    int i = k;
+    int sum= 0; 
+    sum += input[i];
+
+
+    int j = k+1;
+
+    int maxi = sum;
+
+    int sum_copy = sum;
+
+    while(j<n){
+        sum_copy += input[j];
+        j++;
+        maxi = max(maxi , sum_copy);
+    }
+
+    
+    
+    while(j<n){
+        if(i==0) return true;
+        if(sum + input[i-1] >= 0){
+            sum += input[i-1];
+            i--;
+        }
+
+        else{
+            sum += input[j]; j++;
+            if(sum < 0) return false;
+        }
+    }   
 
     return false;
 }
 
+bool right(vector<int> &input, int k){
+    int n = input.size();
+    if(k==n-1) {
+        return true;
+    }
+
+    int i = k;
+    int sum= 0; 
+    sum += input[i];
+
+    int j = k-1;
+    
+    while(j>=0){
+        if(i==n-1) return true;
+        
+        if(sum + input[i+1] >= 0){
+            sum += input[i+1];
+            i++;
+        }
+        else{
+            sum += input[j]; j--;
+            if(sum < 0) return false;
+        }
+    }   
+    return false;
+}
+
+
+void solvee(){
+    int n,k;
+    cin>>n>>k;
+    k--;
+
+
+
+    vector<int> input(n);
+    for(int i = 0; i <n; i++){
+        cin>>input[i];
+    }
+
+    cout<<n<<"b"<<k<<"c";
+    for(auto ele : input){
+        cout<<ele<<"a";
+    }
+    cout<<endl;
+}
+
 void solve(){
-    int n, k;
-    cin >> n >> k;
-    // Adjust k based on indexing
+    int n,k;
+    cin>>n>>k;
     k--;
 
     vector<int> input(n);
-    for(auto &ele : input) cin >> ele;
+    for(int i = 0; i <n; i++){
+        cin>>input[i];
+    }
 
-    if(canReachEnd(input, k)) cout << "YES\n";
-    else cout << "NO\n";
+    if(k==0 or k==n-1){
+        cout<<"YES"<<endl;
+        return;
+    }
+
+    //left
+
+    bool xx = left(input, k);
+    bool yy = right (input, k);
+
+    if(xx or yy ){
+        cout<<"YES"<<endl;
+        return;
+    }
+
+    cout<<"NO"<<endl;   
+
+
 }
-
 /* logic ends */
 
 signed main(){
@@ -120,7 +195,8 @@ signed main(){
     int t;
     cin>>t;
     //t = 1;
-    while(t--){
+    for(int i = 1; i<=t; i++){
+        // if(i==469) solvee();
         solve();
     }
 return 0;
