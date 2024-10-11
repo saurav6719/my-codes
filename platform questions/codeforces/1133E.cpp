@@ -67,37 +67,43 @@
 using namespace std;
 
 /* write core logic here */
-int dp[501][201];
-int f(int time , int i, vector<int> &input, int n){
-    if(i==n) return 0;
-    if(time > 500) return INT_MAX;
+int dp[5001][5001];
+map<int,int> nxt;
+map<int,int> cnt;
+int f(int idx , int k, vector<int> &input, int n){
+    if(idx==n) return 0;
 
-    if(dp[time][i] != -1) return dp[time][i];
-
-    int ans = INT_MAX;
-
-    for(int j = time ;j <=500; j++){
-        ans = min(ans , f(j+1, i+1, input, n) + abs(input[i] - j));
+    if(dp[idx][k] != -1) return dp[idx][k];
+    //not pick 
+    int ans = f(idx+1, k, input, n);
+    // pick
+    if(k>0){
+        ans = max(ans, cnt[idx] + f(nxt[idx], k-1, input, n));
     }
+    return dp[idx][k] = ans;
 
-    return dp[time][i] = ans;
 }
-
 void solve(){
-    int n;
-    cin>>n;
-
-    
-    
+    int n,k;
+    cin>>n>>k;
     vector<int> input(n);
-    for(int i =0 ; i<n; i++){
+    for(int i = 0; i<n; i++){
         cin>>input[i];
     }
-
-    memset(dp, -1, sizeof dp);
     sort(input.begin(), input.end());
-    cout<<f(1, 0, input, n)<<endl;
+    memset(dp, -1, sizeof dp);
 
+    
+
+    for(int i = 0; i<n; i++){
+        int ele = input[i];
+        int tofind = ele + 5;
+        int it = upper_bound(input.begin(), input.end(), tofind) - input.begin();
+        nxt[i] = it;
+        cnt[i] = it - i;
+    }
+
+    cout<<f(0, k, input, n)<<endl;
 
 }
 /* logic ends */
@@ -109,8 +115,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
