@@ -67,100 +67,96 @@
 using namespace std;
 
 /* write core logic here */
-int f(vector<int> &input, int a, int b, int c){
-    if(a==b or b==c) return 1e15;
-    if(a <= 0 or c>= input.size()) return 1e15;
-
-    if(a<= 0 or b<=0 or c>=0) return 1e15;
-    if(a>=b or b>=c) return 1e15;
-    if(a>=input.size() or b>=input.size() or c>=input.size()) return 1e15;
-
-    int i= 1;
-    vector<int> temp;
-    int sum = 0;
-    while(i<=a){
-        sum += input[i];
-        i++;
-    }
-    temp.push_back(sum);
-    sum = 0;
-    while(i<=b){
-        sum += input[i];
-        i++;
-    }
-    temp.push_back(sum);
-    sum = 0;
-    while(i<=c){
-        sum += input[i];
-        i++;
-    }
-    temp.push_back(sum);
-    sum = 0;
-    while(i<=input.size()){
-        sum += input[i];
-        i++;
-    }
-    temp.push_back(sum);
-    sort(temp.begin(), temp.end());
-    return temp[3] - temp[0];
-}
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n+1);
-    int tsum = 0;
-    for(int i =1 ; i<=n; i++){
-        cin>>input[i];
-        tsum += input[i];
-    }
-    int tomake = tsum / 4;
+    vector<vector<char>> grid(n+1, vector<char>(n+1));
 
-    int a= 0;
-    int b = 0;
-    int c = 0;
-    int sum = 0;
-    int i = 0;
-    while(i<=n){
-        sum += input[i];
-        if(sum + input[i+1] > tomake and a == 0){
-            a = i;
-            sum = 0;
-            i++;
-            continue;
+    for(int i=1; i<=n; i++){
+        for(int j=1; j<=n; j++){
+            cin>>grid[i][j];
         }
-        if(sum + input[i+1] > tomake and b == 0){
-            b = i;
-            sum = 0;
-            i++;
-            continue;
-        }
-        if(sum + input[i+1] > tomake and c == 0){
-            c = i;
-            sum = 0;
-            i++;
-            continue;
-        }
+    }
+    map<int,int> mp;
+    int i = 1; int j= n;
+    while(i<j){
+        mp[i] = j;
+        mp[j] = i;
         i++;
+        j--;
     }
 
-    if(c==0) c = n-1;
+    vector<vector<vector<pp> > > dp(n+1, vector<vector<pp>>(n+1, vector<pp>()));
 
-    debug(a);
-    debug(b);
-    debug(c);
-    int res = 1e15;
+    for(int i = 1; i<=n; i++){
+        for(int j = 1 ; j<=n; j++){
+            int transitionx = mp[j];
+            int transitiony = i;
+            debug(i);
+            debug(j);
+            dp[i][j].push_back({i,j});
+            while(transitionx != i or transitiony != j){
+                debug(transitionx);
+                debug(transitiony);
+                dp[i][j].push_back({transitionx, transitiony});
 
-
-    for(int i =-2; i<=2; i++){
-        for(int j = -2; j<=2; j++){
-            for(int k = -2; k<=2; k++){
-                int ans = f(input, a+i, b+j, c+k);
-                res = min(res, ans);
+                int transitionxcopy = transitionx;
+                int transitionycopy = transitiony;
+                transitionx = mp[transitionycopy];
+                transitiony = transitionxcopy;
+                // dp[i][j].push_back({transitionx, transitiony});
             }
         }
     }
 
-    cout<<res<<endl;
+    // for(int k = 0; k<dp[5][5].size(); k++){
+    //     cout<<dp[5][5][k].first<<" "<<dp[5][5][k].second<<endl;
+    // }
+
+    // for(int i = 1; i<=n; i++){
+    //     for(int j = 1; j<=n; j++){
+    //         debug(i);
+    //         debug(j);
+    //         for(int k = 0; k<dp[i][j].size(); k++){
+
+    //             cout<<dp[i][j][k].first<<" "<<dp[i][j][k].second<<endl;
+    //         }
+    //     }
+    // }
+
+    vector<vector<char>> gridcopy = grid;
+
+    for(int i = 1; i<=n; i++){
+        for(int j = 1; j<=n; j++){
+            int affectivex = mp[j];
+            int effectivey = i;
+            debug(i);
+            debug(j);
+            debug(affectivex);
+            debug(effectivey);
+            int aaa = affectivex;
+            int bbb = n+1-effectivey;
+            int ccc = n+1-affectivex;
+            int ddd = effectivey;
+            int nooftransitions = min(aaa,bbb);
+            nooftransitions = min(nooftransitions, ccc);
+            nooftransitions = min(nooftransitions, ddd);
+            debug(nooftransitions);
+            pp xx = dp[i][j][(nooftransitions % dp[i][j].size())];
+            int x = xx.first;
+            int y = xx.second;
+            debug(x);
+            debug(y);
+            gridcopy[i][j] = grid[x][y];
+        }
+    }
+
+    for(int i = 1; i<=n; i++){
+        for(int j = 1; j<=n; j++){
+            cout<<gridcopy[i][j];
+        }
+        cout<<endl;
+    }
 
 
 }
