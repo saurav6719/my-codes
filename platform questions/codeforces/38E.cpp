@@ -67,91 +67,58 @@
 using namespace std;
 
 /* write core logic here */
+int n;
+
+int dp2[3001][3001];
+
+int f(int idx,int lastpinned,  vector<pp> &positioncost, vector<vector<int> > &dp){
+
+
+    if(idx == 0){
+        return positioncost[0].second + dp[0][lastpinned]; 
+    }
+
+    if(dp2[idx][lastpinned] != -1) return dp2[idx][lastpinned];
+
+
+    int ans = 1e15;
+
+    // not pin it 
+
+    ans = min(ans , f(idx-1, lastpinned  , positioncost , dp));
+
+    // pin it
+
+    ans = min(ans , f(idx -1 , idx , positioncost , dp ) + positioncost[idx].second + dp[idx][lastpinned]);
+
+    return dp2[idx][lastpinned] = ans;
+
+}
 void solve(){
-    int n;
-    cin >> n;
-    string s;
-    cin >> s;
-    
-    // Two possible target patterns
-    string target1 = "";
-    string target2 = "";
+    cin>>n;
+    vector<pp> positioncost(n);
     for(int i=0;i<n;i++){
-        if(i%2 == 0){
-            target1 += '0';
-            target2 += '1';
-        }
-        else{
-            target1 += '1';
-            target2 += '0';
-        }
+        int x, c;
+        cin>>x>>c;
+        positioncost[i] = {x,c};
     }
-    
-    // Calculate mismatches for both patterns
-    int mismatches1 = 0, mismatches2 = 0;
+    sort(positioncost.begin(), positioncost.end());
 
-    vector<int> mismatch1;
+    memset(dp2, -1, sizeof dp2);
 
-    vector<int> mismatch2;
-
-    for(int i=0;i<n;i++){
-        if(s[i] != target1[i]) {
-            mismatches1++;
-            mismatch1.push_back(i);
-        }
-        if(s[i] != target2[i]) {
-            mismatches2++;
-            mismatch2.push_back(i);
-        }
-    }
-
-    debug(mismatches1);
-    debug(mismatches2);
+    vector<vector<int> > dp(n+1, vector<int> (n+1, 0));
 
     
-    // Each move can fix two mismatches
-    // If mismatches are odd, it's impossible
-
-    int contiguousblock1 = 0;
-    int contiguousblock2 = 0;
-
-    print(mismatch1);
-    print(mismatch2);
-
-    for(int i = 0; i<mismatch1.size()-1; i++){
-        if(mismatch1.size() == 0) break;
-        bool contiguosu = false;
-        while(i < mismatch1.size()-1 && mismatch1[i+1] == mismatch1[i] + 1 and s[mismatch1[i]] == s[mismatch1[i+1]]){
-            contiguosu = true;
-            i++;
+    for(int i = n-1; i>=0; i--){
+        for(int j = n; j>=i; j--){
+            if(i==j) dp[i][j] = 0;
+            else dp[i][j] = dp[i+1][j] + (j-i-1)*abs(positioncost[i].first - positioncost[i+1].first);
         }
-        if(contiguosu) contiguousblock1++;
     }
 
-    for(int i = 0; i<mismatch2.size()-1; i++){
-        if(mismatch2.size() == 0) break;
-        bool contiguosu = false;
-        while(i < mismatch2.size()-1 && mismatch2[i+1] == mismatch2[i] + 1 and s[mismatch2[i]] == s[mismatch2[i+1]]){
-            debug(mismatch2[i]);
-            debug(mismatch2[i+1]);
-            debug(s[mismatch2[i]]);
-            debug(s[mismatch2[i+1]]);
-            contiguosu = true;
-            i++;
-        }
-        if(contiguosu) contiguousblock2++;
-    }
+    cout<<f(n-1, n, positioncost, dp)<<endl;
 
-    mismatches1 -= contiguousblock1;
-    mismatches2 -= contiguousblock2;
-
-    debug(mismatches1);
-    debug(mismatches2);
-
-    
-    // Choose the minimum
-    int ans = min(mismatches1, mismatches2);
-    cout << ans;
+    // print2d(dp);
 }
 /* logic ends */
 

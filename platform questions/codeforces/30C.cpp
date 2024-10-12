@@ -67,91 +67,86 @@
 using namespace std;
 
 /* write core logic here */
+
+const long double EPSILON = 1e-9;
+struct target{
+    int x;
+    int y;
+    int timeofappearance;
+    long double probabilityofhit;
+};
+vector<target> targets;
+
+int timegap(int idx1, int idx2){
+    return abs(targets[idx1].timeofappearance - targets[idx2].timeofappearance);
+}
+
+long double distance(int idx1, int idx2){
+    return sqrtl((targets[idx1].x - targets[idx2].x)*(targets[idx1].x - targets[idx2].x) + (targets[idx1].y - targets[idx2].y)*(targets[idx1].y - targets[idx2].y));
+}
+
+long double dp[1001][1001];
+
+long double f(int idx, int lasthit){
+
+
+    debug(idx);
+    debug(lasthit);
+
+    if(idx == targets.size()){
+        return 0;
+    }
+
+    if(fabsl(dp[idx][lasthit] + 1) > EPSILON) return dp[idx][lasthit];
+
+    // cout<<"YEA"<<endl;
+
+
+    long double ans = 0;
+
+    //not hit it 
+
+    ans = f(idx + 1 , lasthit);
+
+
+    //hit it
+
+    if(lasthit == targets.size()){
+        ans = max(ans , f(idx+1 , idx ) + targets[idx].probabilityofhit);
+    }
+    else if (timegap(lasthit, idx) >= distance(lasthit, idx)){
+        ans = max(ans , f(idx+1 , idx ) + targets[idx].probabilityofhit);
+    }
+
+    return dp[idx][lasthit] = ans;
+
+
+}
+
+
 void solve(){
+
     int n;
-    cin >> n;
-    string s;
-    cin >> s;
-    
-    // Two possible target patterns
-    string target1 = "";
-    string target2 = "";
+
+    cin>>n;
+    targets.resize(n);
     for(int i=0;i<n;i++){
-        if(i%2 == 0){
-            target1 += '0';
-            target2 += '1';
-        }
-        else{
-            target1 += '1';
-            target2 += '0';
-        }
-    }
-    
-    // Calculate mismatches for both patterns
-    int mismatches1 = 0, mismatches2 = 0;
-
-    vector<int> mismatch1;
-
-    vector<int> mismatch2;
-
-    for(int i=0;i<n;i++){
-        if(s[i] != target1[i]) {
-            mismatches1++;
-            mismatch1.push_back(i);
-        }
-        if(s[i] != target2[i]) {
-            mismatches2++;
-            mismatch2.push_back(i);
-        }
+        cin>>targets[i].x>>targets[i].y>>targets[i].timeofappearance>>targets[i].probabilityofhit;
     }
 
-    debug(mismatches1);
-    debug(mismatches2);
+    sort(targets.begin(), targets.end(), [](target a, target b){
+        return a.timeofappearance < b.timeofappearance;
+    });
 
-    
-    // Each move can fix two mismatches
-    // If mismatches are odd, it's impossible
 
-    int contiguousblock1 = 0;
-    int contiguousblock2 = 0;
+    memset(dp, -1, sizeof dp);
 
-    print(mismatch1);
-    print(mismatch2);
+    cout<<fixed<<setprecision(10)<<f(0, n)<<endl;
 
-    for(int i = 0; i<mismatch1.size()-1; i++){
-        if(mismatch1.size() == 0) break;
-        bool contiguosu = false;
-        while(i < mismatch1.size()-1 && mismatch1[i+1] == mismatch1[i] + 1 and s[mismatch1[i]] == s[mismatch1[i+1]]){
-            contiguosu = true;
-            i++;
-        }
-        if(contiguosu) contiguousblock1++;
-    }
 
-    for(int i = 0; i<mismatch2.size()-1; i++){
-        if(mismatch2.size() == 0) break;
-        bool contiguosu = false;
-        while(i < mismatch2.size()-1 && mismatch2[i+1] == mismatch2[i] + 1 and s[mismatch2[i]] == s[mismatch2[i+1]]){
-            debug(mismatch2[i]);
-            debug(mismatch2[i+1]);
-            debug(s[mismatch2[i]]);
-            debug(s[mismatch2[i+1]]);
-            contiguosu = true;
-            i++;
-        }
-        if(contiguosu) contiguousblock2++;
-    }
 
-    mismatches1 -= contiguousblock1;
-    mismatches2 -= contiguousblock2;
 
-    debug(mismatches1);
-    debug(mismatches2);
 
-    
-    // Choose the minimum
-    int ans = min(mismatches1, mismatches2);
-    cout << ans;
 }
 /* logic ends */
 
