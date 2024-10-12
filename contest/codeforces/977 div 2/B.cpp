@@ -67,102 +67,61 @@
 using namespace std;
 
 /* write core logic here */
-int f(vector<int> &input, int a, int b, int c){
-    if(a==b or b==c) return 1e15;
-    if(a <= 0 or c>= input.size()) return 1e15;
-
-    if(a<= 0 or b<=0 or c>=0) return 1e15;
-    if(a>=b or b>=c) return 1e15;
-    if(a>=input.size() or b>=input.size() or c>=input.size()) return 1e15;
-
-    int i= 1;
-    vector<int> temp;
-    int sum = 0;
-    while(i<=a){
-        sum += input[i];
-        i++;
-    }
-    temp.push_back(sum);
-    sum = 0;
-    while(i<=b){
-        sum += input[i];
-        i++;
-    }
-    temp.push_back(sum);
-    sum = 0;
-    while(i<=c){
-        sum += input[i];
-        i++;
-    }
-    temp.push_back(sum);
-    sum = 0;
-    while(i<=input.size()){
-        sum += input[i];
-        i++;
-    }
-    temp.push_back(sum);
-    sort(temp.begin(), temp.end());
-    return temp[3] - temp[0];
-}
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n+1);
-    int tsum = 0;
-    for(int i =1 ; i<=n; i++){
+    int n,x;
+    cin>>n>>x;
+    vector<int> input(n);
+    for(int i=0; i<n; i++){
         cin>>input[i];
-        tsum += input[i];
-    }
-    int tomake = tsum / 4;
-
-    int a= 0;
-    int b = 0;
-    int c = 0;
-    int sum = 0;
-    int i = 0;
-    while(i<=n){
-        sum += input[i];
-        if(sum + input[i+1] > tomake and a == 0){
-            a = i;
-            sum = 0;
-            i++;
-            continue;
-        }
-        if(sum + input[i+1] > tomake and b == 0){
-            b = i;
-            sum = 0;
-            i++;
-            continue;
-        }
-        if(sum + input[i+1] > tomake and c == 0){
-            c = i;
-            sum = 0;
-            i++;
-            continue;
-        }
-        i++;
     }
 
-    if(c==0) c = n-1;
+    map<int,int> freq;
 
-    debug(a);
-    debug(b);
-    debug(c);
-    int res = 1e15;
+    for(auto ele : input){
+        freq[ele]++;
+    }
 
+    map<int,set<int> > multiplewithmod;
 
-    for(int i =-2; i<=2; i++){
-        for(int j = -2; j<=2; j++){
-            for(int k = -2; k<=2; k++){
-                int ans = f(input, a+i, b+j, c+k);
-                res = min(res, ans);
-            }
+    for(auto ele : freq){
+        if(ele.second > 1){
+            multiplewithmod[ele.first%x].insert(ele.first);
         }
     }
 
-    cout<<res<<endl;
+    int mex = 0;
+    for(int i=0; i<=n; i++){
+        if(freq.find(i) == freq.end()){
+            mex = i;
+            break;
+        }
+    }
 
+    debug(mex);
 
+    while(true){
+        if(freq[mex] >=1) {
+            mex++;
+            continue;
+        }
+        int mexmod = mex%x;
+        if(multiplewithmod[mexmod].size() == 0){
+            cout<<mex<<endl;
+            return;
+        }
+        int ele = *multiplewithmod[mexmod].begin();
+        if(ele > mex){
+            cout<<mex<<endl;
+            return;
+        }
+        freq[ele]--;
+        if(freq[ele] == 1){
+            multiplewithmod[ele%x].erase(ele);
+        }
+        mex++;
+    }
+
+    cout<<mex<<endl;
 }
 /* logic ends */
 
@@ -173,8 +132,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
