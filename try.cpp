@@ -1,17 +1,7 @@
-/*
-  ------------------------------------------
- |                                        |
- |      Code Crafted by Saurav     |
- |                                        |
-  ------------------------------------------
-    \        ,     ,        /
-      \      |     |      /
-         \   \___/   /
-           \  -----  /
-             \_____/
-  
-  Happy coding! 
-*/
+/**
+ *    author: Saurav
+ *    created: 2024.10.14 14:35:33
+ **/
 
 /* includes and all */
 
@@ -67,91 +57,202 @@
 using namespace std;
 
 /* write core logic here */
+int dp[100001][2][2];
 void solve(){
     int n;
-    cin >> n;
-    string s;
-    cin >> s;
-    
-    // Two possible target patterns
-    string target1 = "";
-    string target2 = "";
-    for(int i=0;i<n;i++){
-        if(i%2 == 0){
-            target1 += '0';
-            target2 += '1';
+    cin>>n;
+    vector<vector<char> >v(2, vector<char> (n+1));
+
+    for(int i=0; i<2; i++){
+        for(int j=1; j<=n; j++){
+            cin>>v[i][j];
         }
+    }
+
+    for(int i = 0; i<=n; i++){
+        for(int j = 0; j<2; j++){
+            for(int k = 0; k<2; k++){
+                dp[i][j][k] = 0;
+            }
+        }
+    }
+
+    debug(dp[2][0][1]);
+
+    dp[0][1][1] = 0;
+
+    for(int i = 1; i<=n;i++){
+        if(i-2 < 0) dp[i][1][0] = max((int) -1e15, dp[i][1][0]);
         else{
-            target1 += '1';
-            target2 += '0';
+            bool win = false;
+            int cnta = 0;
+            int cntj = 0;
+            if(v[0][i] == 'A') cnta ++;
+            if(v[0][i-1] == 'A') cnta ++;
+            if(v[1][i-1] == 'A') cnta ++;
+            if(v[0][i] == 'J') cntj ++;
+            if(v[0][i-1] == 'J') cntj ++;
+            if(v[1][i-1] == 'J') cntj ++;
+            if(cnta > cntj) win = true;
+
+            dp[i][1][0] = max(dp[i][1][0]  , dp[i-2][1][1] + (win ? 1 : 0));
+        }
+
+        if(i-3 < 0) dp[i][1][0] = max((int) -1e15, dp[i][1][0]);
+        else{
+            bool win = false;
+            int cnta = 0;
+            int cntj = 0;
+            if(v[0][i] == 'A') cnta ++;
+            if(v[0][i-1] == 'A') cnta ++;
+            if(v[0][i-2] == 'A') cnta ++;
+            if(v[0][i] == 'J') cntj ++;
+            if(v[0][i-1] == 'J') cntj ++;
+            if(v[0][i-2] == 'J') cntj ++;
+            if(cnta > cntj) win = true;
+            if(i==7){
+                debug(dp[i-3][1][0]);
+                debug(win);
+            }
+            dp[i][1][0] = max(dp[i][1][0]  , dp[i-3][1][0] + (win ? 1 : 0));
+            if(i==7){
+                debug(dp[i][1][0]);
+            }
+            if(i==7){
+                debug(dp[7][1][0]);
+            }
+        }
+
+        if(i-3 < 0) dp[i][1][0] = max((int) -1e15, dp[i][1][0]);
+
+        else{
+            bool win = false;
+            int cnta = 0;
+            int cntj = 0;
+            if(v[0][i] == 'A') cnta ++;
+            if(v[0][i-1] == 'A') cnta ++;
+            if(v[0][i-2] == 'A') cnta ++;
+            if(v[0][i] == 'J') cntj ++;
+            if(v[0][i-1] == 'J') cntj ++;
+            if(v[0][i-2] == 'J') cntj ++;
+            if(cnta > cntj) win = true;
+            dp[i][1][0] = max(dp[i][1][0]  , dp[i-3][1][1] + (win ? 1 : 0));
+        }
+
+
+        if(i-2 < 0) dp[i][0][1] = max((int) -1e15, dp[i][0][1]);
+        else{
+            bool win = false;
+            int cnta = 0;
+            int cntj = 0;
+            if(v[1][i] == 'A') cnta ++;
+            if(v[1][i-1] == 'A') cnta ++;
+            if(v[0][i-1] == 'A') cnta ++;
+            if(v[1][i] == 'J') cntj ++;
+            if(v[1][i-1] == 'J') cntj ++;
+            if(v[0][i-1] == 'J') cntj ++;
+            if(cnta > cntj) win = true;
+            if(i==2) debug(dp[i-2][1][1]);
+            if(i==2) debug(win);
+            if(i==2) debug(dp[i][0][1]);
+
+            dp[i][0][1] = max(dp[i][0][1]  , dp[i-2][1][1] + (win ? 1 : 0));
+            if(i==2) debug(dp[i][0][1]);
+
+        }
+
+        if(i-3 < 0) dp[i][0][1] = max((int) -1e15, dp[i][0][1]);
+        else{
+            bool win = false;
+            int cnta = 0;
+            int cntj = 0;
+            if(v[1][i] == 'A') cnta ++;
+            if(v[1][i-1] == 'A') cnta ++;
+            if(v[1][i-2] == 'A') cnta ++;
+            if(v[1][i] == 'J') cntj ++;
+            if(v[1][i-1] == 'J') cntj ++;
+            if(v[1][i-2] == 'J') cntj ++;
+            if(cnta > cntj) win = true;
+            dp[i][0][1] = max(dp[i][0][1]  , dp[i-3][1][1] + (win ? 1 : 0));
+        }
+
+        if(i-3 < 0) dp[i][0][1] = max((int) -1e15, dp[i][0][1]);
+        else{
+            bool win = false;
+            int cnta = 0;
+            int cntj = 0;
+            if(v[1][i] == 'A') cnta ++;
+            if(v[1][i-1] == 'A') cnta ++;
+            if(v[1][i-2] == 'A') cnta ++;
+            if(v[1][i] == 'J') cntj ++;
+            if(v[1][i-1] == 'J') cntj ++;
+            if(v[1][i-2] == 'J') cntj ++;
+            if(cnta > cntj) win = true;
+            dp[i][0][1] = max(dp[i][0][1]  , dp[i-3][0][1] + (win ? 1 : 0));
+        }
+
+        if(i-2 < 0) dp[i][1][1] = max((int) -1e15, dp[i][1][1]);
+        else{
+            bool win = false;
+            int cnta = 0;
+            int cntj = 0;
+            if(v[0][i] == 'A') cnta ++;
+            if(v[1][i] == 'A') cnta ++;
+            if(v[0][i-1] == 'A') cnta ++;
+            if(v[0][i] == 'J') cntj ++;
+            if(v[1][i] == 'J') cntj ++;
+            if(v[0][i-1] == 'J') cntj ++;
+            if(cnta > cntj) win = true;
+            dp[i][1][1] = max(dp[i][1][1]  , dp[i-2][1][0] + (win ? 1 : 0) );
+            dp[i][1][1] = max(dp[i][1][1] , dp[i-1][0][1] + (win ? 1 : 0) );
+            if(i%3 != 0) dp[i][1][1] = 0;
+
+        }
+        if(i-3 < 0)dp[i][1][1] = max((int) -1e15, dp[i][1][1]);
+        else{
+            int win1 = 0;
+            int win2 = 0;
+            int cnta = 0;
+            int cntj = 0;
+            if(v[0][i] == 'A') cnta ++;
+            if(v[0][i-1] == 'A') cnta ++;
+            if(v[0][i-2] == 'A') cnta ++;
+            if(v[0][i] == 'J') cntj ++;
+            if(v[0][i-1] == 'J') cntj ++;
+            if(v[0][i-2] == 'J') cntj ++;
+            if(cnta > cntj) win1 = 1;
+
+            cnta = 0;
+            cntj = 0;
+
+            if(v[1][i] == 'A') cnta ++;
+            if(v[1][i-1] == 'A') cnta ++;
+            if(v[1][i-2] == 'A') cnta ++;
+            if(v[1][i] == 'J') cntj ++;
+            if(v[1][i-1] == 'J') cntj ++;
+            if(v[1][i-2] == 'J') cntj ++;
+            if(cnta > cntj) win2 = 1;
+
+            dp[i][1][1] = max(dp[i][1][1]  , dp[i-3][1][1] + win1 + win2);
+            
+            if(i%3 != 0) dp[i][1][1] = 0;
         }
     }
-    
-    // Calculate mismatches for both patterns
-    int mismatches1 = 0, mismatches2 = 0;
 
-    vector<int> mismatch1;
-
-    vector<int> mismatch2;
-
-    for(int i=0;i<n;i++){
-        if(s[i] != target1[i]) {
-            mismatches1++;
-            mismatch1.push_back(i);
-        }
-        if(s[i] != target2[i]) {
-            mismatches2++;
-            mismatch2.push_back(i);
+    for(int i = 0; i<=n; i++){
+        for(int j = 0; j<2; j++){
+            for(int k = 0; k<2; k++){
+                debug(i);
+                debug(j);
+                debug(k);
+                debug(dp[i][j][k]);
+            }
         }
     }
+    int ans = dp[n][1][1];
+    cout<<ans<<endl;
 
-    debug(mismatches1);
-    debug(mismatches2);
 
-    
-    // Each move can fix two mismatches
-    // If mismatches are odd, it's impossible
-
-    int contiguousblock1 = 0;
-    int contiguousblock2 = 0;
-
-    print(mismatch1);
-    print(mismatch2);
-
-    for(int i = 0; i<mismatch1.size()-1; i++){
-        if(mismatch1.size() == 0) break;
-        bool contiguosu = false;
-        while(i < mismatch1.size()-1 && mismatch1[i+1] == mismatch1[i] + 1 and s[mismatch1[i]] == s[mismatch1[i+1]]){
-            contiguosu = true;
-            i++;
-        }
-        if(contiguosu) contiguousblock1++;
-    }
-
-    for(int i = 0; i<mismatch2.size()-1; i++){
-        if(mismatch2.size() == 0) break;
-        bool contiguosu = false;
-        while(i < mismatch2.size()-1 && mismatch2[i+1] == mismatch2[i] + 1 and s[mismatch2[i]] == s[mismatch2[i+1]]){
-            debug(mismatch2[i]);
-            debug(mismatch2[i+1]);
-            debug(s[mismatch2[i]]);
-            debug(s[mismatch2[i+1]]);
-            contiguosu = true;
-            i++;
-        }
-        if(contiguosu) contiguousblock2++;
-    }
-
-    mismatches1 -= contiguousblock1;
-    mismatches2 -= contiguousblock2;
-
-    debug(mismatches1);
-    debug(mismatches2);
-
-    
-    // Choose the minimum
-    int ans = min(mismatches1, mismatches2);
-    cout << ans;
 }
 /* logic ends */
 
@@ -162,8 +263,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
