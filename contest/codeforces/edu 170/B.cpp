@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.14 20:14:01
+ *    created: 2024.10.14 20:00:24
  **/
 
 /* includes and all */
@@ -57,22 +57,60 @@
 using namespace std;
 
 /* write core logic here */
+const int MOD = 1e9 + 7;
+
+// Function to calculate power in modular arithmetic
+long long power(long long x, long long y) {
+    long long res = 1;
+    x = x % MOD;
+    while (y > 0) {
+        if (y & 1)
+            res = (res * x) % MOD;
+        y = y >> 1; // y = y/2
+        x = (x * x) % MOD;
+    }
+    return res;
+}
+
+// Function to calculate factorial in modular arithmetic
+long long factorial(int n) {
+    long long res = 1;
+    for (int i = 2; i <= n; ++i)
+        res = (res * i) % MOD;
+    return res;
+}
+
+// Function to calculate nCr in modular arithmetic
+long long nCr(int n, int r) {
+    if (r == 0 || r == n)
+        return 1;
+    long long numerator = factorial(n);
+    long long denominator = (factorial(r) * factorial(n - r)) % MOD;
+    return (numerator * power(denominator, MOD - 2)) % MOD;
+}
 void solve(){
-    int N,k;
-    cin>>N>>k;
-
-    vector<vector<int> > C(N + 1, vector<int>(N + 1, 0));
-
-    for (int n = 0; n < N; n++) { // loop over n from 0 to N-1 (inclusive)
-        C[n][0] = 1;
-        C[n][n] = 1;
-        for (int k = 1; k < n; k++) // loop over k from 1 to n-1 (inclusive)
-            C[n][k] = C[n][k - 1] + C[n - 1][k - 1];
+    int t;
+    cin>>t;
+    vector<int> n(t);
+    vector<int> k(t);
+    for(int i = 0; i<t; i++){
+        cin>>n[i];
+    }
+    for(int i = 0; i<t; i++){
+        cin>>k[i];
     }
 
-    print2d(C) ;
+    vector<int> ans;
+    for(int i= 0; i<t; i++){
+        int nn = n[i];
+        int kk = k[i];
+        int res = power(2, kk);
+        ans.push_back(res);
+    }
 
-    cout<<C[N][k]<<endl;
+    for(auto ele : ans){
+        cout<<ele<<endl;
+    }
 }
 /* logic ends */
 
@@ -83,8 +121,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

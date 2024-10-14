@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.14 20:14:01
+ *    created: 2024.10.14 20:00:26
  **/
 
 /* includes and all */
@@ -58,22 +58,45 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int N,k;
-    cin>>N>>k;
-
-    vector<vector<int> > C(N + 1, vector<int>(N + 1, 0));
-
-    for (int n = 0; n < N; n++) { // loop over n from 0 to N-1 (inclusive)
-        C[n][0] = 1;
-        C[n][n] = 1;
-        for (int k = 1; k < n; k++) // loop over k from 1 to n-1 (inclusive)
-            C[n][k] = C[n][k - 1] + C[n - 1][k - 1];
+    int n,k;
+    cin>>n>>k;
+    vector<int> input(n);
+    for(int i=0 ;i<n; i++){
+        cin>>input[i];
     }
 
-    print2d(C) ;
+    sort(input.begin(),input.end());
 
-    cout<<C[N][k]<<endl;
+    vector<int> missing;
+    for(int i=  1; i<n; i++){
+        if(input[i] - input[i-1] > 1){
+            missing.push_back(input[i-1] + 1);
+        }
+    }
+
+    missing.push_back(input.back()+1);
+
+
+
+    int ans = 0;
+
+    for(int i= 0; i<n; i++){
+        int ele = input[i];
+        // i se shuru 
+        // i+k pe khatam 
+
+        int kahantak = lower_bound(missing.begin(), missing.end(), ele)-missing.begin();
+        int firstmissing = missing[kahantak];
+        int xx = ele+k;
+        if(firstmissing < xx) xx = firstmissing;
+        int khatam = lower_bound(input.begin(),input.end(),xx) - input.begin();
+        khatam--;
+        ans = max(ans , khatam - i + 1) ;
+    }
+
+    cout<<ans<<endl;
 }
+
 /* logic ends */
 
 signed main(){

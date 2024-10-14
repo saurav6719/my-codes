@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.14 20:14:01
+ *    created: 2024.10.14 20:50:37
  **/
 
 /* includes and all */
@@ -58,21 +58,7 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int N,k;
-    cin>>N>>k;
-
-    vector<vector<int> > C(N + 1, vector<int>(N + 1, 0));
-
-    for (int n = 0; n < N; n++) { // loop over n from 0 to N-1 (inclusive)
-        C[n][0] = 1;
-        C[n][n] = 1;
-        for (int k = 1; k < n; k++) // loop over k from 1 to n-1 (inclusive)
-            C[n][k] = C[n][k - 1] + C[n - 1][k - 1];
-    }
-
-    print2d(C) ;
-
-    cout<<C[N][k]<<endl;
+    
 }
 /* logic ends */
 
