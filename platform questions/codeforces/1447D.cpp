@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.15 19:57:08
+ *    created: 2024.10.16 00:08:07
  **/
 
 /* includes and all */
@@ -57,74 +57,34 @@
 using namespace std;
 
 /* write core logic here */
+int dp[5001][5001];
+int lcs(string &s1, string &s2, int i, int j){
+    int n = s1.size();
+    int m = s2.size();
+    if(i == n || j == m) return 0;
+    if(dp[i][j] != -1) return dp[i][j];
+    int ans = 0;
+    if(s1[i] == s2[j]){
+        ans = lcs(s1,s2,i+1, j+1) + 2;
+    }
+
+    ans = max({ans, lcs(s1,s2,i+1,j) - 1, lcs(s1,s2,i,j+1) - 1});
+    return dp[i][j] = ans;
+}
 void solve(){
     int n,m;
     cin>>n>>m;
-    vector<int>  storage(n);
-    vector<int> importance(n);
-    int sum = 0;
-    for(int i = 0; i<n; i++){
-        cin>>storage[i];
-        sum += storage[i];
-    }
-    for(int i = 0; i<n; i++){
-        cin>>importance[i];
-    }
-
-    if(m > sum){
-        cout<<-1<<endl;
-        return ;
-    }
-
-    vector<int> one;
-    vector<int> two;
-    for(int i = 0; i<n; i++){
-        if(importance[i] == 1){
-            one.push_back(storage[i]);
-        }
-        else{
-            two.push_back(storage[i]);
-        }
-    }
-
-    sort(one.rbegin(), one.rend());
-    sort(two.rbegin(), two.rend());
-
-    vector<int> prefixone(one.size()+1,0);
-    vector<int> prefixtwo(two.size()+1,0);
-
-    for(int i = 1; i<=one.size(); i++){
-        prefixone[i] = prefixone[i-1] + one[i-1];
-    }
-    for(int i = 1; i<=two.size(); i++){
-        prefixtwo[i] = prefixtwo[i-1] + two[i-1];
-    }
-    int ans = 1e15;
-    for(int i  = 0; i<=one.size(); i++){
-        // i took i one 
-        int totalonetaken = prefixone[i];
-        int remaining = m - totalonetaken;
-        // how many twos required now 
-        if(remaining <= 0){
-            ans = min(ans, i);
-            continue;
-        }
-        int twoindex = lower_bound(prefixtwo.begin(), prefixtwo.end(), remaining) - prefixtwo.begin();
-
-        if(twoindex == two.size() + 1){
-            continue;
+    string s1,s2;
+    cin>>s1>>s2;
+    memset(dp,-1,sizeof dp);
+    int ans = lcs(s1,s2,0,0);
+    for(int i= 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            ans = max(ans,dp[i][j]);
         }
 
-        debug(i);
-        debug(twoindex);
-
-        ans = min(ans , i + 2*twoindex);
     }
-
     cout<<ans<<endl;
-
-
-
 }
 /* logic ends */
 
@@ -135,8 +95,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

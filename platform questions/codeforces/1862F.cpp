@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.15 19:57:08
+ *    created: 2024.10.15 22:36:40
  **/
 
 /* includes and all */
@@ -57,72 +57,80 @@
 using namespace std;
 
 /* write core logic here */
+// writing a bitset query code to find alll possible subsets of input array
+
+void fun(vector<int> &input, bitset<1000001> &b){
+    int n = input.size();
+    b.reset();
+    b[0] = 1;
+
+    for(int i = 0; i<n; i++){
+        b |= (b << input[i]); 
+    }
+
+    return;
+}
+
+bool cando (int time , int w, int f, int total, vector<int> &poss){
+    int k1 = w * time;
+    int k2 = f * time;
+
+    if(k1 < k2) swap(k1,k2);
+
+    int maxi = k1;
+    int mini = total - k2;
+
+    if(mini > maxi) return false;
+
+    int xx = lower_bound(poss.begin(), poss.end(), mini) - poss.begin();
+    if(xx == poss.size()) return false;
+    int curr = poss[xx];
+
+    if(curr <= maxi) return true;
+    return false;
+}
 void solve(){
-    int n,m;
-    cin>>n>>m;
-    vector<int>  storage(n);
-    vector<int> importance(n);
-    int sum = 0;
+    int w,f;
+
+    cin>>w>>f;
+    int n;
+    cin>>n;
+    vector<int> input(n);
+
+    int total = 0;
     for(int i = 0; i<n; i++){
-        cin>>storage[i];
-        sum += storage[i];
+        cin>>input[i];
+        total += input[i];
     }
-    for(int i = 0; i<n; i++){
-        cin>>importance[i];
+    bitset<1000001> b;
+    fun(input,b);
+
+    vector<int> poss;
+    for(int i = 0; i<=1000000; i++){
+        if(b[i]){
+            poss.push_back(i);
+        }
     }
 
-    if(m > sum){
-        cout<<-1<<endl;
-        return ;
-    }
+    sort(poss.begin(), poss.end());
 
-    vector<int> one;
-    vector<int> two;
-    for(int i = 0; i<n; i++){
-        if(importance[i] == 1){
-            one.push_back(storage[i]);
+    int lo = 0;
+    int hi = 1e6;
+    int res = -1;
+
+    while(lo <= hi){
+        int mid = (lo + hi) / 2;
+
+        if(cando(mid, w, f ,total , poss)){
+            res = mid;
+            hi = mid - 1;
         }
         else{
-            two.push_back(storage[i]);
+            lo = mid + 1;
         }
     }
 
-    sort(one.rbegin(), one.rend());
-    sort(two.rbegin(), two.rend());
-
-    vector<int> prefixone(one.size()+1,0);
-    vector<int> prefixtwo(two.size()+1,0);
-
-    for(int i = 1; i<=one.size(); i++){
-        prefixone[i] = prefixone[i-1] + one[i-1];
-    }
-    for(int i = 1; i<=two.size(); i++){
-        prefixtwo[i] = prefixtwo[i-1] + two[i-1];
-    }
-    int ans = 1e15;
-    for(int i  = 0; i<=one.size(); i++){
-        // i took i one 
-        int totalonetaken = prefixone[i];
-        int remaining = m - totalonetaken;
-        // how many twos required now 
-        if(remaining <= 0){
-            ans = min(ans, i);
-            continue;
-        }
-        int twoindex = lower_bound(prefixtwo.begin(), prefixtwo.end(), remaining) - prefixtwo.begin();
-
-        if(twoindex == two.size() + 1){
-            continue;
-        }
-
-        debug(i);
-        debug(twoindex);
-
-        ans = min(ans , i + 2*twoindex);
-    }
-
-    cout<<ans<<endl;
-
+    cout<<res<<endl;
 
 
 }
