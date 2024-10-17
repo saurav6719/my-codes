@@ -59,7 +59,7 @@
 #define printpp(v)
 #endif
 #define endl "\n"
-#define int long long int
+// #define int long long int
 #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
@@ -128,20 +128,27 @@ void solve(){
 
     st.resize(4*n , vector<int> ());
     
-    map<int,int> mp1;
     vector<int> iii(n);
-    for(int i = 0; i<n; i++){
-        mp1[input[i]]++;
-        iii[i] = mp1[input[i]];
+    {
+        unordered_map<int,int> mp1;
+        for(int i = 0; i<n; i++){
+            mp1[input[i]]++;
+            iii[i] = mp1[input[i]];
+        }
     }
 
 
-    map<int,int> mp2;
     vector<int> jjj(n);
-    for(int i = n-1; i>=0; i--){
-        mp2[input[i]]++;
-        jjj[i] = mp2[input[i]];
+    {
+        unordered_map<int,int> mp2;
+
+        for(int i = n-1; i>=0; i--){
+            mp2[input[i]]++;
+            jjj[i] = mp2[input[i]];
+        }
     }
+    
+
 
     
     print(jjj);
@@ -156,7 +163,7 @@ void solve(){
     //     cout<<endl;
     // }
 
-    vector<int> ans(n);
+    vector<long long> ans(n);
     print(iii);
     for(int i = 0; i<n; i++){
         ans[i] = answer(0,0,n-1, i+1, n-1, iii[i]);
@@ -164,7 +171,7 @@ void solve(){
 
     print(ans);
 
-    int res = 0;
+    long long res = 0;
     for(auto ele: ans){
         res += ele;
     }
@@ -190,4 +197,3 @@ signed main(){
     }
 return 0;
 }
-

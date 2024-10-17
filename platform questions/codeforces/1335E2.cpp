@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.17 03:35:02
+ *    created: 2024.10.16 19:02:25
  **/
 
 /* includes and all */
@@ -58,9 +58,59 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int xx = 288230376151711743;
-    int yy = (int) log2(xx);
-    cout<<yy<<endl;
+    int n;
+    cin>>n;
+    vector<int> input(n+1);
+    vector<int> overallfreq(201, 0);
+
+    vector<vector<int> > freq2(201, vector<int> ());
+
+    for(int i=1;i<=n;i++){
+        cin>>input[i];
+        overallfreq[input[i]] ++;
+        freq2[input[i]].push_back(i);
+    }
+
+    vector<vector<int> > freq(201, vector<int> (n+1,0));
+    for(int i =1; i<=n; i++){
+        int ele = input[i];
+        freq[ele][i] = 1;
+    }
+    for(int i=1; i<=200; i++){
+        for(int j=1; j<=n; j++){
+            freq[i][j] += freq[i][j-1];
+        }
+    }
+
+    print2d(freq);
+
+    int ans = 1;
+
+    for(int i = 1; i<= 200; i++){
+        //first block is i 
+        for(int j = 1; j<=overallfreq[i]/2; j++){
+            // taking i jth times 
+            int starting = freq2[i][j-1];
+            int ending = freq2[i][overallfreq[i]-j];
+
+            // if(i==1 and j==2) debug(starting) , debug(ending) ;
+
+            for(int k = 1; k<=200; k++){
+                //taking most frequent element from starting +1 to ending - 1
+                // if(i==1 and j==2 and k==2){
+                //     debug(freq[k][ending-1]) ;
+                //     debug(freq[k][starting]) ;
+                // }
+                if((starting + 1) > (ending - 1)){
+                    ans = max(ans , 2*j);
+                    continue;
+                }
+                
+                ans = max(ans , 2*j + freq[k][ending-1] - freq[k][starting]);
+            }
+        }
+    }
+    cout<<ans<<endl;
 }
 /* logic ends */
 

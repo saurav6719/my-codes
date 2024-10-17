@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.17 03:35:02
+ *    created: 2024.10.16 22:12:11
  **/
 
 /* includes and all */
@@ -58,9 +58,36 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int xx = 288230376151711743;
-    int yy = (int) log2(xx);
-    cout<<yy<<endl;
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i =0 ; i<n; i++){
+        cin>>input[i];
+    }
+    int k;
+    cin>>k;
+
+    for(int i = n-2; i>=0; i--){
+        input[i] = min(input[i], input[i+1]);
+    }
+
+    vector<int> ans(n, 0);
+    ans[0] += (k/input[0]);
+    k-= (ans[0]*input[0]);
+
+    for(int i= 1; i<n; i++){
+        if(input[i] == input[i-1]){
+            ans[i] = ans[i-1];
+            continue;
+        }
+        int diff = input[i] - input[i-1];
+        ans[i] =min(ans[i-1] ,k/ diff);
+        k -= (ans[i]*diff);
+    }
+    for(int i = 0; i<n; i++){
+        cout<<ans[i]<<" ";
+    }
+    cout<<endl;
 }
 /* logic ends */
 

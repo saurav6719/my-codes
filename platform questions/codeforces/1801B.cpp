@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.17 03:35:02
+ *    created: 2024.10.17 01:49:12
  **/
 
 /* includes and all */
@@ -58,9 +58,53 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int xx = 288230376151711743;
-    int yy = (int) log2(xx);
-    cout<<yy<<endl;
+    int n;
+    cin>>n;
+    vector<pp> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i].first;
+        cin>>input[i].second;
+    }
+    sort(input.begin(), input.end());
+
+    multiset<int> stb;
+    for(auto ele : input){
+        stb.insert(ele.second);
+    }
+
+    multiset<int> stbdone;
+
+    int ans = 1e15;
+    for(int i = 0; i<n; i++){
+        // considering this first as maximum for one girlfriend
+        // then after this we have to select all from second element coz first will be greater 
+        // erase the current second from set as first is selected so cant select second 
+        stb.erase(stb.find(input[i].second));
+        int mx = stb.size() ? *stb.rbegin() : -1e15;
+
+        ans = min(ans , abs(input[i].first - mx));
+
+
+        // now lets say current remainining second is so small thatabsolute difference is quite high 
+        // we can select any of the previous second because by doing this amax is still a[i] as a is sorted 
+        // so we select that second from i-1 to 0 that minimise absolute difference 
+        // so select closest number to a[i] from stbdone
+
+        auto it = stbdone.lower_bound(input[i].first);
+        if(it != stbdone.end()){
+            int nmx = max(mx , *it);
+            ans = min(ans , abs(input[i].first - nmx));
+        }
+        if(it != stbdone.begin()){
+            --it;
+            int nmx = max(mx , *it);
+            ans = min(ans , abs(input[i].first - nmx));
+        }
+
+        stbdone.insert(input[i].second);
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 

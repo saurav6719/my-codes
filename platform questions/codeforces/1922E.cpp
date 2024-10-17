@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.17 03:35:02
+ *    created: 2024.10.17 02:12:40
  **/
 
 /* includes and all */
@@ -57,10 +57,54 @@
 using namespace std;
 
 /* write core logic here */
+int floor_log2(unsigned long long x){
+    if(x == 0){
+        throw invalid_argument("Undefined for x = 0");
+    }
+    int log = 0;
+    while(x >>= 1){
+        log++;
+    }
+    return log;
+}
+
 void solve(){
-    int xx = 288230376151711743;
-    int yy = (int) log2(xx);
-    cout<<yy<<endl;
+    int x;
+    cin>>x;
+
+    vector<int> ans;
+
+    int xx = floor_log2(x) ;
+    debug(xx);
+    for(int i = 1; i<=xx ; i++){
+        ans.push_back(i) ;
+    }
+    x-= (1ll<<xx) ;
+
+    debug(x);
+    
+    print(ans);
+
+    int cnt = 0;
+
+    while(x>0){
+        int xxy = floor_log2(x);
+        debug(xxy);
+        ans.push_back(xxy+1);
+        debug(x);
+        // debug(1ll<<xxy);
+        int zz = 1ll<<xxy;
+        debug(zz);
+        x -= zz;
+        debug(x);
+        cnt ++ ;
+    }
+
+    cout<<ans.size()<<endl;
+    for(auto x : ans){
+        cout<<x<<" ";
+    }
+    cout<<endl;
 }
 /* logic ends */
 
@@ -78,4 +122,3 @@ signed main(){
     }
 return 0;
 }
-
