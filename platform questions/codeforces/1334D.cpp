@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.21 01:07:54
+ *    created: 2024.10.20 22:29:26
  **/
 
 /* includes and all */
@@ -57,56 +57,99 @@
 using namespace std;
 
 /* write core logic here */
+
+void printff(int primary , int secondary , int times, int n){
+    while(times > 0){
+        cout<<secondary <<" ";
+        times--;
+        if(times <= 0) break;
+        secondary ++;
+        if(secondary > n){
+            primary ++;
+            secondary = primary + 1;
+        }
+
+        if(primary == n) break;
+
+        cout<<primary <<" ";
+        times--;
+        if(times <= 0) break;
+    }
+
+    if(times > 0){
+        cout<<1<<" ";
+    }
+}
+
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n);
-    for(int i= 0; i<n; i++){
-        cin>>input[i];
+
+    map<int,int> mp;
+    mp[1] = 1;
+
+    int curr = 2;
+    int currincrease = (n-1) * 2;
+    int last = 1;
+
+    while(curr < n){
+        mp[curr] = last + currincrease;
+        last = mp[curr];
+        currincrease -= 2;
+        curr++;
     }
 
-    vector<int> v(n);
-    int currneg = 0;
+    printmap(mp);
 
-    for(int i = n-1;i>=0; i--){
-        if(input[i] < 0) {
-            currneg += abs(input[i]);
-            v[i] = 0;
-        }
-        else{
-            v[i] = max(0ll , input[i] - currneg);
+    int l,r;
+    cin>>l>>r;
 
-            if(v[i] > 0){
-                currneg = 0;
+    vector<int> v;
+    for(auto ele : mp){
+        v.push_back(ele.second);
+    }
+
+    int xx = lower_bound(v.begin(), v.end(), l) - v.begin();
+
+    if(xx == v.size()){
+        if(l == (n * (n-1))){
+            if(r>l){
+                cout<<n<<" "<<1<<endl;
+                return;
             }
-            else {
-                currneg -= input[i];
-            }
+            cout<<n<<endl;
+            return;
+        }
+        else if(l == (n * (n-1)) + 1){
+            cout<<1<<endl;;
+            return;
         }
     }
 
-    print(v);
-
-    for(int i = n-2; i>=0; i--){
-        v[i] += v[i+1];
-    }
-    print(v);
-
-    int sum = 0;
-    int currans = 0;
-    int maxi = v[0];
-
-    for(int i = 0; i<n; i++){
-        sum += input[i];
-        int curr = sum + ((i+1 < n) ? v[i+1] : 0);
-
-        if(curr > maxi){
-            maxi = curr;
-            currans = sum;
-        }
+    if(xx!=v.size() and v[xx] == l){
+        xx++;
     }
 
-    cout<<currans<<endl;
+    debug(xx);
+
+    int primary = xx;
+    int used = l - mp[primary];
+
+    if(used % 2== 0){
+        cout<<primary<<" ";
+        used++;
+        l++;
+    }
+
+    int secondary = primary + (used / 2+ used % 2);
+
+    printff(primary , secondary , r-l+1, n);
+
+    cout<<endl;
+
+
+
+    
 }
 /* logic ends */
 
