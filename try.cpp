@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.19 03:50:35
+ *    created: 2024.10.20 15:06:56
  **/
 
 /* includes and all */
@@ -57,69 +57,94 @@
 using namespace std;
 
 /* write core logic here */
-
+struct pair_hash {
+    size_t operator()(const pp& p) const {
+        // A common way to combine hashes of two integers
+        return hash<int>()(p.first) ^ (hash<int>()(p.second) << 1);
+    }
+};
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n);
-    for(int i=0;i<n;i++){
-        cin>>input[i];
+    multiset<int> ms;
+    unordered_map<int, vector<pp> > mp;
+    unordered_set<int> reaminingindex;
+    unordered_map<pp,int, pair_hash> stl;
+
+    for(int i = 0; i<n; i++){
+        int a,b;
+        cin>>a>>b;
+        mp[a].push_back({b,i}) ;
+        mp[b].push_back({a,i}) ;
+        stl[{a,b}]++;
+        ms.insert(a) ;
+        ms.insert(b) ;
+        reaminingindex.insert(i) ;
     }
 
-    // Initialize DP table
-    // dp[idx][even][length]
-    // idx from 0 to n
-    // even: 0 or 1
-    // length: 0 to 3
-    vector<vector<vector<int>>> dp(n+1, vector<vector<int>>(2, vector<int>(4, 0)));
-
-    // Base Case
-    // At idx=0, even=1 (initial state), length=0, there's 1 way (empty subset)
-    dp[0][1][0] = 1;
-
-    for(int idx = 0; idx < n; idx++){
-        for(int even = 0; even <=1; even++){
-            for(int length = 0; length <=3; length++){
-                if(dp[idx][even][length] == 0) continue;
-
-                // Current element parity
-                int curreven = (input[idx] & 1) ? 0 : 1;
-
-                // Pick the current element
-                int neweven = (even ^ curreven);
-                neweven ^= 1; // As per original logic
-
-                int newlength = length + 1;
-                if(newlength >3) newlength =3;
-
-                dp[idx+1][neweven][newlength] += dp[idx][even][length];
-                dp[idx+1][neweven][newlength] %= mod; // To prevent overflow
-
-                // Not pick the current element
-                dp[idx+1][even][length] += dp[idx][even][length];
-                dp[idx+1][even][length] %= mod;
-            }
+    for(auto ele : mp){
+        debug(ele.first);
+        for(auto x : ele.second){
+            debug(x.first);
+            debug(x.second);
         }
     }
 
-    // Compute the answer
-    // According to the original base cases:
-    // If length >=3 and even ==1, it's valid (assuming based on original conditions)
-    int ans = 0;
-    for(int even =0; even <=1; even++){
-        for(int length =3; length <=3; length++){ // Only length=3 is meaningful due to capping
-            if(length >=3){
-                if(even ==1){
-                    ans += dp[n][even][length];
-                    ans %= mod;
+    for(auto & ele : mp){
+        sort(ele.second.begin(),ele.second.end()) ;
+    }
+
+    vector<int> ans;
+    while(reaminingindex.size() > 0){
+        int mini = *ms.begin() ;
+        debug(mini);
+        // ms.erase(ms.begin()) ;
+        for(auto ele : mp[mini]){
+            int idx = ele.second ;
+            debug(ele.first);
+            debug(idx);
+            if(reaminingindex.count(idx)){
+
+                if(stl.count({mini, ele.first})){
+                    // cout<<"YEE"<<endl;
+                    ans.push_back(mini);
+                    ans.push_back(ele.first) ;
+                    ms.erase(ms.find(mini)) ;
+                    ms.erase(ms.find(ele.first)) ;
+
+                    stl[{mini,ele.first}]-- ;
+                    if(stl[{mini,ele.first}] == 0){
+                        stl.erase(stl.find({mini,ele.first})) ;
+                        
+                    }
                 }
-                // According to original code, if length >=3 and even == false, return 0
-                // So we only count when even ==1
-            }
-        }
-    }
 
-    cout<<ans<<endl;
+                if(stl.count({ele.first, mini})){
+                    // cout<<"YEA"<<endl;
+                    ans.push_back(ele.first);
+                    ans.push_back(mini) ;
+                    ms.erase(ms.find(mini)) ;
+                    ms.erase(ms.find(ele.first)) ;
+                    stl[{ele.first,mini}]-- ;
+                    if(stl[{ele.first,mini}] == 0){
+                        stl.erase(stl.find({ele.first,mini})) ;
+                        
+                    }
+                }
+                
+                reaminingindex.erase(idx) ;
+
+            }
+
+        }
+        
+    }
+    for(auto x : ans){
+        cout<<x<<" ";
+    }
+    cout<<endl;
+
+
 }
 /* logic ends */
 
@@ -130,10 +155,11 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
 return 0;
 }
+
