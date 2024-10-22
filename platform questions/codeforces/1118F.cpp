@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.23 02:35:48
+ *    created: 2024.10.22 23:49:15
  **/
 
 /* includes and all */
@@ -57,49 +57,83 @@
 using namespace std;
 
 /* write core logic here */
-vector<int> dp;
-void f(const vector<int> &arr) {
-    // Calculate the total sum of the array
-    int n = arr.size();
+map<int,pp> dp;
 
-    int sum = 0;
-    for (int i = 0; i < n; i++) {
-        sum += arr[i];
-        
+pp dfs(vector<vector<int> > &tree, int node, int par, vector<int> &color){
+    int blue = 0;
+    int red = 0;
+    if(color[node] == 1) red++;
+    else if(color[node] == 2) blue++;
+
+    for(auto child : tree[node]){
+        if(child == par) continue;
+        auto temp = dfs(tree, child, node, color);
+        red += temp.first;
+        blue += temp.second;
     }
 
-    int target  = sum / 2;
-    dp.assign(sum + 1, 0);
-
-    dp[0] = 1;
-
-    for(int i = 0; i<n; i++){
-        for(int j = sum ; j>=arr[i]; j--){
-            dp[j] |= dp[j - arr[i]];
-        }
-    }
-
-    return;
+    return dp[node] = {red, blue};
 }
+vector<int> parent;
+void dfs2(vector<vector<int> > &tree, int node, int par){
+    parent[node] = par;
+    for(auto child : tree[node]){
+        if(child == par) continue;
+        dfs2(tree, child, node);
+    }
+}
+
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n);
-    int sum = 0;
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-        sum += input[i];
+
+    vector<int> color(n+1);
+
+    int totalred= 0, totalblue = 0;
+
+    for(int i = 1; i<=n; i++){
+        cin>>color[i];
+        if(color[i] == 1) totalred++;
+        else if(color[i] == 2) totalblue++;
     }
 
-    f(input);
-    int cnt = 0;
-    for(int i = 1; i<=sum; i++){
-        if(dp[i]) cnt++;
+    vector<vector<int>> tree(n+1);
+    parent.assign(n+1, 0);
+    vector<pp> edgelist;
+    for(int i = 1; i<n; i++){
+        int u, v;
+        cin>>u>>v;
+        tree[u].push_back(v);
+        tree[v].push_back(u);
+        edgelist.push_back({u,v});
     }
-    cout<<cnt<<endl;
-    for(int i = 1; i<=sum ; i++){
-        if(dp[i]) cout<<i<<" ";
+
+    dfs2(tree, 1, 0);
+
+    pp xx = dfs(tree, 1, 0, color);
+
+    int ans = 0;
+    for(auto ele : edgelist){
+        int u = ele.first;
+        int v = ele.second;
+        if(parent[u] == v){
+            swap(u,v);
+        }
+
+        int red = dp[v].first;
+        int blue = dp[v].second;
+
+        int remainingred = totalred - red;
+        int remainingblue = totalblue - blue;
+
+        if(red == 0 and remainingblue == 0  or blue == 0 and remainingred == 0){
+            ans ++;
+        }
     }
+
+    cout<<ans<<endl;
+
+
 
 }
 /* logic ends */

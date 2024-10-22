@@ -57,11 +57,12 @@
 using namespace std;
 
 /* write core logic here */
-vector<int> dp;
-void f(const vector<int> &arr) {
+
+long long f(const vector<int> &arr) {
     // Calculate the total sum of the array
     int n = arr.size();
 
+    vector<int> dp;
     int sum = 0;
     for (int i = 0; i < n; i++) {
         sum += arr[i];
@@ -79,27 +80,79 @@ void f(const vector<int> &arr) {
         }
     }
 
-    return;
+    int one;
+    int two;
+
+    for(int i = target ; i>=0; i--){
+        if(dp[i]){
+            one = i;
+            two = sum - i;
+            break;
+        }
+    }
+
+    return one * two;
+
+
+
+}
+
+int subtreesize(vector<vector<int>> &tree, int node, int parent, vector<int> &subtree){
+    int cnt = 1;
+    for(auto x : tree[node]){
+        if(x != parent){
+            cnt += subtreesize(tree, x, node, subtree);
+        }
+    }
+    return subtree[node] = cnt;
+}
+
+void children(vector<vector<int> > & tree, int node, int par, vector<vector<int> > &childrens){
+    childrens[par].push_back(node);
+
+    for(auto x : tree[node]){
+        if(x != par){
+            children(tree, x, node, childrens);
+        }
+    }
+
 }
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n);
-    int sum = 0;
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-        sum += input[i];
+    vector<vector<int> > tree(n+1, vector<int> ());
+
+    for(int i= 2; i<=n; i++){
+        int x;
+        cin>>x;
+        tree[x].push_back(i);
+        tree[i].push_back(x);
     }
 
-    f(input);
-    int cnt = 0;
-    for(int i = 1; i<=sum; i++){
-        if(dp[i]) cnt++;
+    vector<int> subtree(n+1, 0);
+    int xx = subtreesize(tree, 1, 0, subtree);
+    print(subtree);
+
+    vector<vector<int> > childrens(n+1, vector<int> ());
+
+    children(tree, 1, 0, childrens);
+
+    vector<vector<int> > childrensizes(n+1, vector<int> ());
+
+    for(int i = 1; i<=n; i++){
+        for(auto x : childrens[i]){
+            childrensizes[i].push_back(subtree[x]);
+        }
     }
-    cout<<cnt<<endl;
-    for(int i = 1; i<=sum ; i++){
-        if(dp[i]) cout<<i<<" ";
+
+    print2d(childrensizes);
+
+    int ans = 0;
+    for(int i = 1; i<=n; i++){
+        ans += f(childrensizes[i]);
     }
+
+    cout<<ans<<endl;
 
 }
 /* logic ends */
