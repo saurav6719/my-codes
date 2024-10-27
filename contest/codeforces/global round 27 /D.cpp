@@ -62,7 +62,7 @@ using namespace std;
 const int MOD = 1e9 + 7;
 
 // Function to calculate power in modular arithmetic
-long long power_mod(long long x, long long y) {
+long long power(long long x, long long y) {
     long long res = 1;
     x = x % MOD;
     while (y > 0) {
@@ -88,33 +88,8 @@ long long nCr(int n, int r) {
         return 1;
     long long numerator = factorial(n);
     long long denominator = (factorial(r) * factorial(n - r)) % MOD;
-    return (numerator * power_mod(denominator, MOD - 2)) % MOD;
+    return (numerator * power(denominator, MOD - 2)) % MOD;
 }
-
-// Safe comparison function
-bool isGreater(long long a, long long b, int power) {
-    if (b <= 0) {
-        // Depending on the problem constraints, handle b <= 0 accordingly.
-        // Here, assuming b > 0 based on the initial code logic.
-        return false;
-    }
-
-    if (power >= 60) { // 2^60 > 1e18, which exceeds LLONG_MAX when multiplied by b >=1
-        return false; // 2^power * b > a for any a <= 1e18
-    }
-
-    long long power_of_two = 1LL << power;
-
-    // Check for potential overflow in multiplication
-    if (power_of_two > LLONG_MAX / b) {
-        return false; // 2^power * b would overflow, thus it's greater than a
-    }
-
-    long long product = power_of_two * b;
-
-    return a > product;
-}
-
 void solve(){
     int n;
     cin>>n;
@@ -129,7 +104,7 @@ void solve(){
     for(int i = 0; i<n; i++){
         int ele = input[i];
         int curr = 0;
-        while(ele % 2 == 0 && ele != 0){
+        while(ele % 2 == 0){
             curr ++;
             ele /= 2;
         }
@@ -140,6 +115,8 @@ void solve(){
     }
 
     vector<int> dp2 = dp;
+
+    print(dp2);
 
     for(int i = 1; i<n; i++){
         dp[i] += dp[i-1];
@@ -159,72 +136,98 @@ void solve(){
 
     print(prfafterdivide);
     vector<int> ans(n);
-    ans[0] = input[0] % mod;
+    ans [0] = input[0];
 
-    // Correct Initialization
-    int currbigggest = input[0];
-    int currbiggestidx = 0;
+    int currbigggest = -1e15;
+    int currbiggestidx = -1;
 
-    int powerafterbiggest = dp2[0];
+    int powerafterbiggest = 0;
 
     for(int i = 1; i<n; i++){
         int powertilli = dp[i-1];
 
         int currele = input[i];
 
+        // debug(i);
+        // debug(currbigggest);
+        // debug(pow(2, powerafterbiggest) * currele);
         bool xx = false;
 
-        // Use safe comparison
-        xx = isGreater(currbigggest, currele, powertilli);
+
+        if(currbigggest > 0){
+            int logtwocurrbiggest = log2(currbigggest);
+            int yy = powerafterbiggest + log2(currele);
+
+            if(yy > logtwocurrbiggest + 2){
+                xx = false;
+            }
+            else if( yy < logtwocurrbiggest - 2){
+                xx = true;
+            }
+
+            else{
+                int aa = (power(2, powerafterbiggest) * currele);
+                int bb = currbigggest;
+                if(aa > bb){
+                    xx = false;
+                }
+                else{
+                    xx = true;
+                }
+            }   
+        }
 
         if(xx){
-            // ans[currbiggestidx] is already modulo'd
-            ans[i] = ans[currbiggestidx];
-            ans[i] %= mod;
-            // Calculate prfafterdivide[i-1] - prfafterdivide[currbiggestidx]
-            if(currbiggestidx > 0){
-                ans[i] += (prfafterdivide[i-1] - prfafterdivide[currbiggestidx] + mod) % mod;
+            int aa = 0;
+            int bb= 0;
+            ans[i] = ans[i-1];
+            if(i - currbiggestidx > 1){
+                int ppr = power(2,dp2[i-1])% mod;
+                ans[i] += (ppr  * (currele % mod)) % mod;
+                ans[i] %= mod;
+                ans[i] -= (input[i-1] - afterdivide[i-1]);
+                ans[i] += mod;
+                ans[i] %= mod;
+                
             }
             else{
-                ans[i] += prfafterdivide[i-1];
+                ans[i] += currele;
+                ans[i] %= mod;
             }
+            aa = ans[i];
+            ans[i] = ans[currbiggestidx];
             ans[i] %= mod;
-
-            // Compute currele * 2^(powerafterbiggestcopy) % mod
-            int powerafterbiggestcopy = powerafterbiggest - dp2[currbiggestidx];
-            powerafterbiggestcopy %= mod; // Ensure within mod
-
-            // To prevent negative powerafterbiggestcopy
-            if(powerafterbiggestcopy < 0){
-                powerafterbiggestcopy += mod;
-            }
-
-            ans[i] += (currele % mod * power_mod(2, powerafterbiggestcopy) % mod) % mod;
+            ans[i]+= prfafterdivide[i-1] - prfafterdivide[currbiggestidx];
+            ans[i] += mod;
             ans[i] %= mod;
-            
+            int powerafterbiggestcopy = powerafterbiggest;
+            powerafterbiggestcopy -= dp2[currbiggestidx];
+            ans[i] += (currele%mod * power(2, powerafterbiggestcopy) %mod) %mod;
+
+            bb = ans[i];
+
+            ans[i] = max(aa, bb);
+
             powerafterbiggest += dp2[i];
             powerafterbiggest %= mod;
+
         }
+
         else{
-            // Add prfafterdivide[i-1] directly
             ans[i] = prfafterdivide[i-1];
             ans[i] %= mod;
-
-            // Add currele * 2^(powertilli) % mod
-            ans[i] += (currele % mod * power_mod(2, powertilli) % mod) % mod;
+            ans[i] += ((currele%mod * (power(2, powertilli))%mod)) %mod;
             ans[i] %= mod;
-
-            // Update current biggest
             currbiggestidx = i;
             currbigggest = currele;
             powerafterbiggest = dp2[i];
         }
     }
-
     for(auto ele : ans){
-        cout<<ele<<" ";
-    }
-    cout<<endl;
+    cout<<ele<<" ";
+
+}
+cout<<endl;
 }
 
 
@@ -238,8 +241,10 @@ signed main(){
     #endif
     int t;
     cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
-    return 0;
+return 0;
 }
+
