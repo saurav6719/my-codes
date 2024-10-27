@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.27 17:15:58
+ *    created: 2024.10.26 22:59:31
  **/
 
 /* includes and all */
@@ -57,34 +57,33 @@
 using namespace std;
 
 /* write core logic here */
-set<int> ans;
-void f(vector<int> &arr, int idx , int currsum){
-    int n = arr.size();
-    if(idx == n) {
-        ans.insert(currsum);
-        return ;
+int dp[501][501];
+int f(int i, int j , vector<int> &arr){
+    if(i>j) return 0;
+    if(i==j) return 1;
+    if(j-i == 1 and arr[i] == arr[j]) return 1;
+    if(dp[i][j] != -1) return dp[i][j];
+    int ans = 1e15;
+    ans = min(ans , f(i+1, j, arr) + 1);
+    if(arr[i] == arr[j]){
+        ans = min(ans , f(i+1, j-1, arr));
     }
-    // pick 
-
-    f(arr, idx+1, currsum + arr[idx]);
-    //not pick 
-    f(arr, idx+1, currsum);
-
-    return;
+    for(int k = i+1; k<j; k++){
+        if(arr[i] == arr[k]){
+            ans = min(ans , f(i, k, arr) + f(k+1, j, arr));
+        }
+    }
+    return dp[i][j] = ans;
 }
 void solve(){
     int n;
     cin>>n;
-    vector<int> arr(n);
-    for(auto &x  : arr){
-        cin>>x;
+    vector<int> input(n);
+    for(int i = 0 ; i<n; i++){
+        cin>>input[i];
     }
-
-    f(arr, 0, 0);
-
-    for(auto &x : ans){
-        cout<<x<<" ";
-    }
+    memset(dp, -1, sizeof dp);
+    cout<<f(0,n-1, input);
 }
 /* logic ends */
 

@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.27 17:15:58
+ *    created: 2024.10.26 19:20:49
  **/
 
 /* includes and all */
@@ -57,34 +57,54 @@
 using namespace std;
 
 /* write core logic here */
-set<int> ans;
-void f(vector<int> &arr, int idx , int currsum){
-    int n = arr.size();
-    if(idx == n) {
-        ans.insert(currsum);
-        return ;
+map<pp, int> dp;
+int f(int i , int currgcd , vector<int> &length, vector<int> &cost){
+    if(currgcd == 1) return 0;
+
+    if( i == cost.size()) return 1e13;
+
+    if(dp.find({i, currgcd}) != dp.end()){
+        return dp[{i, currgcd}];
     }
-    // pick 
 
-    f(arr, idx+1, currsum + arr[idx]);
-    //not pick 
-    f(arr, idx+1, currsum);
+    // take 
 
-    return;
+    int take = cost[i] + f(i+1, __gcd(currgcd, length[i]) , length, cost);
+
+    int nottake = f(i+1, currgcd , length , cost);
+
+    return dp[{i, currgcd}] = min(take , nottake);
 }
 void solve(){
     int n;
     cin>>n;
-    vector<int> arr(n);
-    for(auto &x  : arr){
+    vector<int> length;
+    vector<int> cost;
+
+    for(int i = 0; i<n; i++){
+        int x;
         cin>>x;
+        length.push_back(x);
     }
 
-    f(arr, 0, 0);
-
-    for(auto &x : ans){
-        cout<<x<<" ";
+    for(int i = 0; i<n; i++){
+        int x;
+        cin>>x;
+        cost.push_back(x);
     }
+
+
+    int costy = 1e15;
+
+    for(int i = 0; i<n; i++){
+        costy = min(costy , f(i, 0 , length, cost));
+    }
+
+    if(costy > 1e12) costy = -1;
+
+    cout<<costy<<endl;
+
+
 }
 /* logic ends */
 
