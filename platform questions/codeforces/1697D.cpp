@@ -86,7 +86,6 @@ void solve(){
     for(int i = 2; i<=n; i++){
         int xx = query2(1,i);
         int yy = mp[{1,i-1}];
-
         if(xx != yy){
             ans[i] = query1(i);
             lastoccurence[ans[i]] = i;
