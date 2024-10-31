@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.10.27 21:07:40
+ *    created: 2024.10.31 05:48:05
  **/
 
 /* includes and all */
@@ -57,177 +57,46 @@
 using namespace std;
 
 /* write core logic here */
-
-
-const int MOD = 1e9 + 7;
-
-// Function to calculate power in modular arithmetic
-long long power_mod(long long x, long long y) {
-    long long res = 1;
-    x = x % MOD;
-    while (y > 0) {
-        if (y & 1)
-            res = (res * x) % MOD;
-        y = y >> 1; // y = y/2
-        x = (x * x) % MOD;
+struct triplet{
+    int i,j,gcd;
+    bool operator<(const triplet& other) const {
+        if (i != other.i) return i < other.i;
+        if (j != other.j) return j < other.j;
+        return gcd < other.gcd;
     }
-    return res;
-}
-
-// Function to calculate factorial in modular arithmetic
-long long factorial(int n) {
-    long long res = 1;
-    for (int i = 2; i <= n; ++i)
-        res = (res * i) % MOD;
-    return res;
-}
-
-// Function to calculate nCr in modular arithmetic
-long long nCr(int n, int r) {
-    if (r == 0 || r == n)
-        return 1;
-    long long numerator = factorial(n);
-    long long denominator = (factorial(r) * factorial(n - r)) % MOD;
-    return (numerator * power_mod(denominator, MOD - 2)) % MOD;
-}
-
-// Safe comparison function
-bool isGreater(long long a, long long b, int power) {
-    if (b <= 0) {
-        // Depending on the problem constraints, handle b <= 0 accordingly.
-        // Here, assuming b > 0 based on the initial code logic.
-        return false;
+};
+map<triplet,int> dp;
+int f(int i, int j, int currgcd , vector<vector<int> > &grid){
+    if (i == grid.size() - 1 && j == grid[0].size() - 1) {
+        return __gcd(currgcd, grid[i][j]);
     }
-
-    if (power >= 60) { // 2^60 > 1e18, which exceeds LLONG_MAX when multiplied by b >=1
-        return false; // 2^power * b > a for any a <= 1e18
+    if(i>=grid.size() || j>=grid[0].size()){
+        return 0;
     }
-
-    long long power_of_two = 1LL << power;
-
-    // Check for potential overflow in multiplication
-    if (power_of_two > LLONG_MAX / b) {
-        return false; // 2^power * b would overflow, thus it's greater than a
+    triplet t = {i,j,currgcd};
+    if(dp.find(t)!=dp.end()){
+        return dp[t];
     }
-
-    long long product = power_of_two * b;
-
-    return a > product;
+    int ans = 0;
+    ans = max(ans, f(i+1,j,__gcd(currgcd,grid[i][j]),grid));
+    ans = max(ans, f(i,j+1,__gcd(currgcd,grid[i][j]),grid));
+    return dp[t] = ans;
 }
-
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-    }
-
-    vector<int> dp(n);
-
-    vector<int> afterdivide(n);
-    for(int i = 0; i<n; i++){
-        int ele = input[i];
-        int curr = 0;
-        while(ele % 2 == 0 && ele != 0){
-            curr ++;
-            ele /= 2;
-        }
-
-        dp[i] = curr;
-
-        afterdivide[i] = ele;
-    }
-
-    vector<int> dp2 = dp;
-
-    for(int i = 1; i<n; i++){
-        dp[i] += dp[i-1];
-        dp[i] %= mod;
-    }
-
-    print(dp);
-    
-    print(afterdivide);
-
-    vector<int> prfafterdivide(n);
-    prfafterdivide[0] = afterdivide[0];
-    for(int i = 1; i<n; i++){
-        prfafterdivide[i] = prfafterdivide[i-1] + afterdivide[i];
-        prfafterdivide[i] %= mod;
-    }
-
-    print(prfafterdivide);
-    vector<int> ans(n);
-    ans[0] = input[0] % mod;
-
-    // Correct Initialization
-    int currbigggest = input[0];
-    int currbiggestidx = 0;
-
-    int powerafterbiggest = dp2[0];
-
-    for(int i = 1; i<n; i++){
-        int powertilli = dp[i-1];
-
-        int currele = input[i];
-
-        bool xx = false;
-
-        // Use safe comparison
-        xx = isGreater(currbigggest, currele, powertilli);
-
-        if(xx){
-            // ans[currbiggestidx] is already modulo'd
-            ans[i] = ans[currbiggestidx];
-            ans[i] %= mod;
-            // Calculate prfafterdivide[i-1] - prfafterdivide[currbiggestidx]
-            if(currbiggestidx > 0){
-                ans[i] += (prfafterdivide[i-1] - prfafterdivide[currbiggestidx] + mod) % mod;
-            }
-            else{
-                ans[i] += prfafterdivide[i-1];
-            }
-            ans[i] %= mod;
-
-            // Compute currele * 2^(powerafterbiggestcopy) % mod
-            int powerafterbiggestcopy = powerafterbiggest - dp2[currbiggestidx];
-            powerafterbiggestcopy %= mod; // Ensure within mod
-
-            // To prevent negative powerafterbiggestcopy
-            if(powerafterbiggestcopy < 0){
-                powerafterbiggestcopy += mod;
-            }
-
-            ans[i] += (currele % mod * power_mod(2, powerafterbiggestcopy) % mod) % mod;
-            ans[i] %= mod;
-            
-            powerafterbiggest += dp2[i];
-            powerafterbiggest %= mod;
-        }
-        else{
-            // Add prfafterdivide[i-1] directly
-            ans[i] = prfafterdivide[i-1];
-            ans[i] %= mod;
-
-            // Add currele * 2^(powertilli) % mod
-            ans[i] += (currele % mod * power_mod(2, powertilli) % mod) % mod;
-            ans[i] %= mod;
-
-            // Update current biggest
-            currbiggestidx = i;
-            currbigggest = currele;
-            powerafterbiggest = dp2[i];
+    int n,m;
+    cin>>n>>m;
+    vector<vector<int>> v(n,vector<int>(m));
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            cin>>v[i][j];
         }
     }
+    dp.clear();
 
-    for(auto ele : ans){
-        cout<<ele<<" ";
-    }
-    cout<<endl;
+
+    int ans = f(0,0,v[0][0],v);
+    cout<<ans<<endl;
 }
-
-
 /* logic ends */
 
 signed main(){
@@ -238,8 +107,10 @@ signed main(){
     #endif
     int t;
     cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
-    return 0;
+return 0;
 }
+

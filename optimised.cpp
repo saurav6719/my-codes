@@ -1,58 +1,70 @@
+/**
+ *    author:  tourist
+ *    created: 08.04.2024 10:50:53
+**/
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
 #include <string>
 #include <vector>
-#include<set>
 
-#pragma GCC optimize("Ofast")
 using namespace std;
-typedef long long ll;
-const int pw[]={1,10,100,1000,10000};
-int val(char c){
-	return pw[c-'A'];
-}
-int calc(string&s){
-	int res=0,mx=0;
-	for(int i=s.size()-1;i>=0;i--){
-		mx=max(mx,(int)s[i]);
-		if(s[i]==mx)res+=val(s[i]);
-		else res-=val(s[i]);
-	}
-	return res;
-}
-int main()
-{
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	cout.tie(0);
-	int t;
-	cin>>t;
-	while(t--){
-		string s;
-		cin>>s;
-		vector<int>v[5];
-		for(int i=0;i<s.size();i++){
-			v[s[i]-'A'].push_back(i);
-		}
-		set<int>st;
-		for(int i=0;i<5;i++){
-			if(v[i].empty())continue;
-			st.insert(v[i][0]);
-			st.insert(v[i].back());
-		}
-		int res=calc(s);
-		for(auto x:st){
-			char c=s[x];
-			for(int i=0;i<5;i++){
-				s[x]='A'+i;
-				if(s[x]==c)continue;
-				res=max(res,calc(s));
-			}
-			s[x]=c;
-		}
-		cout<<res<<"\n";
-	}
-	return 0;
+
+#ifdef LOCAL
+#include "algo/debug.h"
+#else
+#define debug(...) 42
+#endif
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(0);
+  int tt;
+  cin >> tt;
+  while (tt--) {
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> a(n, vector<int>(m));
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        cin >> a[i][j];
+      }
+    }
+    vector f(n, vector<vector<int>>(m));
+    f[0][0].push_back(a[0][0]);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        auto& v = f[i][j];
+        sort(v.begin(), v.end());
+        v.resize(unique(v.begin(), v.end()) - v.begin());
+        vector<int> new_v;
+        for (int it = 0; it < int(v.size()); it++) {
+          bool bad = false;
+          for (int jt = it + 1; jt < int(v.size()); jt++) {
+            if (v[jt] % v[it] == 0) {
+              bad = true;
+              break;
+            }
+          }
+          if (!bad) {
+            new_v.push_back(v[it]);
+          }
+        }
+        swap(v, new_v);
+        if (i < n - 1) {
+          for (int x : v) {
+            f[i + 1][j].push_back(__gcd(x, a[i + 1][j]));
+          }
+        }
+        if (j < m - 1) {
+          for (int x : v) {
+            f[i][j + 1].push_back(__gcd(x, a[i][j + 1]));
+          }
+        }
+      }
+    }
+    cout << f[n - 1][m - 1].back() << '\n';
+  }
+  return 0;
 }

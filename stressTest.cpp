@@ -7,24 +7,35 @@
 
 using namespace std;
 
-// Function to generate a random string of capital English letters 'A' to 'E'
-string generate_random_string(int length) {
-    string test_string;
-    for (int i = 0; i < length; ++i) {
-        char random_char = 'A' + rand() % 5; // Random letter from 'A' to 'E'
-        test_string += random_char;
+// Function to generate a random grid with integers between 1 and 10^6
+vector<vector<int>> generate_random_grid(int rows, int cols) {
+    vector<vector<int>> grid(rows, vector<int>(cols));
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            grid[i][j] = rand() % 1000000 + 1; // Random integer between 1 and 10^6
+        }
     }
-    return test_string;
+    return grid;
 }
 
-// Function to generate a random test case
+// Function to generate a random test case in the specified format
 string generate_test_case() {
-    int t = rand() % 5 + 1; // Random number of test cases between 1 and 5 (adjust as needed)
+    int t = rand() % 10000 + 1; // Random number of test cases between 1 and 10^4 (adjust as needed)
     
     string test_case = to_string(t) + "\n"; // Start with the number of test cases
     for (int i = 0; i < t; ++i) {
-        int string_length = rand() % 20 + 1; // Random string length between 1 and 20
-        test_case += generate_random_string(string_length) + "\n";
+        int n = rand() % 100 + 1; // Random rows between 1 and 100
+        int m = rand() % 100 + 1; // Random columns between 1 and 100
+        test_case += to_string(n) + " " + to_string(m) + "\n"; // Add rows and columns for this test case
+
+        // Generate the grid
+        vector<vector<int>> grid = generate_random_grid(n, m);
+        for (const auto& row : grid) {
+            for (int val : row) {
+                test_case += to_string(val) + " ";
+            }
+            test_case += "\n";
+        }
     }
     
     return test_case;
