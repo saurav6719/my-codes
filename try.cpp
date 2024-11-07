@@ -1,56 +1,44 @@
-#include <bits/stdc++.h>
-using ll = signed long long int;
-#define all(x) (x).begin(), (x).end()
+#include <iostream>
+#include <cstdio>
+#include <cstdlib>
+#include <algorithm>
+#include <cmath>
+#include <vector>
+#include <set>
+#include <map>
+#include <unordered_set>
+#include <unordered_map>
+#include <queue>
+#include <ctime>
+#include <cassert>
+#include <complex>
+#include <string>
+#include <cstring>
 using namespace std;
 
-void solve() {
-    int n, m;
-    cin >> n >> m;
-    vector<vector<int>> a(n, vector<int>(m));
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            cin >> a[i][j];
-        }
-    }
+#ifdef LOCAL
+	#define eprintf(...) fprintf(stderr, __VA_ARGS__)
+#else
+	#define eprintf(...) 42
+#endif
 
-    int ans = 1, g = __gcd(a[0][0], a[n - 1][m - 1]);
-    vector<vector<int>> dp(n, vector<int>(m));
+typedef long long ll;
+typedef pair<int, int> pii;
+#define mp make_pair
 
-    vector<int> candidates;
-    for(int x = 1; x * x <= g; ++x) {
-        if(g % x > 0) continue;
-        candidates.push_back(x);
-        if(x * x < g) candidates.push_back(g / x);
-    }
-
-    
-        for (int el : candidates) {
-            // Reset dp to zeros
-            for (int i = 0; i < n; ++i) {
-                for (int j = 0; j < m; ++j) {
-                    dp[i][j] = 0;
-                }
-            }
-            dp[0][0] = (a[0][0] % el == 0);
-
-            for (int i = 0; i < n; ++i) {
-                for (int j = 0; j < m; ++j) {
-                    if (a[i][j] % el > 0) continue;
-                    if (i > 0) dp[i][j] |= dp[i - 1][j];
-                    if (j > 0) dp[i][j] |= dp[i][j - 1];
-                }
-            }
-            if (dp[n - 1][m - 1]) {
-                ans = max(ans, el);
-            }
-        }
-    cout << ans << '\n';
+ll solve(ll n) {
+	if (n == 1) return 0;
+	return (n / 2) + 2 * solve((n + 1) / 2);
 }
 
-int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        solve();
-    }
+int main()
+{
+//	freopen("input.txt", "r", stdin);
+//	freopen("output.txt", "w", stdout);
+
+	ll n;
+	cin >> n;
+	cout << solve(n) << endl;
+
+	return 0;
 }
