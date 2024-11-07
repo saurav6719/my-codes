@@ -1,11 +1,13 @@
 /**
  *    author: Saurav
- *    created: 2024.11.08 01:05:04
+ *    created: 2024.11.07 16:28:33
  **/
 
 /* includes and all */
 
 #include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -55,51 +57,59 @@
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
+using namespace __gnu_pbds;
+
+template<typename T>
+using ordered_set = tree<
+    T,
+    null_type,
+    std::less<T>,
+    rb_tree_tag,
+    tree_order_statistics_node_update
+>;
+
 
 /* write core logic here */
+
+
+
+
 void solve(){
     int n;
     cin>>n;
+    int q;
+    cin>>q;
     vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    for(auto &x : input){
+        cin>>x;
     }
 
-    int ans = 0;
-    for(int i = 0; i<n; i++){
-        if(input[i] > 3 and input[i] & 1){
-            input[i] -= 3;
-            ans++;
-        }
-        if(input[i] == 3){
-            input[i] -= 3;
-            ans++;
-        }
-    }
-    // all are either even or 1 or 0
-
-    int evencnt = 0;
-    int onecnt = 0;
-    int sum = 0;
-    int reqone = 0;
-
-    for(int i = 0; i<n; i++){
-        if(input[i] > 1){
-            reqone += input[i]/2;
-            evencnt++;
-        }
-        else if(input[i] == 1){
-            onecnt++;
-        }
-        sum += input[i];
+    ordered_set<pair<int,int>> os ;
+    for(int i = 0 ; i < n ; i++){
+        os.insert({input[i],i}) ;
     }
 
-    if(onecnt > reqone){
-        sum -= (onecnt - reqone);
-    }
-    ans += sum/3;
+    while(q--){
+        char type;
+        cin>>type;
+        if(type == '!'){
+            int k,x ;
+            cin>>k>>x;
+            --k;
+            os.erase({input[k],k}) ;
+            input[k] = x ;
+            os.insert({input[k],k}) ;
 
-    cout<<ans<<endl;
+        }
+        else{
+            int a,b;
+            cin>>a>>b;
+            int xx = os.order_of_key({b+1,0}) - os.order_of_key({a,0}) ;
+            cout<<xx<<endl ;
+        }
+    }
+
+    
 }
 /* logic ends */
 

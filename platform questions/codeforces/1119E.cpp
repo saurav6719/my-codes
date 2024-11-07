@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.07 02:34:26
+ *    created: 2024.11.08 01:05:04
  **/
 
 /* includes and all */
@@ -61,39 +61,114 @@ void solve(){
     int n;
     cin>>n;
     vector<int> input(n);
-    for(auto &x : input){
-        cin>>x;
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
     }
 
-    
+    priority_queue<int> pq;
+    int onecnt = 0;
 
-    int ans = 0;
-    for(int i = 0; i<n; i++){
-        int ele = input[i];
-        if(ele == 1) continue;
-        if(ele % 3 == 0){
-            ans += (ele - 1) / 3;
-            input[i] -= ((ele - 1) / 3) * 3;
+    for(auto ele : input){
+        if(ele > 1){
+            pq.push(ele);
         }
-        else if(ele % 3 == 1){
-            ans += (ele - 2) / 3;
-            input[i] -= ((ele - 2) / 3) * 3;
+        else onecnt++;
+    }
+    int ans = 0;
+
+    vector<int> lasts;
+
+    while(!pq.empty()){
+        int ff = pq.top();
+        // cout<<"one"<<endl;
+        debug(ff);
+        pq.pop();
+
+        int noofisosceles = ff/2;
+
+        if(onecnt >= noofisosceles){
+            // cout<<"two"<<endl;
+            ans += noofisosceles;
+            debug(ans);
+            onecnt -= noofisosceles;
+            debug(onecnt);
+            ff-= (noofisosceles*2);
+            debug(ff);
+
+            if(ff == 1){
+                onecnt++;
+                debug(onecnt);
+            }
         }
         else{
-            ans += ele / 3;
-            input[i] -= (ele / 3) * 3;
+            ans += onecnt;
+            ff -= (2*onecnt);
+            onecnt = 0;
+            // cout<<"three"<<endl;
+            debug(ans);
+            debug(onecnt);
+            debug(ff);
+
+            while(!pq.empty() and ff > 1){
+                // cout<<"four"<<endl;
+                int ss = pq.top();
+                pq.pop();
+                debug(ss);
+
+                int nowisosceles = ff/2;
+                debug(nowisosceles);
+                if(nowisosceles <= ss){
+
+                    // cout<<"five"<<endl;
+                    ans += nowisosceles;
+                    ss -= nowisosceles;
+                    ff -= (nowisosceles*2);
+
+                    debug(ans);
+                    debug(ss);
+                    debug(ff);
+                    if(ss > 1){
+                        // cout<<"six"<<endl;
+                        pq.push(ss);
+                    }
+                    if(ff == 1){
+                        // cout<<"seven"<<endl;
+                        onecnt++;
+                    }
+                    if(ss == 1){
+                        // cout<<"eight"<<endl;
+                        onecnt++;
+                    }
+                }
+                else{
+                    // cout<<"nine"<<endl;
+                    ans += ss;
+                    ff -= (2*ss);
+                    debug(ans);
+                    debug(ff);
+                    if(ff == 1){
+                        // cout<<"ten"<<endl;
+                        onecnt++;
+                    }
+                }
+            }
+
+            if(ff > 1){
+                // cout<<"eleven"<<endl;
+                lasts.push_back(ff);
+            }
         }
     }
 
-    set<int> s;
-    for(int i = 0; i<n; i++){
-        s.insert(input[i]);
+    print(lasts);
+
+    debug(ans);
+
+    if(!lasts.empty() ){
+        ans += lasts[0]/3;
     }
 
-    while(!s.empty()){
-        int last = *s.rbegin();
-        int first = *s.begin();
-    }
+    cout<<ans<<endl;
 }
 /* logic ends */
 

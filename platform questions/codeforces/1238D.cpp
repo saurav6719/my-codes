@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.08 01:05:04
+ *    created: 2024.11.07 22:08:12
  **/
 
 /* includes and all */
@@ -60,46 +60,64 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    string str;
+    cin>>str;
+
+    vector<int> a;
+    vector<int> b;
+    for(int i= 0; i<n; i++){
+        if(str[i] == 'A'){
+            a.push_back(i+1);
+        }
+        else{
+            b.push_back(i+1);
+        }
     }
+    a.push_back(n+1);
+    b.push_back(n+1);
+    a.push_back(0);
+    b.push_back(0);
+
+    sort(a.begin(),a.end());
+    sort(b.begin(),b.end());
 
     int ans = 0;
-    for(int i = 0; i<n; i++){
-        if(input[i] > 3 and input[i] & 1){
-            input[i] -= 3;
-            ans++;
+
+    str = '#' + str;
+    for(int i = 1; i<=n; i++){
+        if(str[i] == 'A'){
+            //AAAAB types
+            int nextb = *upper_bound(b.begin(),b.end(),i);
+            if(nextb != n+1 and nextb != i+1){
+                ans ++;
+            }
+            if(i==1) debug(nextb);
+            if(i==1) debug(ans);
+
+            //ABBBB types
+
+            int nexta = *upper_bound(a.begin(),a.end(),i);
+            ans += nexta - i - 1;
+            if(i==1) debug(ans);
         }
-        if(input[i] == 3){
-            input[i] -= 3;
-            ans++;
+        else{
+            //BBBBA types
+            int nexta = *upper_bound(a.begin(),a.end(),i);
+            if(nexta != n+1 and nexta != i+1){
+                ans ++;
+            }
+
+            //BAAAA types
+            int nextb = *upper_bound(b.begin(),b.end(),i);
+            ans += nextb - i - 1;
         }
+        debug(i);
+        debug(ans);
     }
-    // all are either even or 1 or 0
 
-    int evencnt = 0;
-    int onecnt = 0;
-    int sum = 0;
-    int reqone = 0;
+    int total = (n-1) * (n) / 2;
+    cout<<total - ans<<endl;
 
-    for(int i = 0; i<n; i++){
-        if(input[i] > 1){
-            reqone += input[i]/2;
-            evencnt++;
-        }
-        else if(input[i] == 1){
-            onecnt++;
-        }
-        sum += input[i];
-    }
-
-    if(onecnt > reqone){
-        sum -= (onecnt - reqone);
-    }
-    ans += sum/3;
-
-    cout<<ans<<endl;
 }
 /* logic ends */
 
