@@ -66,39 +66,22 @@ void solve(){
     }
 
     int ans = 0;
-    for(int i = 0; i<n; i++){
-        if(input[i] > 3 and input[i] & 1){
-            input[i] -= 3;
-            ans++;
-        }
-        if(input[i] == 3){
-            input[i] -= 3;
-            ans++;
+    int pairs = 0;
+    for(int i = n-1; i>=0; i--){
+        pairs += input[i]/2;
+
+        if(input[i] & 1){
+            //there is a 1 
+            // if there are some pairs already match this 1 with those pairs
+
+            if(pairs){
+                pairs --;
+                ans++;
+            }
         }
     }
-    // all are either even or 1 or 0
-
-    int evencnt = 0;
-    int onecnt = 0;
-    int sum = 0;
-    int reqone = 0;
-
-    for(int i = 0; i<n; i++){
-        if(input[i] > 1){
-            reqone += input[i]/2;
-            evencnt++;
-        }
-        else if(input[i] == 1){
-            onecnt++;
-        }
-        sum += input[i];
-    }
-
-    if(onecnt > reqone){
-        sum -= (onecnt - reqone);
-    }
-    ans += sum/3;
-
+    //all pairs can arrange themselves 
+    ans += 2*pairs/3;
     cout<<ans<<endl;
 }
 /* logic ends */
