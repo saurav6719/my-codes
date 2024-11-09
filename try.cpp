@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.08 01:05:04
+ *    created: 2024.11.09 13:30:33
  **/
 
 /* includes and all */
@@ -60,29 +60,78 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    int xx = log2(n);
+
+    if(n==2){
+        cout<<1<<endl;
+        cout<<0<<endl;
+        return;
     }
 
-    int ans = 0;
-    int pairs = 0;
-    for(int i = n-1; i>=0; i--){
-        pairs += input[i]/2;
-
-        if(input[i] & 1){
-            //there is a 1 
-            // if there are some pairs already match this 1 with those pairs
-
-            if(pairs){
-                pairs --;
-                ans++;
-            }
-        }
+    if(n==3){
+        cout<<1<<endl;
+        cout<<1<<endl;
+        return;
     }
-    //all pairs can arrange themselves 
-    ans += 2*pairs/3;
-    cout<<ans<<endl;
+
+
+    cout<<xx<<endl;
+    int curr = 1; 
+
+    
+
+    int currentnumberofbacteria = 1;
+    for(int i = 0; i < xx-2; i++){
+        currentnumberofbacteria += curr;
+        cout<<curr<<" ";
+        curr *= 2;
+    }
+
+    int madetotal = 2*currentnumberofbacteria-1;
+
+    debug(madetotal);
+
+    int requiredbacteria = n - (pow(2, xx) - 1);
+    debug(requiredbacteria);
+
+    if(requiredbacteria <= currentnumberofbacteria){
+        cout<<0<<" ";
+
+        int uptilnow = madetotal + currentnumberofbacteria;
+
+        debug(uptilnow);
+        int tomake = n - uptilnow;
+
+        cout<<requiredbacteria<<" ";
+    }
+
+    else if(requiredbacteria > currentnumberofbacteria and requiredbacteria < 2*currentnumberofbacteria){
+        cout<<requiredbacteria - currentnumberofbacteria<<" ";
+        currentnumberofbacteria += requiredbacteria - currentnumberofbacteria;
+        int uptilnow = madetotal + currentnumberofbacteria;
+        int tomake = n - uptilnow;
+
+        int extramake = tomake - currentnumberofbacteria;
+
+        cout<<extramake<<" ";
+    }
+
+    else{
+        cout<<currentnumberofbacteria<<" ";
+        currentnumberofbacteria += currentnumberofbacteria;
+        int uptilnow = pow(2, xx) - 1;
+        int tomake = n - uptilnow;
+
+
+        int extramake = tomake - currentnumberofbacteria;
+
+        cout<<extramake<<" ";
+
+    }
+
+    
+
+
 }
 /* logic ends */
 
@@ -93,8 +142,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
