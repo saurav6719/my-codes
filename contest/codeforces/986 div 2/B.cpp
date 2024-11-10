@@ -57,8 +57,71 @@
 using namespace std;
 
 /* write core logic here */
+
+int countTermsLessThan(int a, int d, int size, int c) {
+    // If the common difference is zero, check if the first term is less than c
+    if (d == 0) {
+        if (a < c) return size; // All terms are the same and less than c
+        else return 0;          // All terms are the same but not less than c
+    }
+
+    // Calculate the maximum n such that the n-th term is less than c
+    int n_max = floor((double)(c - a) / d + 1);
+
+    // The result is the minimum of n_max and the size of the AP
+    return min(n_max, size);
+}
+
+
 void solve(){
+    int n,b,c;
+    cin>>n>>b>>c;
+
+    if(b==0){
+        if(c>=n-2 and c< n){
+            cout<<n-1<<endl;
+            return;
+        }
+        else if(c>= n){
+            cout<<n<<endl;
+            return; 
+        }
+        else{
+            cout<<-1<<endl;
+            return;
+        }
+    }
+
+    int start = c;
+    int end = c + (n-1) * b;
+
+    int perstart = 0;
+    int perlast = n-1;
+
+    int chotethann = 0;
+
+
+    int xx = n - start;
+
+    if(xx<0){
+        cout<<n<<endl;
+        return;
+    }
+    else{
+        int chote = xx / b;
+        if(xx%b!=0){
+            chote++;
+        }
+
+        chotethann = chote;
+        cout<<n-chotethann<<endl;
+    }
+
+
+
     
+
+
 }
 /* logic ends */
 

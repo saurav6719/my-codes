@@ -58,7 +58,35 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n,a,b;
+    cin>>n>>a>>b;
+    string s;
+    cin>>s;
+    int currx = 0;
+    int curry = 0;
+
+    for(int k = 0; k<100; k++){
+        for(int i = 0; i<n; i++){
+            if(s[i] == 'N'){
+                curry ++;
+            }
+            else if(s[i] == 'S'){
+                curry --;
+            }
+            else if(s[i] == 'E'){
+                currx ++;
+            }
+            else{
+                currx --;
+            }
+
+            if(currx == a and curry == b){
+                cout<<"YES"<<endl;
+                return ;
+            }
+        }
+    }
+    cout<<"NO"<<endl;
 }
 /* logic ends */
 
