@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.10 19:22:02
+ *    created: 2024.11.10 21:03:49
  **/
 
 /* includes and all */
@@ -57,43 +57,6 @@
 using namespace std;
 
 /* write core logic here */
-int ans = -1e18;
-int f(int i, vector<int> &v, vector<int> &input, int currsize){
-    int n = input.size();
-    if(i==n){
-        int k = currsize;
-        int req = max(1ll, k-2);
-        int currans = 0;
-        for(int j = 0; j<=60; j++){
-            if(v[j] >= req){
-                currans += (1LL<<j);
-            }
-        }
-        ans = max(ans, currans);
-        return 0;
-    }
-
-    // take it
-
-    for(int j = 0; j<=60; j++){
-        if(input[i] & (1LL<<j)){
-            v[j] ++;
-        }
-    }
-    int take = f(i+1,v,input, currsize+1);
-
-    for(int j = 0; j<=60; j++){
-        if(input[i] & (1LL<<j)){
-            v[j] --;
-        }
-    }
-
-    // leave it
-
-    int leave = f(i+1,v,input, currsize);
-
-    return max(take,leave);
-}
 void solve(){
     
 }
