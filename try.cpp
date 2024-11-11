@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.11 03:47:11
+ *    created: 2024.11.11 16:35:39
  **/
 
 /* includes and all */
@@ -50,81 +50,15 @@
 #endif
 #define endl "\n"
 #define int long long int
-// #define mod 1000000007
-#define MOD 1000000007
+#define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
-long long mod_pow(long long base, long long exp, long long mod) {
-    long long result = 1;
-    while (exp > 0) {
-        if (exp % 2 == 1) result = (result * base) % mod;
-        base = (base * base) % mod;
-        exp /= 2;
-    }
-    return result;
-}
 
-// Function to find modular inverse using Fermat's Little Theorem
-long long mod_inv(long long x, long long mod) {
-    return mod_pow(x, mod - 2, mod);
-}
-
-// Function to calculate sum of GP
-long long sum_of_gp(long long a, long long r, long long n) {
-    if (r == 1) {
-        return (a * n) % MOD;  // If r = 1, the sum is simply a * n
-    } else {
-        long long r_pow_n = mod_pow(r, n, MOD);  // Calculate r^n % MOD
-        long long numerator = (r_pow_n - 1 + MOD) % MOD;  // (r^n - 1) % MOD
-        long long denominator = (r - 1 + MOD) % MOD;  // (r - 1) % MOD
-        long long denominator_inv = mod_inv(denominator, MOD);  // Modular inverse of (r - 1)
-        return (a * numerator % MOD * denominator_inv % MOD) % MOD;
-    }
-}
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-
-    if(n&1){
-        int xx = n/2;
-        if(xx & 1){
-            int start = 1;
-            int r = 9;
-            int size = xx/2 + 1;
-            int ans1 = sum_of_gp(start,r,size);
-            int ans2 = sum_of_gp(1,r,size-1);
-            int ans = (ans1%MOD+ans2%MOD)%MOD;
-            ans *= 4;
-            ans %= MOD;
-            cout<<ans<<endl;
-        }
-        else{
-            int start = 3;
-            int r = 9;
-            int size = xx/2;
-            int ans1 = sum_of_gp(start,r,size);
-            int ans2 = sum_of_gp(1,r,size-1);
-
-            int ans = (ans1%MOD+ans2%MOD)%MOD;
-            ans *= 4;
-            ans %= MOD;
-            cout<<ans<<endl;
-
-        }
-    }
-    else{
-        int size = (n-1) / 2;
-        debug(size);
-        int ans = sum_of_gp(4,3,size);
-        debug(ans);
-        // ans *= 4;
-        ans %= MOD;
-        cout<<ans<<endl;
-        return;
-    }
+    
 }
 /* logic ends */
 
@@ -142,3 +76,4 @@ signed main(){
     }
 return 0;
 }
+
