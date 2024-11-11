@@ -58,7 +58,39 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(int i=0;i<n;i++){
+        cin>>input[i];
+    }
+
+    map<int,int> mp;
+
+    for(int i = 40; i>=0; i--){
+        for(int j = 0; j<n; j++){
+            if(input[j] & (1LL<<i)){
+                mp[i]++;
+            }
+        }
+    }
+
+
+    for(int i = 40; i>=0; i--){
+        if(mp[i] & 1){
+            if(mp[i] % 4 ==3 and (n-mp[i]) % 2 == 0){
+                cout<<"LOSE"<<endl;
+                return;
+            }
+            else{
+                cout<<"WIN"<<endl;
+                return;
+            }
+        }
+    }
+
+    cout<<"DRAW"<<endl;
+    return;
 }
 /* logic ends */
 
