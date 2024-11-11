@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.11 16:35:39
+ *    created: 2024.11.11 18:30:41
  **/
 
 /* includes and all */
@@ -57,40 +57,63 @@
 using namespace std;
 
 /* write core logic here */
+
+bool f(int i, int t, vector<int> &input, vector<int> &p, int l, int k, vector<vector<int> > &dp){
+    if(i == input.size()) return true;
+    int currdepth = input[i] + p[t % (2*k)];
+    if(i == 0) currdepth = 0;
+
+    debug(i);
+    debug(t);
+    debug(currdepth);
+
+    if(currdepth > l){
+        return false;
+    }
+    if(t > 1e4) return false;
+    if(dp[i][t] != -1) {
+        if(dp[i][t] == 1) return true;
+        return false;
+    }
+    // stay at current 
+    if(f(i, t+1, input, p, l, k, dp)){
+        dp[i][t] = 1;
+        return true;
+    }
+    // go to next
+    if(f(i+1, t+1, input, p, l, k, dp)){
+        dp[i][t] = 1;
+        return true;
+    }
+    dp[i][t] = 0;
+    return false;
+}
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    for(int i=0;i<n;i++){
+    int n,k,l;
+    cin>>n>>k>>l;
+
+    vector<int> input(n+1, 0);
+    for(int i=1;i<=n;i++){
         cin>>input[i];
     }
 
-    map<int,int> mp;
+    vector<vector<int> > dp(n+5, vector<int> (10005, -1));
+    vector<int> p;
+    for(int i = 0; i<=k; i++){
+        p.push_back(i);
+    }
+    for(int i = k-1; i>=0; i--){
+        p.push_back(i);
+    }
 
-    for(int i = 40; i>=0; i--){
-        for(int j = 0; j<n; j++){
-            if(input[j] & (1LL<<i)){
-                mp[i]++;
-            }
-        }
+    if(f(0,0,input, p,l,k,dp)){
+        cout<<"Yes"<<endl;
+
+    }else{
+        cout<<"No"<<endl;
     }
 
 
-    for(int i = 40; i>=0; i--){
-        if(mp[i] & 1){
-            if(mp[i] % 4 ==3 and (n-mp[i]) % 2 == 0){
-                cout<<"LOSE"<<endl;
-                return;
-            }
-            else{
-                cout<<"WIN"<<endl;
-                return;
-            }
-        }
-    }
-
-    cout<<"DRAW"<<endl;
-    return;
 }
 /* logic ends */
 
