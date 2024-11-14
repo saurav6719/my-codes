@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.14 23:42:16
+ *    created: 2024.11.15 03:17:24
  **/
 
 /* includes and all */
@@ -57,73 +57,103 @@
 using namespace std;
 
 /* write core logic here */
+map<int, vector<pp> >mp;
+int f(int node, vector<vector<int> > &tree , int par, int k, vector<int> &childrencount, vector<int> &score){
+    // answer if this node is in k paths 
+
+    int ans =  (score[node] * k);
+
+    if(k==0) return 0;
+
+    for(auto ele : mp[node]){
+        if(ele.first == k) return ele.second;
+    }
+
+    // debug(ans);
+
+
+    int noofchildren = childrencount[node];
+
+    if(noofchildren == 0){
+        return ans;
+    }
+
+    // debug(noofchildren);
+
+    vector<int> dp1;
+    vector<int> dp2;
+    vector<int> iftakensingle;
+
+    int x1 = k / noofchildren;
+    int x2 = k / noofchildren + 1;
+
+    int remain;
+    if(noofchildren == 0){
+        remain = 0;
+    }else{
+        remain = k % noofchildren;
+    }
+
+    // debug(x1);
+    // debug(x2);
+    // debug(remain);
+
+    for(auto child : tree[node]){
+        if(child == par) continue;
+        // debug(child);
+        int ans1 = f(child, tree, node, x1, childrencount, score);
+        if(remain > 0){
+            int ans2 = f(child, tree, node, x2, childrencount, score);
+            dp2.push_back(ans2);
+            iftakensingle.push_back(ans2 - ans1);
+        }
+        dp1.push_back(ans1);
+    }
+
+    sort(iftakensingle.begin(), iftakensingle.end(), greater<int>());
+
+    
+    for(int i = 0; i<dp1.size(); i++){
+        ans += dp1[i];
+    }
+
+    debug(node);
+    debug(ans);
+
+    for(int i = 0; i < remain; i++){
+        ans += iftakensingle[i];
+    }
+
+    mp[node].push_back({k, ans});
+
+    return ans;
+}
 void solve(){
     int n;
     cin>>n;
-    vector<int> arr(n);
-    int sum = 0;
-    for(int i=0;i<n;i++){
-        cin>>arr[i];
-        sum += arr[i];
+    int k;
+    cin>>k;
+    vector<vector<int> > tree(n+1, vector<int> ());
+
+    mp.clear();
+
+    vector<int> childrencount(n+1, 0);
+
+    for(int i = 2; i<=n; i++){
+        int par;
+        cin>>par;
+        childrencount[par]++;
+        tree[par].push_back(i);
+        tree[i].push_back(par);
     }
-    sort(arr.begin(), arr.end());
-
-    debug(sum);
-
-    bool zerofound = false;
-
-    int totalzerro = 0;
-
-    int pushedzero = 0;
-
-    while(arr.size() > 1 and sum > 0){
-
-        if(arr.size() == 2 and arr[0] == 0){
-            cout<<arr[1]<<endl;
-            return ;
-        }
-        print(arr);
-        vector<int> newarr;
-        for(int i = 1; i < arr.size(); i++){
-            newarr.push_back(arr[i] - arr[i-1]);
-            if(newarr.back() == 0){
-                totalzerro++;
-            }
-        }
-        sort(newarr.begin(), newarr.end());
-        int zerocnt = 0;
-        for(int i=0;i<newarr.size();i++){
-            if(newarr[i] == 0){
-                zerocnt++;
-            }
-        }
-        vector<int> xx;
-        for(auto ele : newarr){
-            if(ele != 0){
-                xx.push_back(ele);
-            }
-        }
-        if(zerocnt > 0){
-            zerofound = true;
-        }
-        if(zerofound and pushedzero < totalzerro){
-            xx.push_back(0);
-            pushedzero++;
-        }
-        sort(xx.begin(), xx.end());
-        arr = xx;
-        sum = 0;
-        for(auto ele : arr){
-            sum += ele;
-        }
+    vector<int> score(n+1);
+    for(int i = 1; i<=n; i++){
+        cin>>score[i];
     }
-    if(sum == 0){
-        cout<<0<<endl;
-        return ;
-    }
-    else if(arr.size() == 1) {
-        cout<<arr[0]<<endl;
-    }
+
+    int ans = f(1, tree, 0, k, childrencount, score);
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 
