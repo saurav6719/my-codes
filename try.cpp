@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.14 18:20:54
+ *    created: 2024.11.14 23:42:16
  **/
 
 /* includes and all */
@@ -57,96 +57,75 @@
 using namespace std;
 
 /* write core logic here */
-
-int query(int l, int r){
-    cout<<"? "<<l<<" "<<r<<endl;
-    cout<<flush;
-    int x;
-    cin>>x;
-    return x;
-}
-
-void printres(int x){
-    cout<<"! "<<x<<endl;
-    cout<<flush;
-}
 void solve(){
     int n;
     cin>>n;
+    vector<int> arr(n);
+    int sum = 0;
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+        sum += arr[i];
+    }
+    sort(arr.begin(), arr.end());
 
-    int secondmaxpos = query(1,n);
+    debug(sum);
 
-    if(secondmaxpos == 1){
-        int lo = secondmaxpos + 1;
-        int hi = n;
-        int ans = secondmaxpos + 1;
+    bool zerofound = false;
 
-        while(lo <= hi){
-            int mid = (lo + hi) / 2;
-            int x = query(secondmaxpos, mid);
-            if(x == secondmaxpos){
-                ans = mid;
-                hi = mid - 1;
-            }
-            else{
-                lo = mid + 1;
+    int totalzerro = 0;
+
+    int pushedzero = 0;
+
+    while(arr.size() > 1 and sum > 0){
+
+        if(arr.size() == 2 and arr[0] == 0){
+            cout<<arr[1]<<endl;
+            return ;
+        }
+        print(arr);
+        vector<int> newarr;
+        for(int i = 1; i < arr.size(); i++){
+            newarr.push_back(arr[i] - arr[i-1]);
+            if(newarr.back() == 0){
+                totalzerro++;
             }
         }
-
-        printres(ans);
-
-        return;
+        sort(newarr.begin(), newarr.end());
+        int zerocnt = 0;
+        for(int i=0;i<newarr.size();i++){
+            if(newarr[i] == 0){
+                zerocnt++;
+            }
+        }
+        vector<int> xx;
+        for(auto ele : newarr){
+            if(ele != 0){
+                xx.push_back(ele);
+            }
+        }
+        if(zerocnt > 0){
+            zerofound = true;
+        }
+        if(zerofound and pushedzero < totalzerro){
+            xx.push_back(0);
+            pushedzero++;
+        }
+        sort(xx.begin(), xx.end());
+        arr = xx;
+        sum = 0;
+        for(auto ele : arr){
+            sum += ele;
+        }
     }
 
-    int xx = query(1,secondmaxpos);
-
-    if(xx == secondmaxpos){
-        //left me max hai 
-        // i need to find minimum index where query(index, secondmaxpos) != secondmaxpos
-
-        int lo = 1;
-        int hi = secondmaxpos - 1;
-        int ans = secondmaxpos - 1;
-
-        while(lo <= hi){
-            int mid = (lo + hi) / 2;
-            int x = query(mid, secondmaxpos);
-            if(x != secondmaxpos){
-                ans = mid - 1;
-                hi = mid - 1;
-            }
-            else{
-                lo = mid + 1;
-            }
-        }
-
-        printres(ans);
+    if(sum == 0){
+        cout<<0<<endl;
+        return ;
     }
-    else{
-        //right
-
-        // i need to find first index where query(secondmaxpos, index ) == secondmaxpos
-
-        int lo = secondmaxpos + 1;
-        int hi = n;
-        int ans = secondmaxpos + 1;
-
-        while(lo <= hi){
-            int mid = (lo + hi) / 2;
-            int x = query(secondmaxpos, mid);
-            if(x == secondmaxpos){
-                ans = mid;
-                hi = mid - 1;
-            }
-            else{
-                lo = mid + 1;
-            }
-        }
-
-        printres(ans);
+    else if(arr.size() == 1) {
+        cout<<arr[0]<<endl;
     }
 }
-
 /* logic ends */
 
 signed main(){
@@ -156,8 +135,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
