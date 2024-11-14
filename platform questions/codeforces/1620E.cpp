@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.14 15:51:37
+ *    created: 2024.11.12 21:48:55
  **/
 
 /* includes and all */
@@ -60,31 +60,62 @@ using namespace std;
 void solve(){
     int n;
     cin>>n;
-    vector<int> v(1000001, 0);
+
+    vector<vector<int> > query(n,vector<int>());
+
     for(int i = 0; i<n; i++){
-        int x;
-        cin>>x;
-        v[x]++;
+        int type;
+        cin>>type;
+        if(type == 1){
+            int x;
+            cin>>x;
+            query[i].push_back(type);
+            query[i].push_back(x);
+        }
+        else{
+            int x,y;
+            cin>>x>>y;
+            query[i].push_back(type);
+            query[i].push_back(x);
+            query[i].push_back(y);
+        }
     }
 
-    int ans = 0;
-    for(int i = 1; i<=1000000; i++){
-        if(v[i] > 0) continue;
+    map<int,int> mp;
 
-        int best_gcd = 0;
+    vector<int> ans;
 
-        for(int j = i; j<=1000000; j+=i){
-            if(v[j] > 0){
-                best_gcd = __gcd(best_gcd, j);
+    for(int i = n-1; i>=0; i--){
+        int type = query[i][0];
+
+        if(type==1){
+            int ele = query[i][1];
+            if(mp.count(ele)){
+                int newval = mp[ele];
+                ans.push_back(newval);
+            }
+            else{
+                ans.push_back(ele);
             }
         }
+        else{
+            int x = query[i][1];
+            int y = query[i][2];
 
-        if(best_gcd == i){
-            ans++;
+            if(mp.count(y)){
+                mp[x] = mp[y];
+            }
+            else{
+                mp[x] = y;
+            }
         }
     }
 
-    cout<<ans<<endl;
+    reverse(ans.begin(),ans.end());
+
+    for(auto x : ans){
+        cout<<x<<" ";
+    }
 }
 /* logic ends */
 

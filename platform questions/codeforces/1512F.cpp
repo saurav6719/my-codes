@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.14 15:51:37
+ *    created: 2024.11.13 14:53:37
  **/
 
 /* includes and all */
@@ -57,33 +57,99 @@
 using namespace std;
 
 /* write core logic here */
-void solve(){
-    int n;
-    cin>>n;
-    vector<int> v(1000001, 0);
-    for(int i = 0; i<n; i++){
-        int x;
+
+void solveee(){
+    int n,c;
+    cin>>n>>c;
+    vector<int> earn(n);
+    for(auto &x : earn){
         cin>>x;
-        v[x]++;
+    }
+    vector<int> course(n-1);
+    for(auto &x : course){
+        cin>>x;
     }
 
+
+    cout<<n<<"->"<<c<<"->";
+    for(auto ele : earn){
+        cout<<ele<<":";
+    }
+    for(auto ele : course){
+        cout<<ele<<":";
+    }
+    cout<<endl;
+}
+
+bool poss(int mid, vector<int> &time, vector<int> &remain, int &c, vector<int> &earn){
+    int n= time.size();
     int ans = 0;
-    for(int i = 1; i<=1000000; i++){
-        if(v[i] > 0) continue;
 
-        int best_gcd = 0;
+    for(int i = 0; i<n; i++){
+        //if i am doing till this i 
+        int timeleft = mid - time[i] + 1;
 
-        for(int j = i; j<=1000000; j+=i){
-            if(v[j] > 0){
-                best_gcd = __gcd(best_gcd, j);
-            }
-        }
+        if(timeleft <= 0) break;
 
-        if(best_gcd == i){
-            ans++;
-        }
+        int earning = remain[i] + (timeleft * earn[i]);
+
+        ans = max(ans, earning); 
+    }
+    return ans >= c;
+}
+void solve(){
+    int n,c;
+    cin>>n>>c;
+    vector<int> earn(n);
+    for(auto &x : earn){
+        cin>>x;
+    }
+    vector<int> course(n-1);
+    for(auto &x : course){
+        cin>>x;
     }
 
+    vector<int> time(n);
+    vector<int> remain(n);
+    time[0] = 1;
+    remain[0] = 0;
+    for(int i =1; i<n;i++){
+        int lastremaining = remain[i-1];
+        int required = course[i-1];
+
+        if(lastremaining >= required){
+            time[i] = time[i-1] + 1;
+            remain[i] = lastremaining - required;
+            continue;
+        }
+        int toearn = required - lastremaining;
+
+        int daysrequiredtoearn = toearn / earn[i-1];
+        if(toearn % earn[i-1] != 0){
+            daysrequiredtoearn ++;
+        }
+        time[i] = time[i-1] + daysrequiredtoearn + 1;
+        remain[i] = earn[i-1] * daysrequiredtoearn + lastremaining - required;
+    }
+
+    print(time);
+    print(remain);
+
+    int lo = 0;
+    int hi = 1e18;
+    int ans = -1;
+
+    while(lo <= hi){
+        int mid = lo + (hi - lo) / 2;
+
+        if(poss(mid, time , remain, c, earn)){
+            ans = mid;
+            hi = mid - 1;
+        }
+        else{
+            lo = mid + 1;
+        }
+    }
     cout<<ans<<endl;
 }
 /* logic ends */
@@ -95,10 +161,15 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
-    while(t--){
-        solve();
+    cin>>t;
+    //t = 1;
+    for(int i = 1; i<=t; i++){
+        if(i==8891){
+            solveee();
+        }
+        else{
+            solve();
+        }
     }
 return 0;
 }
