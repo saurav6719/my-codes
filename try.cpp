@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.14 15:51:37
+ *    created: 2024.11.14 18:20:54
  **/
 
 /* includes and all */
@@ -57,35 +57,96 @@
 using namespace std;
 
 /* write core logic here */
+
+int query(int l, int r){
+    cout<<"? "<<l<<" "<<r<<endl;
+    cout<<flush;
+    int x;
+    cin>>x;
+    return x;
+}
+
+void printres(int x){
+    cout<<"! "<<x<<endl;
+    cout<<flush;
+}
 void solve(){
     int n;
     cin>>n;
-    vector<int> v(1000001, 0);
-    for(int i = 0; i<n; i++){
-        int x;
-        cin>>x;
-        v[x]++;
-    }
 
-    int ans = 0;
-    for(int i = 1; i<=1000000; i++){
-        if(v[i] > 0) continue;
+    int secondmaxpos = query(1,n);
 
-        int best_gcd = 0;
+    if(secondmaxpos == 1){
+        int lo = secondmaxpos + 1;
+        int hi = n;
+        int ans = secondmaxpos + 1;
 
-        for(int j = i; j<=1000000; j+=i){
-            if(v[j] > 0){
-                best_gcd = __gcd(best_gcd, j);
+        while(lo <= hi){
+            int mid = (lo + hi) / 2;
+            int x = query(secondmaxpos, mid);
+            if(x == secondmaxpos){
+                ans = mid;
+                hi = mid - 1;
+            }
+            else{
+                lo = mid + 1;
             }
         }
 
-        if(best_gcd == i){
-            ans++;
-        }
+        printres(ans);
+
+        return;
     }
 
-    cout<<ans<<endl;
+    int xx = query(1,secondmaxpos);
+
+    if(xx == secondmaxpos){
+        //left me max hai 
+        // i need to find minimum index where query(index, secondmaxpos) != secondmaxpos
+
+        int lo = 1;
+        int hi = secondmaxpos - 1;
+        int ans = secondmaxpos - 1;
+
+        while(lo <= hi){
+            int mid = (lo + hi) / 2;
+            int x = query(mid, secondmaxpos);
+            if(x != secondmaxpos){
+                ans = mid - 1;
+                hi = mid - 1;
+            }
+            else{
+                lo = mid + 1;
+            }
+        }
+
+        printres(ans);
+    }
+    else{
+        //right
+
+        // i need to find first index where query(secondmaxpos, index ) == secondmaxpos
+
+        int lo = secondmaxpos + 1;
+        int hi = n;
+        int ans = secondmaxpos + 1;
+
+        while(lo <= hi){
+            int mid = (lo + hi) / 2;
+            int x = query(secondmaxpos, mid);
+            if(x == secondmaxpos){
+                ans = mid;
+                hi = mid - 1;
+            }
+            else{
+                lo = mid + 1;
+            }
+        }
+
+        printres(ans);
+    }
 }
+
 /* logic ends */
 
 signed main(){
