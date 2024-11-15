@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.15 14:44:36
+ *    created: 2024.11.15 17:52:35
  **/
 
 /* includes and all */
@@ -58,76 +58,14 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    vector<int> x(k);
-    vector<int> c(k);
-    for(int i = 0; i<k; i++){
-        cin>>x[i];
-    }
-    for(int i = 0; i<k; i++){
-        cin>>c[i];
 
-        
-    }
+    int n,q;
+    cin>>n>>q;
 
-    for(int i = 0; i<k; i++){
-        if(c[i] > x[i]){
-            debug(x[i]);
-            debug(c[i]);
-            debug(i);
-            cout<<"NO"<<endl;
-            return;
-        }
-    }
+    
 
-    for(int i = 1; i<k; i++){
-        int diffa = x[i] - x[i-1];
-        int diffb = c[i] - c[i-1];
-        if(diffb > diffa){
-            debug(x[i]);
-            debug(x[i-1]);
-            debug(c[i]);
-            debug(c[i-1]);
-            // cout<<"Kal se"<<endl;
-            cout<<"NO"<<endl;
-            return;
-        }
 
-    }
 
-    vector<char> ans(n);
-    string s = "abc";
-    int ptr = 0;
-
-    ans[0] = 'a';
-    ans[1] = 'b';
-    int curr = 2; // curr se fill krna hai 
-    int fulfilled = 2;
-    char ch = 'c';
-    for(int i = 0; i<k;i++){
-        int len = x[i] - curr;
-        int required = c[i] - fulfilled;
-        for(int j = 0; j<required; j++){
-            ans[curr] = ch;
-            curr++;
-        }
-        for(int j = 0; j<len-required; j++){
-            ans[curr] = s[ptr%3];
-            ptr++;
-            curr++;
-        }
-        curr = x[i];
-        fulfilled = c[i];
-        ch++;
-    }
-
-    cout<<"YES"<<endl;
-
-    for(auto x : ans){
-        cout<<x;
-    }
-    cout<<endl;
 
 
 }
@@ -140,8 +78,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
