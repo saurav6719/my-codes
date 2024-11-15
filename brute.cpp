@@ -1,16 +1,11 @@
 /**
  *    author: Saurav
- *    created: 2024.10.31 05:48:05
+ *    created: 2024.11.15 15:01:56
  **/
 
 /* includes and all */
 
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <fstream>
-#include <string>
-#include <vector>
+#include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -62,45 +57,48 @@
 using namespace std;
 
 /* write core logic here */
-struct triplet{
-    int i,j,gcd;
-    bool operator<(const triplet& other) const {
-        if (i != other.i) return i < other.i;
-        if (j != other.j) return j < other.j;
-        return gcd < other.gcd;
-    }
-};
-map<triplet,int> dp;
-int f(int i, int j, int currgcd , vector<vector<int> > &grid){
-    if (i == grid.size() - 1 && j == grid[0].size() - 1) {
-        return __gcd(currgcd, grid[i][j]);
-    }
-    if(i>=grid.size() || j>=grid[0].size()){
-        return 0;
-    }
-    triplet t = {i,j,currgcd};
-    if(dp.find(t)!=dp.end()){
-        return dp[t];
-    }
-    int ans = 0;
-    ans = max(ans, f(i+1,j,__gcd(currgcd,grid[i][j]),grid));
-    ans = max(ans, f(i,j+1,__gcd(currgcd,grid[i][j]),grid));
-    return dp[t] = ans;
-}
-void solve(){
-    int n,m;
-    cin>>n>>m;
-    vector<vector<int>> v(n,vector<int>(m));
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++){
-            cin>>v[i][j];
+// YES
+// abcaeebcabcafbggcabcabciiaklbcmmabcabpcabcabrrcttttabcabvvv
+
+int f(string &str){
+    //finding number of unique palindroms in this string
+
+    set<string> unique_palindroms;
+    int n = str.size();
+
+    for(int i = 0; i<n; i++){
+        for(int j = i; j<n; j++){
+            string temp = str.substr(i,j-i+1);
+            string rev = temp;
+            reverse(rev.begin(),rev.end());
+            if(temp == rev){
+                unique_palindroms.insert(temp);
+            }
         }
     }
-    dp.clear();
 
+    return unique_palindroms.size();
 
-    int ans = f(0,0,v[0][0],v);
-    cout<<ans<<endl;
+}
+void solve(){
+    string str;
+    cin>>str;
+
+    vector<int> ans(str.size()+5);
+
+    for(int i = 3; i<=str.size(); i++){
+        string temp = str.substr(0,i);
+        ans[i] = f(temp);
+    }
+
+    debug(ans[37]);
+    debug(ans[43]);
+    debug(ans[44]);
+    debug(ans[46]);
+    debug(ans[47]);
+    debug(ans[54]);
+    debug(ans[56]);
+    debug(ans[59]);
 }
 /* logic ends */
 
