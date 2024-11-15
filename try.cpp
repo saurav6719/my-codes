@@ -115,6 +115,20 @@ void solve(){
             continue;
         }
 
+        if(v[r] == 0){
+            if(prfxor[r-1] - prfxor[l-1] == 0){
+                cout<<1<<endl;
+                continue;
+            }
+        }
+
+        if(v[l] == 0){
+            if(prfxor[r] - prfxor[l] == 0){
+                cout<<1<<endl;
+                continue;
+            }
+        }
+
         // length is even and xor is 0 
         // i need to check whether any prefix xor 0 exists between l and r or not 
 
@@ -122,38 +136,19 @@ void solve(){
 
         if(l & 1){
             auto &v = mpodd[lastxor];
-
             auto it = lower_bound(v.begin(),v.end(),l);
-
-            if(it != v.end() && *it <= r){
-                int zeroafter = 0;
-                zeroafter = zerocount[r] - zerocount[*it];
-                if(zeroafter == r - *it){
-                    cout<<1<<endl;
-                }
-                else{
-                    cout<<2<<endl;
-                }
+            if(it != v.end() && *it < r ){
+                cout<<2<<endl;
             }
             else{
                 cout<<-1<<endl;
             }
         } 
-
         else{
             auto &v = mpeven[lastxor];
-
             auto it = lower_bound(v.begin(),v.end(),l);
-
-            if(it != v.end() && *it <= r){
-                int zeroafter = 0;
-                zeroafter = zerocount[r] - zerocount[*it];
-                if(zeroafter == r - *it){
-                    cout<<1<<endl;
-                }
-                else{
-                    cout<<2<<endl;
-                }
+            if(it != v.end() && *it < r){
+                cout<<2<<endl;
             }
             else{
                 cout<<-1<<endl;
