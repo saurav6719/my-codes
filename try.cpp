@@ -62,6 +62,105 @@ void solve(){
     int n,q;
     cin>>n>>q;
 
+    vector<int> v(n+1);
+
+    for(int i=1;i<=n;i++){
+        cin>>v[i];
+    }
+
+    vector<int> zerocount(n+1);
+
+    for(int i=1;i<=n;i++){
+        zerocount[i] = zerocount[i-1] + (v[i] == 0) ;
+    }
+
+    vector<int> prfxor(n+1);
+    prfxor[0] = 0;
+    for(int i=1;i<=n;i++){
+        prfxor[i] = prfxor[i-1] ^ v[i];
+    }
+
+    map<int,vector<int> > mpodd;
+    map<int,vector<int> > mpeven;
+
+    for(int i = 1; i<=n; i++){
+        if(i&1){
+            mpodd[prfxor[i]].push_back(i);
+        }
+        else{
+            mpeven[prfxor[i]].push_back(i);
+        }
+    } 
+
+
+    while(q--){
+        int l,r;
+        cin>>l>>r;
+
+        int x = prfxor[r] ^ prfxor[l-1];
+        if(x != 0){
+            cout<<-1<<endl;
+            continue;
+        }
+
+        // if already all elements are zero return 0
+
+        if(zerocount[r] - zerocount[l-1] == r-l+1){
+            cout<<0<<endl;
+            continue;
+        }
+
+        if((r-l+1)&1){
+            cout<<1<<endl;
+            continue;
+        }
+
+        // length is even and xor is 0 
+        // i need to check whether any prefix xor 0 exists between l and r or not 
+
+        int lastxor = prfxor[l-1];
+
+        if(l & 1){
+            auto &v = mpodd[lastxor];
+
+            auto it = lower_bound(v.begin(),v.end(),l);
+
+            if(it != v.end() && *it <= r){
+                int zeroafter = 0;
+                zeroafter = zerocount[r] - zerocount[*it];
+                if(zeroafter == r - *it){
+                    cout<<1<<endl;
+                }
+                else{
+                    cout<<2<<endl;
+                }
+            }
+            else{
+                cout<<-1<<endl;
+            }
+        } 
+
+        else{
+            auto &v = mpeven[lastxor];
+
+            auto it = lower_bound(v.begin(),v.end(),l);
+
+            if(it != v.end() && *it <= r){
+                int zeroafter = 0;
+                zeroafter = zerocount[r] - zerocount[*it];
+                if(zeroafter == r - *it){
+                    cout<<1<<endl;
+                }
+                else{
+                    cout<<2<<endl;
+                }
+            }
+            else{
+                cout<<-1<<endl;
+            }
+        }
+    }
+
     
 
 
