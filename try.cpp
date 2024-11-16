@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.17 01:14:26
+ *    created: 2024.11.17 03:52:29
  **/
 
 /* includes and all */
@@ -57,190 +57,60 @@
 using namespace std;
 
 /* write core logic here */
-int f1(int start, int end, int d){
-    // kitne term baad jaake end se chota hoga 
-    if(end > start) return 0;
-    int total = start - end;
-    int ans = total/d + 1;
-    return ans;
-}
+vector<vector<int>> dp;
+int f(int i, int last, vector<int> &cold, vector<int> &hot, vector<int> &sequence){
+    int n = sequence.size();
+    if(i==n) return 0;
 
-int sumofap(int start, int end , int d){
-    int n = f1(start, end, d);
-    end = start - (n-1) * d;
-    int ans = n*(start + end)/2;
-    return ans;
-}
+    if(dp[i][last] != -1) return dp[i][last];
 
-bool poss1(int mid, vector<int> &a, vector<int> &b, int k){
-    int n = a.size();
-    int cnt = 0;
-    // debug(mid);
-    for(int i = 0; i<n; i++){
-        int start = a[i];
-        int end = mid;
-        if(mid == 13){
-            debug(i);
-            debug(f1(start, end, b[i]));
-        }
-        cnt += f1(start, end, b[i]);
+    // option 1 run at cpu where prev index got run 
+
+    int prev = sequence[i-1];
+    int option1;
+    int option2;
+    if(sequence[i] == prev){
+        option1 = f(i+1, last, cold, hot, sequence) + hot[sequence[i]];
     }
-    // debug(cnt);
-    return cnt >= k;
-}
-
-int poss2(int mid, vector<int> &a, vector<int> &b, int k,  int minimum){
-    int ans = 0;
-    int n = a.size();
-    int currtaken = 0;
-
-    debug(mid);
-
-    for(int i = 0; i<n; i++){
-        if(currtaken >= k) break;
-        int times = f1(a[i], minimum+1, b[i]);
-        debug(a[i]);
-        debug(minimum+1);
-        debug(f1(a[i], minimum+1, b[i]));
-        debug(i);
-        debug(ans);
-        debug(times);
-
-        if(currtaken + times > k){
-            int left = k - currtaken;
-            ans += sumofap(a[i] , a[i] - (left - 1) *b[i] , b[i]);
-            debug(a[i]);
-            debug(a[i] - (left - 1) *b[i]);
-            debug(sumofap(a[i] , a[i] - (left - 1) *b[i] , b[i]));
-        }
-        else{
-            ans += sumofap(a[i], minimum +1, b[i]);
-
-            debug(a[i]);
-            debug(minimum+1);
-
-            debug(sumofap(a[i], minimum +1, b[i]));
-        }
-        currtaken += times;
+    else{
+        option1 = f(i+1, last, cold, hot, sequence) + cold[sequence[i]];
     }
 
-    if(currtaken < k){
-        return -1e9;
+    // option 2 run at cpu where last index got run
+
+    
+    if(sequence[last] == sequence[i]){
+        option2 = f(i+1, i-1, cold, hot, sequence) + hot[sequence[i]];
+    }
+    else{
+        option2 = f(i+1, i-1, cold, hot, sequence) + cold[sequence[i]];
     }
 
-    debug(ans);
-    return ans;
-}
-
-int f2(int minimum , vector<int> &a, vector<int> &b, int k){
-    int lo = 1;
-    int hi = k;
-    int currans = k * minimum;
-
-    debug(currans);
-
-    while(lo <= hi){
-        int mid = lo + (hi-lo)/2;
-        // mai minimum ko mid times le rha hu 
-
-
-        int temp = poss2(mid, a, b, k - mid, minimum);
-
-        if(temp + (mid * minimum)  > currans){
-            currans = temp + (mid * minimum);
-            debug(currans);
-            hi = mid - 1;
-        }
-        else{
-            lo = mid + 1;
-        }
-    }
-
-    return currans;
-}
-
-void solvee(){
-    int n;
-    cin>>n;
-    int k;
-    cin>>k;
-    vector<int> a(n);
-    vector<int> b(n);
-    for(int i=0;i<n;i++){
-        cin>>a[i];
-    }
-    for(int i=0;i<n;i++){
-        cin>>b[i];
-    }
-    int xx = 0;
-
-    for(int i = 0; i<n; i++){
-        xx += f1(a[i] , 1, b[i]);
-    }
-
-    k = min(k, xx);
-
-    debug(k);
-
-    cout<<n<<":";
-    cout<<k<<":";
-
-    for(int i = 0; i<n; i++){
-        cout<<a[i]<<"->"<<b[i]<<",";
-    }
-    cout<<endl;
+    return dp[i][last] = min(option1, option2);
 
 }
 void solve(){
-    int n;
-    cin>>n;
-    int k;
-    cin>>k;
-    vector<int> a(n);
-    vector<int> b(n);
-    for(int i=0;i<n;i++){
+    int n,k;
+    cin>>n>>k;
+    vector<int> v(n+1, 0);
+    for(int i=1;i<=n;i++){
+        cin>>v[i];
+    }
+    vector<int> a(k+1 , 0);
+    for(int i=1;i<=k;i++){
         cin>>a[i];
     }
-    for(int i=0;i<n;i++){
+    vector<int> b(k+1, 0);
+    for(int i=1;i<=k;i++){
         cin>>b[i];
     }
-    int xx = 0;
 
-    for(int i = 0; i<n; i++){
-        xx += f1(a[i] , 1, b[i]);
-    }
+    dp.clear();
+    dp.resize(n+1, vector<int>(n+1, -1));
 
-    k = min(k, xx);
+    int ans = f(1, 0, a, b, v);
 
-    debug(k);
-
-
-    int lo = 0;
-    int hi = 1e9;
-    int ans = 1;
-    while(lo <= hi){
-        int mid = lo + (hi-lo)/2;
-        if(poss1(mid, a, b, k)){
-            ans = mid;
-            lo = mid + 1;
-        }else{
-            hi = mid - 1;
-        }
-    }
-
-    debug(ans);
-
-    // now finding ans kitni baar lenge to maximise our score 
-
-    int minimum = ans;
-
-    debug(minimum);
-
-    int finalans = f2(minimum, a, b, k);
-
-    cout<<finalans<<endl;
-
-
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -253,9 +123,8 @@ signed main(){
     int t;
     cin>>t;
     //t = 1;
-    for(int i = 1; i<=t; i++){
+    while(t--){
         solve();
-        
     }
 return 0;
 }
