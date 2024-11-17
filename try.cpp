@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.17 16:50:13
+ *    created: 2024.11.17 18:54:22
  **/
 
 /* includes and all */
@@ -50,87 +50,141 @@
 #endif
 #define endl "\n"
 #define int long long int
-// #define mod 1000000007
+#define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-const int MOD = 998244353;
+void dfs1(vector<vector<int> > &tree, int node, int par, vector<int> &v, set<int> &st){
+    for(auto child : tree[node]){
+        if(child == par) continue;
+        dfs1(tree, child, node, v, st);
 
-vector<int> factorialdp(300001);
-
-void precompute(){
-    factorialdp[0] = 1;
-    factorialdp[1] = 1;
-    for(int i = 2; i<=300000; i++){
-        factorialdp[i] = i * factorialdp[i-1];
-        factorialdp[i] %= MOD;
+        if(v[child] == 1){
+            v[node] = 1;
+        }
     }
-}
-// Function to calculate power in modular arithmetic
-long long power(long long x, long long y) {
-    long long res = 1;
-    x = x % MOD;
-    while (y > 0) {
-        if (y & 1)
-            res = (res * x) % MOD;
-        y = y >> 1; // y = y/2
-        x = (x * x) % MOD;
+
+    if(st.find(node) != st.end()){
+        v[node] = 1;
     }
-    return res;
+
+    return;
 }
 
-// Function to calculate factorial in modular arithmetic
-long long factorial(int n) {
-    return factorialdp[n];
+void dfs3(vector<vector<int> > &tree, int node, int par, vector<int> &v , vector<int> &v2){
+    int cnt = 0;
+    // debug(node);
+
+    for(auto child : tree[node]){
+        if(child == par) continue;
+        if(v[child] == 1){
+            cnt++;
+        }
+        // debug(cnt)
+
+        dfs3(tree, child, node, v, v2);
+    }
+
+    if(cnt == 0){
+        v2[node] = 1;
+    }
+
+    return;
 }
 
-// Function to calculate nCr in modular arithmetic
-long long nCr(int n, int r) {
-    if (r == 0 || r == n)
-        return 1;
-    long long numerator = factorial(n);
-    long long denominator = (factorial(r) * factorial(n - r)) % MOD;
-    return (numerator * power(denominator, MOD - 2)) % MOD;
+bool dfs2(vector<vector<int> > &tree, int node, int par, vector<int> &v){
+    int cnt = 0;
+    // debug(node);
+
+    for(auto child : tree[node]){
+        if(child == par) continue;
+        if(v[child] == 1){
+            cnt++;
+        }
+        // debug(cnt);
+
+        if(cnt > 1){
+            return false;
+        }
+
+        if(!dfs2(tree, child, node, v)){
+            return false;
+        }
+
+    }
+
+    return true;
 }
 void solve(){
     int n;
     cin>>n;
-    vector<int> a(2*n);
 
-    for(int i =0; i<2*n; i++){
-        cin>>a[i];
-    }
-    
-    sort(a.begin(), a.end());
-    int ans = 0;
-    int i = 0; 
-    int j = (2*n)-1;
-
-    while(i<j){
-        ans += a[j] - a[i];
-        i++;
-        j--;
+    vector<vector<int> > tree(n+1, vector<int>());
+    for(int i = 0; i<n-1; i++){
+        int u, v;
+        cin>>u>>v;
+        tree[u].push_back(v);
+        tree[v].push_back(u);
     }
 
-    int x = n-1;
-    int tomul = 0;
-    for (int x = n - 1; x < 2 * n; ++x) {
-        tomul = (tomul + nCr(x, n - 1)) % MOD;
+    int q;
+    cin>>q;
+    while(q--){
+        int k;
+        cin>>k;
+        set<int> st;
+        for(int i = 0; i<k; i++){
+            int x;
+            cin>>x;
+            st.insert(x);
+        }
+
+        vector<int> v(n+1, 0);
+
+        dfs1(tree, 1, 0, v, st);
+
+        print(v);
+
+        vector<int> v2(n+1, 0);
+
+        dfs3(tree, 1, 0, v, v2);
+
+        print(v2);
+
+        int startnode = -1;
+
+        for(auto ele : st){
+            if(v2[ele] == 1){
+                startnode = ele;
+                break;
+            }
+        }
+
+        debug(startnode);
+
+        if(startnode == -1){
+            cout<<"NO"<<endl;
+            continue;
+        }
+
+        v.clear();
+        v.resize(n+1, 0);
+
+        dfs1(tree, startnode, 0, v, st);
+
+        print(v);
+
+        if(dfs2(tree, startnode, 0, v)){
+            cout<<"YES"<<endl;
+        }else{
+            cout<<"NO"<<endl;
+        }
+
     }
 
-
-    ans %= MOD;
-
-    ans *= tomul;
-    ans %= MOD;
-
-    cout<<ans<<endl;
-
-
-    
 }
 /* logic ends */
 
@@ -143,7 +197,6 @@ signed main(){
     int t;
     // cin>>t;
     t = 1;
-    precompute();
     while(t--){
         solve();
     }
