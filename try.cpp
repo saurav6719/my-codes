@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.18 00:47:25
+ *    created: 2024.11.18 02:12:22
  **/
 
 /* includes and all */
@@ -58,20 +58,19 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int a,b,c;
-    cin>>a>>b>>c;
-
-    int anna = c/2 + c%2;
-    anna += a;
-    int kati = b;
-    kati += c/2;
-
-    if(anna > kati){
-        cout<<"First"<<endl;
+    int a,b;
+    cin>>a>>b;
+    
+    if(max(a,b) % min(a,b) == 0 and max(a,b) / min(a,b) == 1){
+        cout<<1<<endl;
+        cout<<a<<" "<<b<<endl;
+        return ;
     }
-    else{
-        cout<<"Second"<<endl;
-    }
+    cout<<2<<endl;
+
+    cout<<a+1<<" "<<b+1<<endl;
+    cout<<a<<" "<<b<<endl;
+
 }
 /* logic ends */
 
