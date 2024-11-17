@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.17 18:54:22
+ *    created: 2024.11.18 00:47:25
  **/
 
 /* includes and all */
@@ -57,134 +57,21 @@
 using namespace std;
 
 /* write core logic here */
-void dfs1(vector<vector<int> > &tree, int node, int par, vector<int> &v, set<int> &st){
-    for(auto child : tree[node]){
-        if(child == par) continue;
-        dfs1(tree, child, node, v, st);
-
-        if(v[child] == 1){
-            v[node] = 1;
-        }
-    }
-
-    if(st.find(node) != st.end()){
-        v[node] = 1;
-    }
-
-    return;
-}
-
-void dfs3(vector<vector<int> > &tree, int node, int par, vector<int> &v , vector<int> &v2){
-    int cnt = 0;
-    // debug(node);
-
-    for(auto child : tree[node]){
-        if(child == par) continue;
-        if(v[child] == 1){
-            cnt++;
-        }
-        // debug(cnt)
-
-        dfs3(tree, child, node, v, v2);
-    }
-
-    if(cnt == 0){
-        v2[node] = 1;
-    }
-
-    return;
-}
-
-bool dfs2(vector<vector<int> > &tree, int node, int par, vector<int> &v){
-    int cnt = 0;
-    // debug(node);
-
-    for(auto child : tree[node]){
-        if(child == par) continue;
-        if(v[child] == 1){
-            cnt++;
-        }
-        // debug(cnt);
-
-        if(cnt > 1){
-            return false;
-        }
-
-        if(!dfs2(tree, child, node, v)){
-            return false;
-        }
-
-    }
-
-    return true;
-}
 void solve(){
-    int n;
-    cin>>n;
+    int a,b,c;
+    cin>>a>>b>>c;
 
-    vector<vector<int> > tree(n+1, vector<int>());
-    for(int i = 0; i<n-1; i++){
-        int u, v;
-        cin>>u>>v;
-        tree[u].push_back(v);
-        tree[v].push_back(u);
+    int anna = c/2 + c%2;
+    anna += a;
+    int kati = b;
+    kati += c/2;
+
+    if(anna > kati){
+        cout<<"First"<<endl;
     }
-
-    int q;
-    cin>>q;
-    while(q--){
-        int k;
-        cin>>k;
-        set<int> st;
-        for(int i = 0; i<k; i++){
-            int x;
-            cin>>x;
-            st.insert(x);
-        }
-
-        vector<int> v(n+1, 0);
-
-        dfs1(tree, 1, 0, v, st);
-
-        print(v);
-
-        vector<int> v2(n+1, 0);
-
-        dfs3(tree, 1, 0, v, v2);
-
-        print(v2);
-
-        int startnode = -1;
-
-        for(auto ele : st){
-            if(v2[ele] == 1){
-                startnode = ele;
-                break;
-            }
-        }
-
-        debug(startnode);
-
-        if(startnode == -1){
-            cout<<"NO"<<endl;
-            continue;
-        }
-
-        v.clear();
-        v.resize(n+1, 0);
-
-        dfs1(tree, startnode, 0, v, st);
-
-        print(v);
-
-        if(dfs2(tree, startnode, 0, v)){
-            cout<<"YES"<<endl;
-        }else{
-            cout<<"NO"<<endl;
-        }
-
+    else{
+        cout<<"Second"<<endl;
     }
-
 }
 /* logic ends */
 
@@ -195,8 +82,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
