@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.17 03:52:29
+ *    created: 2024.11.17 16:50:13
  **/
 
 /* includes and all */
@@ -50,67 +50,87 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+// #define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-vector<vector<int>> dp;
-int f(int i, int last, vector<int> &cold, vector<int> &hot, vector<int> &sequence){
-    int n = sequence.size();
-    if(i==n) return 0;
+const int MOD = 998244353;
 
-    if(dp[i][last] != -1) return dp[i][last];
+vector<int> factorialdp(300001);
 
-    // option 1 run at cpu where prev index got run 
-
-    int prev = sequence[i-1];
-    int option1;
-    int option2;
-    if(sequence[i] == prev){
-        option1 = f(i+1, last, cold, hot, sequence) + hot[sequence[i]];
+void precompute(){
+    factorialdp[0] = 1;
+    factorialdp[1] = 1;
+    for(int i = 2; i<=300000; i++){
+        factorialdp[i] = i * factorialdp[i-1];
+        factorialdp[i] %= MOD;
     }
-    else{
-        option1 = f(i+1, last, cold, hot, sequence) + cold[sequence[i]];
+}
+// Function to calculate power in modular arithmetic
+long long power(long long x, long long y) {
+    long long res = 1;
+    x = x % MOD;
+    while (y > 0) {
+        if (y & 1)
+            res = (res * x) % MOD;
+        y = y >> 1; // y = y/2
+        x = (x * x) % MOD;
     }
+    return res;
+}
 
-    // option 2 run at cpu where last index got run
+// Function to calculate factorial in modular arithmetic
+long long factorial(int n) {
+    return factorialdp[n];
+}
 
-    
-    if(sequence[last] == sequence[i]){
-        option2 = f(i+1, i-1, cold, hot, sequence) + hot[sequence[i]];
-    }
-    else{
-        option2 = f(i+1, i-1, cold, hot, sequence) + cold[sequence[i]];
-    }
-
-    return dp[i][last] = min(option1, option2);
-
+// Function to calculate nCr in modular arithmetic
+long long nCr(int n, int r) {
+    if (r == 0 || r == n)
+        return 1;
+    long long numerator = factorial(n);
+    long long denominator = (factorial(r) * factorial(n - r)) % MOD;
+    return (numerator * power(denominator, MOD - 2)) % MOD;
 }
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    vector<int> v(n+1, 0);
-    for(int i=1;i<=n;i++){
-        cin>>v[i];
-    }
-    vector<int> a(k+1 , 0);
-    for(int i=1;i<=k;i++){
+    int n;
+    cin>>n;
+    vector<int> a(2*n);
+
+    for(int i =0; i<2*n; i++){
         cin>>a[i];
     }
-    vector<int> b(k+1, 0);
-    for(int i=1;i<=k;i++){
-        cin>>b[i];
+    
+    sort(a.begin(), a.end());
+    int ans = 0;
+    int i = 0; 
+    int j = (2*n)-1;
+
+    while(i<j){
+        ans += a[j] - a[i];
+        i++;
+        j--;
     }
 
-    dp.clear();
-    dp.resize(n+1, vector<int>(n+1, -1));
+    int x = n-1;
+    int tomul = 0;
+    for (int x = n - 1; x < 2 * n; ++x) {
+        tomul = (tomul + nCr(x, n - 1)) % MOD;
+    }
 
-    int ans = f(1, 0, a, b, v);
+
+    ans %= MOD;
+
+    ans *= tomul;
+    ans %= MOD;
 
     cout<<ans<<endl;
+
+
+    
 }
 /* logic ends */
 
@@ -121,8 +141,9 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
+    precompute();
     while(t--){
         solve();
     }
