@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.18 02:12:22
+ *    created: 2024.11.18 13:54:43
  **/
 
 /* includes and all */
@@ -58,18 +58,65 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int a,b;
-    cin>>a>>b;
-    
-    if(max(a,b) % min(a,b) == 0 and max(a,b) / min(a,b) == 1){
-        cout<<1<<endl;
-        cout<<a<<" "<<b<<endl;
-        return ;
+    int n;
+    cin>>n;
+    bool odd = false;
+    if(n%2) odd = true;
+    n/=2;
+    vector<int> input(n);
+    map<int,int> mp;
+    for(int i=0;i<n;i++){
+        cin>>input[i];
+        mp[input[i]]++;
     }
-    cout<<2<<endl;
 
-    cout<<a+1<<" "<<b+1<<endl;
-    cout<<a<<" "<<b<<endl;
+    if(odd){
+        cout<<-1<<endl;
+        return;
+    }
+
+    for(auto ele : mp){
+        if(ele.second > 1){
+            cout<<-1<<endl;
+            return;
+        }
+    }
+
+    set<int> st;
+    for(int i = 1; i<=2*n; i++){
+        if(mp[i] == 0) st.insert(i);
+    }
+
+    vector<int> ans;
+    
+    for(int i = n-1; i>=0; i--){
+        int ele = input[i];
+        debug(ele);
+        auto idx = st.upper_bound(ele);
+        if(idx == st.end()){
+            ans.push_back(*st.rbegin());
+            st.erase(*st.rbegin());
+        }
+        else if(idx == st.begin()){
+            cout<<-1<<endl;
+            return;
+        }
+        else{
+            idx--;
+            ans.push_back(*idx);
+            st.erase(*idx);
+        }
+    }
+
+    reverse(ans.begin(),ans.end());
+
+    int i = 0;
+    while(i<n){
+        cout<<ans[i]<<" ";
+        cout<<input[i]<<" ";
+        i++;
+    }
+    cout<<endl;
 
 }
 /* logic ends */
