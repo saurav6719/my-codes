@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.18 13:54:43
+ *    created: 2024.11.18 15:36:45
  **/
 
 /* includes and all */
@@ -58,66 +58,104 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-    bool odd = false;
-    if(n%2) odd = true;
-    n/=2;
-    vector<int> input(n);
-    map<int,int> mp;
-    for(int i=0;i<n;i++){
-        cin>>input[i];
-        mp[input[i]]++;
+    string str;
+    cin>>str;
+    int n = str.size();
+    vector<int> prfmod(n+1,0);
+    for(int i = 1; i<=n; i++){
+        prfmod[i] = (prfmod[i-1] + (str[i-1]-'0'))%9;
     }
-
-    if(odd){
-        cout<<-1<<endl;
-        return;
-    }
-
-    for(auto ele : mp){
-        if(ele.second > 1){
-            cout<<-1<<endl;
-            return;
-        }
-    }
-
-    set<int> st;
-    for(int i = 1; i<=2*n; i++){
-        if(mp[i] == 0) st.insert(i);
-    }
-
-    vector<int> ans;
     
-    for(int i = n-1; i>=0; i--){
-        int ele = input[i];
-        debug(ele);
-        auto idx = st.upper_bound(ele);
-        if(idx == st.end()){
-            ans.push_back(*st.rbegin());
-            st.erase(*st.rbegin());
+    print(prfmod);
+    int w,q;
+    cin>>w>>q;
+
+    map<int,int> wlengthmod;
+
+    for(int i = 1;i<=n; i++){
+        if(i+w-1 <= n){
+            int v = prfmod[i+w-1] - prfmod[i-1];
+            v = (v+9)%9;
+            wlengthmod[i] = v;
         }
-        else if(idx == st.begin()){
-            cout<<-1<<endl;
-            return;
+    }
+
+    printmap(wlengthmod);
+
+    map<int,set<int> > mpxx;
+
+    for(auto ele : wlengthmod){
+        mpxx[ele.second].insert(ele.first);
+    }
+
+
+
+    while(q--){
+        int l,r;
+        cin>>l>>r;
+        int k;
+        cin>>k;
+        int vlr = prfmod[r] - prfmod[l-1];
+
+        debug(vlr);
+
+        map<int,int> mp;
+
+        for(int i = 0; i<=8; i++){
+            int l1 = i;
+            l1 *= vlr;
+
+            int l2 = (k - l1 + 900) % 9;
+
+            mp[i] = l2; 
+        }
+
+        printmap(mp);
+
+        int ans1 = n+5;
+        int ans2 = n+5;
+
+        for(int i = 0; i<=8; i++){
+            int aa = i;
+            int bb = mp[i];
+
+            if(aa == bb){
+                if(mpxx[aa].size() < 2) continue;
+                int firstmini = *mpxx[aa].begin();
+                auto it = mpxx[aa].begin();
+                it++;
+                int secondmini = *it;
+
+                if(ans1 > firstmini){
+                    ans1 = firstmini;
+                    ans2 = secondmini;
+                }
+                else if(ans1 == firstmini){
+                    ans2 = min(ans2,secondmini);
+                }
+
+            }
+            else{
+                if(mpxx[aa].size() == 0 || mpxx[bb].size() == 0) continue;
+                int firstmini = *mpxx[aa].begin();
+                int secondmini = *mpxx[bb].begin();
+
+                if(ans1 > firstmini){
+                    ans1 = firstmini;
+                    ans2 = secondmini;
+                }
+                else if(ans1 == firstmini){
+                    ans2 = min(ans2,secondmini);
+                }
+            }
+        }
+        if(ans1 == n+5){
+            cout<<-1<<" "<<-1<<endl;
         }
         else{
-            idx--;
-            ans.push_back(*idx);
-            st.erase(*idx);
+            cout<<ans1<<" "<<ans2<<endl;
         }
     }
-
-    reverse(ans.begin(),ans.end());
-
-    int i = 0;
-    while(i<n){
-        cout<<ans[i]<<" ";
-        cout<<input[i]<<" ";
-        i++;
-    }
-    cout<<endl;
-
 }
 /* logic ends */
 
