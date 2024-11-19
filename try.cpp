@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.19 00:39:39
+ *    created: 2024.11.19 22:35:19
  **/
 
 /* includes and all */
@@ -58,103 +58,145 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    vector<int> arr(n);
+    int n,m;
+    cin>>n>>m;
+    vector<vector<char> > grid(n,vector<char>(m));
     for(int i=0;i<n;i++){
-        cin>>arr[i];
+        for(int j=0;j<m;j++){
+            cin>>grid[i][j];
+        }
     }
 
-    multiset<int> s1;
-    multiset<int> s2;
-
-    if(k<5){
-        
-        for(int i = 0; i<=n-k; i++){
-            vector<int> v;
-            for(int j = i; j<i+k; j++){
-                v.push_back(arr[j]);
-            }
-            sort(v.begin(),v.end());
-            if(k == 1){
-                cout<<v[0]<<" ";
-            }
-            else if(k == 2){
-                cout<<v[0]<<" ";
-            }
-            else if(k == 3){
-                cout<<v[1]<<" ";
-            }
-            else if(k == 4){
-                cout<<v[1]<<" ";
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            if(grid[i][j] == '<'){
+                for(int k = j-1; k>=0; k--){
+                    if(grid[i][k] == '.'){
+                        grid[i][k] = '#';
+                    }
+                    else break;
+                }
             }
         }
+    }
+
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            if(grid[i][j] == '>'){
+                for(int k = j+1; k<m; k++){
+                    if(grid[i][k] == '.'){
+                        grid[i][k] = '#';
+                    }
+                    else break;
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            if(grid[i][j] == '^'){
+                for(int k = i-1; k>=0; k--){
+                    if(grid[k][j] == '.'){
+                        grid[k][j] = '#';
+                    }
+                    else break;
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            if(grid[i][j] == 'v'){
+                for(int k = i+1; k<n; k++){
+                    if(grid[k][j] == '.'){
+                        grid[k][j] = '#';
+                    }
+                    else break;
+                }
+            }
+        }
+    }
+
+
+    //bfs
+
+    int start_x = -1, start_y = -1;
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            if(grid[i][j] == 'S'){
+                start_x = i;
+                start_y = j;
+                break;
+            }
+        }
+    }
+
+    int end_x = -1, end_y = -1;
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            if(grid[i][j] == 'G'){
+                end_x = i;
+                end_y = j;
+                break;
+            }
+        }
+    }
+
+    debug(end_x);
+    debug(end_y);
+
+    print2d(grid);
+
+    queue<pp> q;
+
+    vector<vector<int> > visited(n,vector<int>(m,0));
+    vector<vector<int> > dist(n,vector<int>(m,0));
+    q.push({start_x,start_y});
+    visited[start_x][start_y] = 1;
+    dist[start_x][start_y] = 0;
+    while(!q.empty()){
+        int curr_x = q.front().first;
+        int curr_y = q.front().second;
+        debug(curr_x);
+        debug(curr_y);
+        q.pop();
+        if(curr_x == end_x && curr_y == end_y){
+            cout<<dist[curr_x][curr_y]<<endl;
+            return;
+        }
+        if(curr_x-1>=0 && visited[curr_x-1][curr_y] == 0 && (grid[curr_x-1][curr_y] == '.' || grid[curr_x-1][curr_y] == 'G') ){
+            visited[curr_x-1][curr_y] = 1;
+            dist[curr_x-1][curr_y] = dist[curr_x][curr_y] + 1;
+            q.push({curr_x-1,curr_y});
+        }
+        if(curr_x+1<n && visited[curr_x+1][curr_y] == 0 && (grid[curr_x+1][curr_y] == '.' || grid[curr_x+1][curr_y] == 'G') ){
+            visited[curr_x+1][curr_y] = 1;
+            dist[curr_x+1][curr_y] = dist[curr_x][curr_y] + 1;
+            q.push({curr_x+1,curr_y});
+        }
+        if(curr_y-1>=0 && visited[curr_x][curr_y-1] == 0 && (grid[curr_x][curr_y-1] == '.' || grid[curr_x][curr_y-1] == 'G') ){
+            visited[curr_x][curr_y-1] = 1;
+            dist[curr_x][curr_y-1] = dist[curr_x][curr_y] + 1;
+            q.push({curr_x,curr_y-1});
+        }
+        if(curr_y+1<m && visited[curr_x][curr_y+1] == 0 && (grid[curr_x][curr_y+1] == '.' || grid[curr_x][curr_y+1] == 'G') ){
+            visited[curr_x][curr_y+1] = 1;
+            dist[curr_x][curr_y+1] = dist[curr_x][curr_y] + 1;
+            q.push({curr_x,curr_y+1});
+        }
+    }
+
+    if(visited[end_x][end_y] == 0){
+        cout<<-1<<endl;
     }
     else{
-        int leftsize = k/2+k%2;
-        int rightsize = k/2;
-
-        vector<int> v;
-        for(int i = 0; i<k; i++){
-            v.push_back(arr[i]);
-        }
-        sort(v.begin(),v.end());
-
-        for(int i=0;i<leftsize;i++){
-            s1.insert(v[i]);
-        }
-
-        for(int i=leftsize;i<k;i++){
-            s2.insert(v[i]);
-        }
-
-        cout<<*s1.rbegin()<<" ";
-
-        for(int i = k; i<n; i++){
-            int eletoadd = arr[i];
-            int eletoerase = arr[i-k];
-
-            if(s1.find(eletoerase) != s1.end()){
-                auto it = s1.find(eletoerase);
-                s1.erase(it);
-                vector<int> v2;
-                v2.push_back(eletoadd);
-                v2.push_back(*s1.rbegin());
-                v2.push_back(*s2.begin());
-
-                s1.erase(s1.find(*s1.rbegin()));
-                s2.erase(s2.find(*s2.begin()));
-
-                sort(v2.begin(),v2.end());
-
-                s1.insert(v2[0]);
-                s1.insert(v2[1]);
-                s2.insert(v2[2]);
-
-                cout<<*s1.rbegin()<<" ";
-
-            }
-            else{
-                auto it = s2.find(eletoerase);
-                s2.erase(it);
-                vector<int> v2;
-                v2.push_back(eletoadd);
-                v2.push_back(*s1.rbegin());
-                v2.push_back(*s2.begin());
-
-                s1.erase(s1.find(*s1.rbegin()));
-                s2.erase(s2.find(*s2.begin()));
-
-                sort(v2.begin(),v2.end());
-
-                s1.insert(v2[0]);
-                s2.insert(v2[1]);
-                s2.insert(v2[2]);
-
-                cout<<*s1.rbegin()<<" ";
-            }
-        }
+        cout<<dist[end_x][end_y]<<endl;
     }
+
+
+    
 }
 /* logic ends */
 
