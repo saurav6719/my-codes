@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.19 22:35:19
+ *    created: 2024.11.20 15:34:03
  **/
 
 /* includes and all */
@@ -58,143 +58,40 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,m;
-    cin>>n>>m;
-    vector<vector<char> > grid(n,vector<char>(m));
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++){
-            cin>>grid[i][j];
-        }
+    int n,k;
+    cin>>n>>k;
+    vector<int> input(n);
+    for(int i=0; i<n; i++){
+        cin>>input[i];
     }
+
+    vector<vector<int> > dp(501, vector<int> (501, 0));
+
+    dp[0][0] = 1;
 
     for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            if(grid[i][j] == '<'){
-                for(int k = j-1; k>=0; k--){
-                    if(grid[i][k] == '.'){
-                        grid[i][k] = '#';
-                    }
-                    else break;
-                }
+        vector<vector<int> > next (501, vector<int> (501, 0));
+
+        for(int j = 0; j<=k; j++){
+            for(int l = 0; l<=k;  l++){
+                if(dp[j][l] == 1) next[j][l] = 1;
+                if(l - input[i] >= 0 and dp[j][l-input[i]] == 1) next[j][l] = 1;
+                if(j - input[i] >= 0 and l - input[i] >= 0 and dp[j-input[i]][l-input[i]] == 1) next[j][l] = 1;
             }
         }
+        dp = next;
     }
 
-    for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            if(grid[i][j] == '>'){
-                for(int k = j+1; k<m; k++){
-                    if(grid[i][k] == '.'){
-                        grid[i][k] = '#';
-                    }
-                    else break;
-                }
-            }
-        }
+    vector<int> ans;
+    for(int i = 0; i<=k; i++){
+        if(dp[i][k] == 1) ans.push_back(i);
     }
 
-    for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            if(grid[i][j] == '^'){
-                for(int k = i-1; k>=0; k--){
-                    if(grid[k][j] == '.'){
-                        grid[k][j] = '#';
-                    }
-                    else break;
-                }
-            }
-        }
+    cout<<ans.size()<<endl;
+    for(auto x : ans){
+        cout<<x<<" ";
     }
-
-    for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            if(grid[i][j] == 'v'){
-                for(int k = i+1; k<n; k++){
-                    if(grid[k][j] == '.'){
-                        grid[k][j] = '#';
-                    }
-                    else break;
-                }
-            }
-        }
-    }
-
-
-    //bfs
-
-    int start_x = -1, start_y = -1;
-    for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            if(grid[i][j] == 'S'){
-                start_x = i;
-                start_y = j;
-                break;
-            }
-        }
-    }
-
-    int end_x = -1, end_y = -1;
-    for(int i = 0; i<n; i++){
-        for(int j = 0; j<m; j++){
-            if(grid[i][j] == 'G'){
-                end_x = i;
-                end_y = j;
-                break;
-            }
-        }
-    }
-
-    debug(end_x);
-    debug(end_y);
-
-    print2d(grid);
-
-    queue<pp> q;
-
-    vector<vector<int> > visited(n,vector<int>(m,0));
-    vector<vector<int> > dist(n,vector<int>(m,0));
-    q.push({start_x,start_y});
-    visited[start_x][start_y] = 1;
-    dist[start_x][start_y] = 0;
-    while(!q.empty()){
-        int curr_x = q.front().first;
-        int curr_y = q.front().second;
-        debug(curr_x);
-        debug(curr_y);
-        q.pop();
-        if(curr_x == end_x && curr_y == end_y){
-            cout<<dist[curr_x][curr_y]<<endl;
-            return;
-        }
-        if(curr_x-1>=0 && visited[curr_x-1][curr_y] == 0 && (grid[curr_x-1][curr_y] == '.' || grid[curr_x-1][curr_y] == 'G') ){
-            visited[curr_x-1][curr_y] = 1;
-            dist[curr_x-1][curr_y] = dist[curr_x][curr_y] + 1;
-            q.push({curr_x-1,curr_y});
-        }
-        if(curr_x+1<n && visited[curr_x+1][curr_y] == 0 && (grid[curr_x+1][curr_y] == '.' || grid[curr_x+1][curr_y] == 'G') ){
-            visited[curr_x+1][curr_y] = 1;
-            dist[curr_x+1][curr_y] = dist[curr_x][curr_y] + 1;
-            q.push({curr_x+1,curr_y});
-        }
-        if(curr_y-1>=0 && visited[curr_x][curr_y-1] == 0 && (grid[curr_x][curr_y-1] == '.' || grid[curr_x][curr_y-1] == 'G') ){
-            visited[curr_x][curr_y-1] = 1;
-            dist[curr_x][curr_y-1] = dist[curr_x][curr_y] + 1;
-            q.push({curr_x,curr_y-1});
-        }
-        if(curr_y+1<m && visited[curr_x][curr_y+1] == 0 && (grid[curr_x][curr_y+1] == '.' || grid[curr_x][curr_y+1] == 'G') ){
-            visited[curr_x][curr_y+1] = 1;
-            dist[curr_x][curr_y+1] = dist[curr_x][curr_y] + 1;
-            q.push({curr_x,curr_y+1});
-        }
-    }
-
-    if(visited[end_x][end_y] == 0){
-        cout<<-1<<endl;
-    }
-    else{
-        cout<<dist[end_x][end_y]<<endl;
-    }
-
+    cout<<endl;
 
     
 }
