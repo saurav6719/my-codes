@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.20 15:34:03
+ *    created: 2024.11.21 14:40:36
  **/
 
 /* includes and all */
@@ -57,43 +57,79 @@
 using namespace std;
 
 /* write core logic here */
+int ans = 0;
+vector<vector<int> > dp;
+void f(vector<vector<int> > &graph, int node, int mask, int cnt){
+
+    // is node pe aap is mask ke saath aaye ho aur cnt nodes le chuke ho 
+    
+    ans = max(ans, cnt);
+
+    if(dp[node][mask] != -1){
+        return;
+    }
+
+    dp[node][mask] = cnt;
+    
+    // take this node 
+    mask |= (1<<node);
+    for(auto neigh : graph[node]){
+        if(mask & (1<<neigh)) continue;
+        f(graph, neigh, mask, cnt+1);
+    }
+
+    ans = max(ans, cnt+1);
+
+
+    return;
+    
+}
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    vector<int> input(n);
-    for(int i=0; i<n; i++){
-        cin>>input[i];
+    int n;
+    cin>>n;
+    vector<pair<string, string > > input(n);
+    map<string, set<int> > mpgenre;
+    map<string, set<int> > mpactor;
+
+    for(int i=0;i<n;i++){
+        cin>>input[i].first>>input[i].second;
+        mpgenre[input[i].first].insert(i);
+        mpactor[input[i].second].insert(i);
     }
-
-    vector<vector<int> > dp(501, vector<int> (501, 0));
-
-    dp[0][0] = 1;
-
-    for(int i = 0; i<n; i++){
-        vector<vector<int> > next (501, vector<int> (501, 0));
-
-        for(int j = 0; j<=k; j++){
-            for(int l = 0; l<=k;  l++){
-                if(dp[j][l] == 1) next[j][l] = 1;
-                if(l - input[i] >= 0 and dp[j][l-input[i]] == 1) next[j][l] = 1;
-                if(j - input[i] >= 0 and l - input[i] >= 0 and dp[j-input[i]][l-input[i]] == 1) next[j][l] = 1;
-            }
-        }
-        dp = next;
-    }
-
-    vector<int> ans;
-    for(int i = 0; i<=k; i++){
-        if(dp[i][k] == 1) ans.push_back(i);
-    }
-
-    cout<<ans.size()<<endl;
-    for(auto x : ans){
-        cout<<x<<" ";
-    }
-    cout<<endl;
 
     
+
+    vector<vector<int> > graph(n+1, vector<int> ());
+
+    dp.assign(n+1, vector<int> ((1<<n), -1));
+
+    for(int i= 0; i<n; i++){
+        for(int j = 0; j<n; j++){
+            if(i==j) continue;
+            string & s1 = input[i].first;
+            string & s2 = input[i].second;
+            string & s3 = input[j].first;
+            string & s4 = input[j].second;
+            if(mpgenre[s1].count(j) || mpgenre[s3].count(i) || mpactor[s2].count(j) || mpactor[s4].count(i)){
+                graph[i].push_back(j);
+            }
+        }
+    }
+
+    
+
+    ans = 0;
+
+
+    for(int i=0;i<n;i++){
+        f(graph, i, 0, 0);
+    }
+
+    debug(ans);
+
+    cout<<n-ans<<endl;
+
+
 }
 /* logic ends */
 
@@ -104,8 +140,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
