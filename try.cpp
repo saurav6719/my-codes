@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.25 22:48:33
+ *    created: 2024.12.07 01:43:53
  **/
 
 /* includes and all */
@@ -57,83 +57,96 @@
 using namespace std;
 
 /* write core logic here */
-vector<int> dp;
-int f(int i, vector<int> &interval, vector<int> &next, int n){
-    if(i > n){
-        return 0;
-    }  
+struct xxxx{
+    int i; // which test case
+    int start;
+    int length;
 
-    if(dp[i] != -1){
-        return dp[i];
-    }
+};
 
-    int ans  =  0; 
-
-    // take 
-    ans = max(ans , interval[i] + f(next[i],interval,next,n));
-
-    // leave
-    ans = max(ans , f(i+1,interval,next,n));
-
-    return dp[i] = ans;
+int sum(vector<int> &prfsum, vector<int> &weightedpfsum, int l, int r){
+    return weightedpfsum[r] - weightedpfsum[l-1] - (prfsum[r] - prfsum[l-1])*(l-1);
 }
 void solve(){
-    int n;
-    cin>>n;
-    int m;
-    cin>>m;
-
-    dp.assign(n+1,-1);
-
-    vector<pp> input(m);
-    for(int i=0;i<m;i++){
-        cin>>input[i].first>>input[i].second;
+    int n,q;
+    cin>>n>>q;
+    vector<int> input(n+1);
+    for(int i=1;i<=n;i++){
+        cin>>input[i];
     }
 
-    sort(input.begin(),input.end());
-    int j = 0;
+    map<pp,vector<xxxx> > mp;
 
-    vector<int> v(n+1);
-    vector<int> intervals(n+1);
-    int oc = 0;
-    set<int> st;
-    map<int,int> mp;
-    for(int i = 1; i<=n; i++){
-        while(j < m and input[j].first == i){
-            st.insert(input[j].second);
-            debug(input[j].second);
-            oc++;
-            mp[input[j].second]++;
-            if(input[j].second == 4){
-                debug(mp[input[j].second]);
-            }
-            j++;
+    for(int i = 1; i<=q; i++){
+        int s,d,k;
+        cin>>s>>d>>k;
+        int x = s%d;
+        if(x == 0){
+            x = d;
         }
-        if(st.size() == 0){
-            v[i] = i+1;
-        }
-        else{
-            v[i] = *st.rbegin() + 1;
-        }
-
-        intervals[i] = oc;
-
-        if(st.count(i)){
-            if(i==4){
-                debug(i);
-                debug(oc);
-                debug(mp[i]);
-            }
-            st.erase(i);
-            oc -= mp[i];
-        }
-
+        mp[{d,x}].push_back({i, s, k});
     }
 
-    print(v);
-    print(intervals);
+    vector<int> ans(q+1);
 
-    cout<<f(1,intervals,v,n)<<endl;
+
+    for(auto &ele : mp){
+        auto &ff = ele.first;
+        auto &ss = ele.second;
+        int d = ff.first;
+        int start = ff.second;
+        int n;
+        cin>>n;
+        vector<int> v;
+        for(int i = 0; i<n; i++){
+            int x;
+            cin>>x;
+            v.push_back(x);
+        }
+
+        vector<int> prfsum;
+        prfsum.push_back(0);
+        for(auto x : v){
+            prfsum.push_back(prfsum.back() + x);
+        }
+
+        vector<int> weightedpfsum;
+        weightedpfsum.push_back(0);
+        for(int i = 1; i<=v.size(); i++){
+            weightedpfsum.push_back(weightedpfsum.back() + i*v[i-1]);
+        }
+
+        print(prfsum);
+        print(weightedpfsum);
+
+        int q;
+        cin>>q;
+        while(q--){
+            int l,r;
+            cin>>l>>r;
+            int answer = sum(prfsum, weightedpfsum, l, r);
+            cout<<answer<<" ";
+        }
+
+        for(auto &ele : ss){
+            int testcase = ele.i;
+            int s = ele.start;
+            debug(s);
+            int left =( s - start ) / d + 1;
+            debug(left);
+            int right = left + ele.length - 1;
+            debug(right);
+            int answer = sum(prfsum, weightedpfsum, left, right);
+            debug(answer);
+            ans[testcase] = answer;
+        }
+    }
+
+    for(int i = 1; i<=q; i++){
+        cout<<ans[i]<<" ";
+    }
+
+    cout<<endl;
 
 }
 /* logic ends */
