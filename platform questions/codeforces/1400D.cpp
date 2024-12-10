@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.12.08 20:09:28
+ *    created: 2024.12.07 03:03:14
  **/
 
 /* includes and all */
@@ -56,85 +56,85 @@
 #define pp pair<int,int>
 using namespace std;
 
+class MergeSortTree {
+private:
+    std::vector<std::vector<int>> tree;
+    int n;
+
+    void build(int node, int start, int end, const std::vector<int>& arr) {
+        if (start == end) {
+            tree[node] = {arr[start]};
+        } else {
+            int mid = (start + end) / 2;
+            build(2 * node, start, mid, arr);
+            build(2 * node + 1, mid + 1, end, arr);
+            
+            // Merge the two child nodes
+            std::merge(tree[2 * node].begin(), tree[2 * node].end(),
+                       tree[2 * node + 1].begin(), tree[2 * node + 1].end(),
+                       std::back_inserter(tree[node]));
+        }
+    }
+
+    int query(int node, int start, int end, int l, int r, int k) {
+        if (start > r || end < l) {
+            return 0; // Out of range
+        }
+        if (start >= l && end <= r) {
+            // Complete overlap
+            return std::upper_bound(tree[node].begin(), tree[node].end(), k) -
+                   std::lower_bound(tree[node].begin(), tree[node].end(), k);
+        }
+
+        int mid = (start + end) / 2;
+        int leftQuery = query(2 * node, start, mid, l, r, k);
+        int rightQuery = query(2 * node + 1, mid + 1, end, l, r, k);
+        return leftQuery + rightQuery;
+    }
+
+public:
+    MergeSortTree(const std::vector<int>& arr) {
+        n = arr.size();
+        tree.resize(4 * n);
+        build(1, 0, n - 1, arr);
+    }
+
+    int query(int l, int r, int k) {
+        return query(1, 0, n - 1, l, r, k);
+    }
+};
+
+
+
+
 /* write core logic here */
-
-int dp[100005][205][2];
-int f(int i, int last , int lastge, vector<int> &input){
-
-
-    int ans = 0;
-
-    if(i == input.size() - 1){
-        if(input[i] != -1){
-            if(lastge == 0){
-                if(input[i] == last) return 1;
-                return 0;
-            }   
-            if(last >= input[i]){
-                return 1;
-            }
-            return 0;
-        }
-
-        if(lastge == 0) return 1;
-
-        for(int j = 1; j<=last; j++){
-            ans += 1;
-        }
-
-        return ans;
-    }   
-
-    if(dp[i][last][lastge] != -1) return dp[i][last][lastge];
-
-    if(input[i] != -1){
-        int newlastge = 0;
-        if(input[i-1] >= input[i]){
-            newlastge = 1;
-        }
-        return dp[i][last][lastge] = f(i+1, input[i], newlastge, input);
-    }
-
-    if(lastge == 1){
-        for(int j = 1; j<=200; j++){
-            if(last >= j){
-                ans += f(i+1, j, 1, input);
-            }
-            else {
-                ans += f(i+1, j, 0, input);
-            }
-        }
-    }
-
-    else{
-        for(int j = last; j<=200; j++){
-            int newlastge = 0;
-            if(j == last) newlastge = 1;
-            ans += f(i+1, j, newlastge, input);
-        }
-    }
-
-    return dp[i][last][lastge] = ans;
-}
 void solve(){
     int n;
     cin>>n;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    vector<int> v(n);
+    for(auto &x : v){
+        cin>>x;
     }
-
-    memset(dp, -1, sizeof(dp));
-
 
     int ans = 0;
 
-    if(input[0] != -1){
-        ans = f(1, input[0], 0, input);
-    }
-    else{
-        for(int i = 1; i<=200; i++){
-            ans += f(1, i, 0, input);
+    vector<int> v2 = v;
+    reverse(v2.begin(), v2.end());
+
+    for(int j = 0; j<n; j++){
+        unordered_map<int,int> mp1;
+        for(int i = 0; i<j; i++){
+            mp1[v[i]] ++;
+        }
+        unordered_map<int,int> mp2;
+        for(int i = 0; i<n-j-1; i++){
+            mp2[v2[i]] ++;
+        }
+        for(int k = j+1; k<n; k++){
+            int valatk = v[k];
+            int valatj = v[j];
+            mp2[valatk] --;
+            ans += mp1[valatk] * mp2[valatj];
         }
     }
 
@@ -149,8 +149,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
