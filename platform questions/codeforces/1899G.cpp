@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.12.10 03:07:04
+ *    created: 2024.12.11 01:59:33
  **/
 
 /* includes and all */
@@ -57,141 +57,143 @@
 using namespace std;
 
 /* write core logic here */
+void solve(){
+    int n,a,b,c;
+    cin>>n>>a>>b>>c;
 
-void subtreedfs(int node, int par, vector<vector<int> > &tree, vector<int> &subtreesizes){
-    subtreesizes[node] = 1;
-    for(auto child : tree[node]){
-        if(child != par){
-            subtreedfs(child, node, tree, subtreesizes);
-            subtreesizes[node] += subtreesizes[child];
-        }
-    }
-}
 
-void dfs2(vector<vector<int> > &tree, int node, int par, vector<int> &subtreesizes, vector<int> &maxchildsize){
-    int maxchild = 0;
-    for(auto child : tree[node]){
-        if(child != par){
-            maxchild = max(maxchild, subtreesizes[child]);
-        }
+    int x = a-b+c;
+    if(x%2 != 0 or x<0){
+        cout<<"NO"<<endl;
+        return;
     }
-    maxchildsize[node] = maxchild;
-    for(auto child : tree[node]){
-        if(child != par){
-            dfs2(tree, child, node, subtreesizes, maxchildsize);
-        }
-    }
-}
+    x /= 2;
 
-void dfs3(vector<vector<int> > &tree, int node, int par, vector<int> &subtreesizes, vector<int> &sumchildsize){
-    int sumchild = 0;
-    for(auto child : tree[node]){
-        if(child != par){
-            sumchild += subtreesizes[child];
-        }
-    }
-    sumchildsize[node] = sumchild;
-    for(auto child : tree[node]){
-        if(child != par){
-            dfs3(tree, child, node, subtreesizes, sumchildsize);
-        }
-    }
-}
+    int y = b+c-a;
 
-void dfs(vector<vector<int> > &tree, int node, int par, vector<int> &subtreesizes, vector<int> &ans, vector<vector<int> > &directchildrens, vector<int> &maxchildsize, vector<int> &sumchildsize, vector<int> &parent){
-    for(auto child : tree[node]){
-        if(child != par){
-            dfs(tree, child, node, subtreesizes, ans, directchildrens, maxchildsize, sumchildsize, parent);
-        }
+    if(y%2 != 0 or y<0){
+        cout<<"NO"<<endl;
+        return;
     }
 
-    set<int> possiblecandidates;
 
-    possiblecandidates.insert(node);
+    vector<pp> ans;
 
-    int maximumsizeofchild = 0;
-    int maximumchild = -1;
+    y /= 2;
+    int curr1 = 1;
+    int curr2 = 4;
+    int acopy = a;
 
-    for(auto child : tree[node]){
-        if(child != par){
-            if(subtreesizes[child] > maximumsizeofchild){
-                maximumsizeofchild = subtreesizes[child];
-                maximumchild = child;
+    debug(x);
+    debug(y);
+
+    if(x >= a){
+
+        if(a+b != c){
+            cout<<"NO"<<endl;
+            return;
+        }
+        for(int i = 0; i<a-1; i++){
+            ans.push_back({curr1,curr2});
+            curr1 = curr2;
+            curr2++; 
+        }
+        ans.push_back({curr1,2});
+
+        curr1 = 2;
+
+        for(int i = 0; i<x-a; i++){
+            if(i== x-a-1){
+                if(y==0){
+                    ans.push_back({curr1,3});
+                    break;
+                }
             }
+
+            ans.push_back({curr1,curr2});
+            curr1 = curr2;
+            curr2++;
         }
+
+        for(int i = 0; i<y-1; i++){
+            ans.push_back({curr1,curr2});
+            curr1 = curr2;
+            curr2++;
+        }
+
+        if(y!=0) {
+            ans.push_back({curr1,3});
+        }
+
+        for(int i = 0; i<n-1-(x+y); i++){
+            ans.push_back({3,curr2});
+            curr2++;
+        }
+
     }
 
-    if(maximumchild != -1){
-        int centroidofchild = ans[maximumchild];
-        while(centroidofchild != node){
-            int ele = centroidofchild;
-            vector<int> afterthis;
-            int cnt = 0;
-            cnt += sumchildsize[ele];
-            afterthis.push_back(maxchildsize[ele]);
-            afterthis.push_back(subtreesizes[node] - cnt - 1);
-            sort(afterthis.begin(), afterthis.end());
-            if(afterthis.back() <= subtreesizes[node] / 2){
-                ans[node] = ele;
-                return;
+    else{
+
+        curr1 = 1;
+        curr2 = 4;
+
+        int newstart = 1;
+        for(int i = 0; i<x; i++){
+
+            if(i== x-1){
+                if(y==0){
+                    ans.push_back({curr1,3});
+                    newstart = 3;
+                    break;
+                }
             }
-            centroidofchild = parent[centroidofchild];
+            ans.push_back({curr1,curr2});
+            curr1 = curr2;
+            curr2++;
+            newstart = curr1;
+        }
+
+        for(int i = 0; i<y-1; i++){
+            ans.push_back({curr1,curr2});
+            curr1 = curr2;
+            curr2++;
+        }
+
+        if(y!=0) {
+            ans.push_back({curr1,3});
+        }
+
+        curr1 = newstart;
+
+        for(int i = 0; i<acopy-x- 1; i++){
+            ans.push_back({curr1,curr2});
+            curr1 = curr2;
+            curr2++;
+        }
+        ans.push_back({curr1,2});
+
+
+        for(int i = 0; i<n-1-(a+y); i++){
+            ans.push_back({2,curr2});
+            curr2++;
         }
     }
 
-    for(auto ele : possiblecandidates){
-        vector<int> afterthis;
-        int cnt = 0;
-        cnt += sumchildsize[ele];
-        afterthis.push_back(maxchildsize[ele]);
-        afterthis.push_back(subtreesizes[node] - cnt - 1);
-        sort(afterthis.begin(), afterthis.end());
-        if(afterthis.back() <= subtreesizes[node] / 2){
-            ans[node] = ele;
+
+    for(auto ele : ans){
+        if(ele.first > n or ele.second > n){
+            cout<<"NO"<<endl;
             return;
         }
     }
 
-    return ;
-}
-void solve(){
+    cout<<"YES"<<endl;
 
-    int n;
-    int q; 
-    cin>>n;
-    cin>>q;
-    vector<vector<int> > tree(n+1, vector<int> ());
-    vector<vector<int> > directchildrens(n+1, vector<int> ());
-    vector<int> parent(n+1, 0);
-    vector<int> subtreesizes(n+1);
-    for(int i = 2; i<=n; i++){
-        int par;
-        cin>>par;
-        parent[i] = par;
-        tree[par].push_back(i);
-        tree[i].push_back(par);
-        directchildrens[par].push_back(i);
+    for(auto ele : ans){
+        cout<<ele.first<<" "<<ele.second<<endl;
     }
 
-    vector<int> ans(n+1,0);
-
-    subtreedfs(1, 0, tree, subtreesizes);
-
-    vector<int> maxchildsize(n+1, 0);
-
-    dfs2(tree, 1, 0, subtreesizes, maxchildsize);
-
-    vector<int> sumchildsize(n+1, 0);
-
-    dfs3(tree, 1, 0, subtreesizes, sumchildsize);
-
-    dfs(tree, 1, 0, subtreesizes, ans, directchildrens, maxchildsize, sumchildsize, parent);
-
-    while(q--){
-        int node;
-        cin>>node;
-        cout<<ans[node]<<endl;
-    }
+    return;
 
 }
 /* logic ends */
@@ -203,8 +205,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
