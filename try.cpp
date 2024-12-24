@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.12.08 20:09:28
+ *    created: 2024.12.23 14:10:17
  **/
 
 /* includes and all */
@@ -57,88 +57,116 @@
 using namespace std;
 
 /* write core logic here */
+int bfs(int source, int sink , vector<int> &parent, vector<vector<int> > &adj , vector<vector<int> > &capacity){
+    fill(parent.begin(),parent.end(),-1);
+    parent[source] = -2;
+    queue<pp> q;
+    q.push({source,INT_MAX});
 
-int dp[100005][205][2];
-int f(int i, int last , int lastge, vector<int> &input){
+    while(!q.empty()){
+        int currnode = q.front().first;
+        int currmaxflow = q.front().second;
+        q.pop();
 
-
-    int ans = 0;
-
-    if(i == input.size() - 1){
-        if(input[i] != -1){
-            if(lastge == 0){
-                if(input[i] == last) return 1;
-                return 0;
-            }   
-            if(last >= input[i]){
-                return 1;
-            }
-            return 0;
-        }
-
-        if(lastge == 0) return 1;
-
-        for(int j = 1; j<=last; j++){
-            ans += 1;
-        }
-
-        return ans;
-    }   
-
-    if(dp[i][last][lastge] != -1) return dp[i][last][lastge];
-
-    if(input[i] != -1){
-        int newlastge = 0;
-        if(input[i-1] >= input[i]){
-            newlastge = 1;
-        }
-        return dp[i][last][lastge] = f(i+1, input[i], newlastge, input);
-    }
-
-    if(lastge == 1){
-        for(int j = 1; j<=200; j++){
-            if(last >= j){
-                ans += f(i+1, j, 1, input);
-            }
-            else {
-                ans += f(i+1, j, 0, input);
+        for(int nextnode : adj[currnode]){
+            if(parent[nextnode] == -1 and capacity[currnode][nextnode]){
+                parent[nextnode] = currnode;
+                int newflow = min(currmaxflow,capacity[currnode][nextnode]);
+                if(nextnode == sink){
+                    return newflow;
+                }
+                q.push({nextnode,newflow});
             }
         }
     }
 
-    else{
-        for(int j = last; j<=200; j++){
-            int newlastge = 0;
-            if(j == last) newlastge = 1;
-            ans += f(i+1, j, newlastge, input);
+    return 0;
+}
+
+int maxflow(int source, int sink , vector<vector<int> > &adj , vector<vector<int> > &capacity, int n){
+    int flow = 0;
+    vector<int> parent(n+1);
+    int newflow;
+
+    while(newflow = bfs(source,sink,parent,adj,capacity)){
+        flow += newflow;
+        int currnode = sink;
+        while(currnode != source){
+            int prevnode = parent[currnode];
+            capacity[prevnode][currnode] -= newflow;
+            capacity[currnode][prevnode] += newflow;
+            currnode = prevnode;
         }
     }
 
-    return dp[i][last][lastge] = ans;
+    return flow;
 }
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    int n,m;
+    cin>>n>>m;
+
+    int source = 1;
+    int sink = n;
+
+    vector<vector<int> > flowgraph (n+1,vector<int>(n+1,0));
+
+    vector<vector<int> > adj (n+1,vector<int>());
+
+    set<pp> edges;
+
+    for(int i = 0; i<m; i++){
+        int u,v,c;
+        c = 1;
+        cin>>u>>v;
+        flowgraph[u][v] += c;
+        flowgraph[v][u] += c;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+        edges.insert({u,v});
+        edges.insert({v,u});
     }
 
-    memset(dp, -1, sizeof(dp));
+    int ans = maxflow(source,sink,adj,flowgraph,n);
 
+    vector<int> parent(n+1, -1);
 
-    int ans = 0;
+    bfs(source,sink,parent,adj,flowgraph);
 
-    if(input[0] != -1){
-        ans = f(1, input[0], 0, input);
-    }
-    else{
-        for(int i = 1; i<=200; i++){
-            ans += f(1, i, 0, input);
+    set<int> one;
+
+    for(int i = 1;i<=n; i++){
+        if(parent[i] != -1){
+            one.insert(i);
         }
     }
 
-    cout<<ans<<endl;
+    set<int> two;
+
+    for(int i = 1; i<=n; i++){
+        if(one.find(i) == one.end()){
+            two.insert(i);
+        }
+    }
+
+    int ans1 = 0;
+
+    vector<pp> res;
+
+    for(auto x : edges){
+        int u = x.first;
+        int v = x.second;
+        if(one.find(u) != one.end() and two.find(v) != two.end()){
+            ans1++;
+            res.push_back({u,v});
+        }
+    }
+
+    cout<<ans1<<endl;
+
+    for(auto x : res){
+        cout<<x.first<<" "<<x.second<<endl;
+    }
+    
 }
 /* logic ends */
 

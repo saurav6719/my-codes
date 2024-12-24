@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.11.15 15:01:56
+ *    created: 2024.12.24 15:38:03
  **/
 
 /* includes and all */
@@ -57,48 +57,177 @@
 using namespace std;
 
 /* write core logic here */
-// YES
-// abcaeebcabcafbggcabcabciiaklbcmmabcabpcabcabrrcttttabcabvvv
+class MaxFlow {
+private:
+    int n; // Number of nodes
+    int source, sink; // Source and sink nodes
+    vector<vector<int>> &capacity; // Capacity matrix
+    vector<vector<int>> adj; // Adjacency list
+ 
+    // Helper function to perform BFS
+    int bfs(vector<int>& parent) {
+        fill(parent.begin(), parent.end(), -1);
+        parent[source] = -2; // Mark the source as visited
+        queue<pair<int, int>> q; // Queue to store (node, flow)
+        q.push({source, INT_MAX});
+ 
+        while (!q.empty()) {
+            int curr = q.front().first;
+            int flow = q.front().second;
+            q.pop();
+ 
+            for (int next : adj[curr]) {
+                if (parent[next] == -1 && capacity[curr][next] > 0) {
+                    parent[next] = curr;
+                    int new_flow = min(flow, capacity[curr][next]);
+                    if (next == sink)
+                        return new_flow; // Found a path to the sink
+                    q.push({next, new_flow});
+                }
+            }
+        }
+        return 0; // No more augmenting paths
+    }
 
-int f(string &str){
-    //finding number of unique palindroms in this string
+public:
+    // Constructor
+    MaxFlow(int nodes, int sourceNode, int sinkNode, vector<vector<int>>& cap)
+        : n(nodes), source(sourceNode), sink(sinkNode), capacity(cap) {
+        adj.resize(n);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (capacity[i][j] > 0) {
+                    adj[i].push_back(j);
+                    adj[j].push_back(i); // Add reverse edge for residual graph
+                }
+            }
+        }
+    }
+ 
+    // Function to calculate the maximum flow
+    int getMaxFlow() {
+        int totalFlow = 0;
+        vector<int> parent(n);
+ 
+        int new_flow;
+        while (new_flow = bfs(parent)) {
+            totalFlow += new_flow;
+            int curr = sink;
+ 
+            // Update the residual capacities
+            while (curr != source) {
+                int prev = parent[curr];
+                capacity[prev][curr] -= new_flow;
+                capacity[curr][prev] += new_flow;
+                curr = prev;
+            }
+        }
+ 
+        return totalFlow;
+    }
+};
 
-    set<string> unique_palindroms;
-    int n = str.size();
 
-    for(int i = 0; i<n; i++){
-        for(int j = i; j<n; j++){
-            string temp = str.substr(i,j-i+1);
-            string rev = temp;
-            reverse(rev.begin(),rev.end());
-            if(temp == rev){
-                unique_palindroms.insert(temp);
+bool bfs2(int source, int sink, vector<vector<int> > &flowing, vector<vector<int> > adj, vector<int> &parent){
+    fill(parent.begin(), parent.end(), -1);
+    parent[source] = -2;
+    queue<int> q;
+    q.push(source);
+
+    while(!q.empty()){
+        int curr = q.front();
+        q.pop();
+
+        for(auto next : adj[curr]){
+            if(parent[next] == -1 && flowing[curr][next] == 1){
+                parent[next] = curr;
+                if(next == sink){
+                    return true;
+                }
+                q.push(next);
+            }
+        }
+    }
+    return false;
+}
+
+void solve(){
+    int n,m;
+    cin>>n>>m;
+
+    vector<vector<int>> flowgraph(n+5, vector<int>(n+5, 0));
+
+    vector<vector<int>> adj(n+5);
+
+    for(int i=0; i<m; i++){
+        int a,b,c;
+        cin>>a>>b;
+        c = 1;
+        adj[a].push_back(b);
+        flowgraph[a][b] = c;
+    }
+
+    vector<vector<int> > initial = flowgraph;
+
+    int source = 1, sink = n;
+
+    MaxFlow mf(n+5, source, sink, flowgraph);
+
+    int maxflow = mf.getMaxFlow();
+
+    vector<vector<int> > residual = flowgraph;
+
+
+    vector<vector<int> > flowing(n+5, vector<int>(n+5, 0));
+
+    for(int i = 1; i<=n; i++){
+        for(auto x : adj[i]){
+            if(residual[i][x] == 0){
+                flowing[i][x] = 1;
             }
         }
     }
 
-    return unique_palindroms.size();
+    vector<int> parent(n+5);
 
-}
-void solve(){
-    string str;
-    cin>>str;
+    vector<vector<int>> ans;
 
-    vector<int> ans(str.size()+5);
+    while(bfs2(source, sink, flowing, adj, parent)){
+        vector<int> res;
+        int curr = sink;
+        while(curr != source){
+            res.push_back(curr);
+            int prev = parent[curr];
+            flowing[prev][curr] = 0;
+            curr = prev;
+        }
+        res.push_back(source);
 
-    for(int i = 3; i<=str.size(); i++){
-        string temp = str.substr(0,i);
-        ans[i] = f(temp);
+        reverse(res.begin(), res.end());
+
+        ans.push_back(res);
+
+
     }
 
-    debug(ans[37]);
-    debug(ans[43]);
-    debug(ans[44]);
-    debug(ans[46]);
-    debug(ans[47]);
-    debug(ans[54]);
-    debug(ans[56]);
-    debug(ans[59]);
+
+    if(ans.size() == 0){
+        cout<<0<<endl;
+        return;
+    }
+
+    cout<<ans.size()<<endl;
+
+    for(auto x : ans){
+        cout<<x.size()<<endl;
+        for(auto y : x){
+            cout<<y<<" ";
+        }
+        cout<<endl;
+    }
+
+    return;
+
 }
 /* logic ends */
 
@@ -109,8 +238,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
