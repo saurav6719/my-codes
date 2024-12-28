@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.12.24 20:16:55
+ *    created: 2024.12.28 20:52:07
  **/
 
 /* includes and all */
@@ -57,62 +57,37 @@
 using namespace std;
 
 /* write core logic here */
+int f(int l, int r, int k){
+    debug(l);
+    debug(r);
+    if(r - l + 1< k){
+        return 0;
+    }
+    int ans = 0;
+    int size = r - l + 1;
+    int m = (l + r) / 2;
 
-bool isDivisibleBy(vector<int> &x, int num) {
-    int rem = 0; // Remainder starts at 0
-
-    for (int i = 0; i < x.size(); i++) {
-        rem = rem * 10 + x[i]; // Add the current digit to the remainder
-        rem %= num;            // Keep only the remainder modulo `num`
+    if(size & 1){
+        ans += f(l,m-1,k);
+        ans += m;
+        ans += f(m+1,r,k);
+    }
+    else{
+        ans += f(l,m,k);
+        ans += f(m+1,r,k);
     }
 
-    return rem == 0; // If the remainder is 0, the number is divisible
+    return ans;
 }
-
-long long factorial(int n) {
-    long long result = 1;
-    for (int i = 1; i <= n; ++i) {
-        result *= i;
-    }
-    return result;
-}
-
-
 void solve(){
-    int n,d;
-    cin>>n>>d;
+    int n,k;
+    cin>>n>>k;
 
-    vector<int> ans;
+    int l = 1;
+    int r = n;
 
-    if(n > 9){
-        cout<<1<<" ";
-        if(d == 3 or d==6 or d==9){
-            cout<<3<<" ";
-        }
-
-        if(d == 5){
-            cout<<5<<" ";
-        }
-
-        if(d == 3 or d==6 or d==9){
-            cout<<9<<" ";
-        }
-    }
-
-    for(int i = 1; i<=9; i+=2){
-
-        int x = factorial(n);
-        vector<int> v(x,d);
-        if(isDivisibleBy(v, i)){
-            ans.push_back(i);
-        }
-    }
-
-    for(auto x : ans){
-        cout<<x<<" ";
-    }
-
-    cout<<endl;
+    int ans = f(l,r,k);
+    cout<<ans<<endl;
 }
 /* logic ends */
 

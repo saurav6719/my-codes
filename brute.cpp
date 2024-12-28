@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.12.27 01:55:47
+ *    created: 2024.12.28 20:35:27
  **/
 
 /* includes and all */
@@ -57,138 +57,58 @@
 using namespace std;
 
 /* write core logic here */
-set<int> total;
-set<int> odd;
-set<int> even;
-bool poss = true;
-void dfs(vector<vector<int> > &tree, int node, int par , vector<int> &values){
-    int parentval = values[node];
-    for(auto child : tree[node]){
-        if(child == par) continue;
-
-        int plusone = parentval + 1;
-        if(total.count(plusone)){
-            values[child] = plusone;
-            total.erase(plusone);
-            if(plusone%2 == 0){
-                even.erase(plusone);
-            }else{
-                odd.erase(plusone);
-            }
-
-            dfs(tree,child,node,values);
-        }
-        else{
-            if(parentval % 2 == 0){
-                if(even.empty()){
-                    poss = false;
-                    return;
-                }
-                int val = *even.begin();
-                if(abs(val - parentval) == 2){
-                    if(even.size() < 2){
-                        poss = false;
-                        return;
-                    }
-                    else{
-                        val = *(++even.begin());
-                    }
-                }
-                if(abs(val - parentval) == 2){
-                    if(even.size() < 3){
-                        poss = false;
-                        return;
-                    }
-                    else{
-                        val = *(++(++even.begin()));
-                    }
-                }
-                values[child] = val;
-                even.erase(val);
-                total.erase(val);
-                dfs(tree,child,node,values);
-
-            }
-            else{
-                if(odd.empty()){
-                    poss = false;
-                    return;
-                }
-                int val = *odd.begin();
-
-                if(node == 4){
-                    debug(val);
-                    debug(parentval);
-                }
-                if(abs(val - parentval) == 2){
-                    if(odd.size() < 2){
-                        poss = false;
-                        return;
-                    }
-                    else{
-                        val = *(++odd.begin());
-                    }
-                }
-                if(abs(val - parentval) == 2){
-                    if(odd.size() < 3){
-                        poss = false;
-                        return;
-                    }
-                    else{
-                        val = *(++(++odd.begin()));
-                    }
-                }
-                values[child] = val;
-                odd.erase(val);
-                total.erase(val);
-                dfs(tree,child,node,values);
-            }
-        }
-    }
+long long sumOfAP(long long a, long long d, long long n) {
+    // Calculate sum using the formula
+    return n * (2 * a + (n - 1) * d) / 2;
 }
 void solve(){
-    int n;
-    cin>>n;
-    vector<vector<int> > tree(n+1);
-    for(int i=0;i<n-1;i++){
-        int u,v;
-        cin>>u>>v;
-        tree[u].push_back(v);
-        tree[v].push_back(u);
+    int n,k;
+    cin>>n>>k;
+    int currl = 1;
+    int currr = n;
+
+    int currterms = 1;
+
+    int ans = 0;
+    bool lasteven = false;
+    if(n % 2 == 0){
+        lasteven = true;
     }
+    while(currr >= k){
 
-    total.clear();
-    odd.clear();
-    even.clear();
-
-    for(int i = 1; i<=2*n; i++){
-        total.insert(i);
-        if(i%2 == 0){
-            even.insert(i);
-        }else{
-            odd.insert(i);
+        // debug(currr);
+        int size = currr - currl + 1;
+        if(size % 2 == 0){
+            int m = (currl + currr) / 2;
+            currr = m;
+            currterms *= 2;
+            lasteven = true;
+            continue;
         }
+        else{
+            int curra = (currl + currr) / 2;
+            debug(curra);
+            int d;
+            if(lasteven){
+                d = size;
+            }
+            else d = size+1;
+            debug(d);
+            debug(currterms);
+            ans += sumOfAP(curra,d,currterms);
+            debug(ans);
+            currterms *= 2;
+            currr = ((currl + currr) / 2) - 1;
+            lasteven = false;
+        }
+        // debug(ans);
+        // debug(currr);
     }
 
-    vector<int> values(n+1);
-    values[0] = 0;
-    values[1] = 1;
+    // 1 - 725 // 363
+    // 726 - 1450//1088
 
-    total.erase(1); 
-    odd.erase(1);
-
-
-    dfs(tree,1,0,values);
-
-    if(!poss){
-        cout<<-1<<endl;
-        return;
-    }
-
-    for(int i = 1; i<=n; i++){
-        cout<<values[i]<<" ";
-    }
-    cout<<endl;
+    cout<<ans<<endl;
 }
 /* logic ends */
 
