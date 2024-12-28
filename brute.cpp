@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.12.24 15:38:03
+ *    created: 2024.12.27 01:55:47
  **/
 
 /* includes and all */
@@ -57,177 +57,138 @@
 using namespace std;
 
 /* write core logic here */
-class MaxFlow {
-private:
-    int n; // Number of nodes
-    int source, sink; // Source and sink nodes
-    vector<vector<int>> &capacity; // Capacity matrix
-    vector<vector<int>> adj; // Adjacency list
- 
-    // Helper function to perform BFS
-    int bfs(vector<int>& parent) {
-        fill(parent.begin(), parent.end(), -1);
-        parent[source] = -2; // Mark the source as visited
-        queue<pair<int, int>> q; // Queue to store (node, flow)
-        q.push({source, INT_MAX});
- 
-        while (!q.empty()) {
-            int curr = q.front().first;
-            int flow = q.front().second;
-            q.pop();
- 
-            for (int next : adj[curr]) {
-                if (parent[next] == -1 && capacity[curr][next] > 0) {
-                    parent[next] = curr;
-                    int new_flow = min(flow, capacity[curr][next]);
-                    if (next == sink)
-                        return new_flow; // Found a path to the sink
-                    q.push({next, new_flow});
+set<int> total;
+set<int> odd;
+set<int> even;
+bool poss = true;
+void dfs(vector<vector<int> > &tree, int node, int par , vector<int> &values){
+    int parentval = values[node];
+    for(auto child : tree[node]){
+        if(child == par) continue;
+
+        int plusone = parentval + 1;
+        if(total.count(plusone)){
+            values[child] = plusone;
+            total.erase(plusone);
+            if(plusone%2 == 0){
+                even.erase(plusone);
+            }else{
+                odd.erase(plusone);
+            }
+
+            dfs(tree,child,node,values);
+        }
+        else{
+            if(parentval % 2 == 0){
+                if(even.empty()){
+                    poss = false;
+                    return;
                 }
-            }
-        }
-        return 0; // No more augmenting paths
-    }
-
-public:
-    // Constructor
-    MaxFlow(int nodes, int sourceNode, int sinkNode, vector<vector<int>>& cap)
-        : n(nodes), source(sourceNode), sink(sinkNode), capacity(cap) {
-        adj.resize(n);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (capacity[i][j] > 0) {
-                    adj[i].push_back(j);
-                    adj[j].push_back(i); // Add reverse edge for residual graph
+                int val = *even.begin();
+                if(abs(val - parentval) == 2){
+                    if(even.size() < 2){
+                        poss = false;
+                        return;
+                    }
+                    else{
+                        val = *(++even.begin());
+                    }
                 }
-            }
-        }
-    }
- 
-    // Function to calculate the maximum flow
-    int getMaxFlow() {
-        int totalFlow = 0;
-        vector<int> parent(n);
- 
-        int new_flow;
-        while (new_flow = bfs(parent)) {
-            totalFlow += new_flow;
-            int curr = sink;
- 
-            // Update the residual capacities
-            while (curr != source) {
-                int prev = parent[curr];
-                capacity[prev][curr] -= new_flow;
-                capacity[curr][prev] += new_flow;
-                curr = prev;
-            }
-        }
- 
-        return totalFlow;
-    }
-};
-
-
-bool bfs2(int source, int sink, vector<vector<int> > &flowing, vector<vector<int> > adj, vector<int> &parent){
-    fill(parent.begin(), parent.end(), -1);
-    parent[source] = -2;
-    queue<int> q;
-    q.push(source);
-
-    while(!q.empty()){
-        int curr = q.front();
-        q.pop();
-
-        for(auto next : adj[curr]){
-            if(parent[next] == -1 && flowing[curr][next] == 1){
-                parent[next] = curr;
-                if(next == sink){
-                    return true;
+                if(abs(val - parentval) == 2){
+                    if(even.size() < 3){
+                        poss = false;
+                        return;
+                    }
+                    else{
+                        val = *(++(++even.begin()));
+                    }
                 }
-                q.push(next);
+                values[child] = val;
+                even.erase(val);
+                total.erase(val);
+                dfs(tree,child,node,values);
+
+            }
+            else{
+                if(odd.empty()){
+                    poss = false;
+                    return;
+                }
+                int val = *odd.begin();
+
+                if(node == 4){
+                    debug(val);
+                    debug(parentval);
+                }
+                if(abs(val - parentval) == 2){
+                    if(odd.size() < 2){
+                        poss = false;
+                        return;
+                    }
+                    else{
+                        val = *(++odd.begin());
+                    }
+                }
+                if(abs(val - parentval) == 2){
+                    if(odd.size() < 3){
+                        poss = false;
+                        return;
+                    }
+                    else{
+                        val = *(++(++odd.begin()));
+                    }
+                }
+                values[child] = val;
+                odd.erase(val);
+                total.erase(val);
+                dfs(tree,child,node,values);
             }
         }
     }
-    return false;
 }
-
 void solve(){
-    int n,m;
-    cin>>n>>m;
-
-    vector<vector<int>> flowgraph(n+5, vector<int>(n+5, 0));
-
-    vector<vector<int>> adj(n+5);
-
-    for(int i=0; i<m; i++){
-        int a,b,c;
-        cin>>a>>b;
-        c = 1;
-        adj[a].push_back(b);
-        flowgraph[a][b] = c;
+    int n;
+    cin>>n;
+    vector<vector<int> > tree(n+1);
+    for(int i=0;i<n-1;i++){
+        int u,v;
+        cin>>u>>v;
+        tree[u].push_back(v);
+        tree[v].push_back(u);
     }
 
-    vector<vector<int> > initial = flowgraph;
+    total.clear();
+    odd.clear();
+    even.clear();
 
-    int source = 1, sink = n;
-
-    MaxFlow mf(n+5, source, sink, flowgraph);
-
-    int maxflow = mf.getMaxFlow();
-
-    vector<vector<int> > residual = flowgraph;
-
-
-    vector<vector<int> > flowing(n+5, vector<int>(n+5, 0));
-
-    for(int i = 1; i<=n; i++){
-        for(auto x : adj[i]){
-            if(residual[i][x] == 0){
-                flowing[i][x] = 1;
-            }
+    for(int i = 1; i<=2*n; i++){
+        total.insert(i);
+        if(i%2 == 0){
+            even.insert(i);
+        }else{
+            odd.insert(i);
         }
     }
 
-    vector<int> parent(n+5);
+    vector<int> values(n+1);
+    values[0] = 0;
+    values[1] = 1;
 
-    vector<vector<int>> ans;
-
-    while(bfs2(source, sink, flowing, adj, parent)){
-        vector<int> res;
-        int curr = sink;
-        while(curr != source){
-            res.push_back(curr);
-            int prev = parent[curr];
-            flowing[prev][curr] = 0;
-            curr = prev;
-        }
-        res.push_back(source);
-
-        reverse(res.begin(), res.end());
-
-        ans.push_back(res);
+    total.erase(1); 
+    odd.erase(1);
 
 
-    }
+    dfs(tree,1,0,values);
 
-
-    if(ans.size() == 0){
-        cout<<0<<endl;
+    if(!poss){
+        cout<<-1<<endl;
         return;
     }
 
-    cout<<ans.size()<<endl;
-
-    for(auto x : ans){
-        cout<<x.size()<<endl;
-        for(auto y : x){
-            cout<<y<<" ";
-        }
-        cout<<endl;
+    for(int i = 1; i<=n; i++){
+        cout<<values[i]<<" ";
     }
-
-    return;
-
+    cout<<endl;
 }
 /* logic ends */
 
@@ -238,8 +199,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }

@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.12.23 14:10:17
+ *    created: 2024.12.24 20:16:55
  **/
 
 /* includes and all */
@@ -57,116 +57,62 @@
 using namespace std;
 
 /* write core logic here */
-int bfs(int source, int sink , vector<int> &parent, vector<vector<int> > &adj , vector<vector<int> > &capacity){
-    fill(parent.begin(),parent.end(),-1);
-    parent[source] = -2;
-    queue<pp> q;
-    q.push({source,INT_MAX});
 
-    while(!q.empty()){
-        int currnode = q.front().first;
-        int currmaxflow = q.front().second;
-        q.pop();
+bool isDivisibleBy(vector<int> &x, int num) {
+    int rem = 0; // Remainder starts at 0
 
-        for(int nextnode : adj[currnode]){
-            if(parent[nextnode] == -1 and capacity[currnode][nextnode]){
-                parent[nextnode] = currnode;
-                int newflow = min(currmaxflow,capacity[currnode][nextnode]);
-                if(nextnode == sink){
-                    return newflow;
-                }
-                q.push({nextnode,newflow});
-            }
-        }
+    for (int i = 0; i < x.size(); i++) {
+        rem = rem * 10 + x[i]; // Add the current digit to the remainder
+        rem %= num;            // Keep only the remainder modulo `num`
     }
 
-    return 0;
+    return rem == 0; // If the remainder is 0, the number is divisible
 }
 
-int maxflow(int source, int sink , vector<vector<int> > &adj , vector<vector<int> > &capacity, int n){
-    int flow = 0;
-    vector<int> parent(n+1);
-    int newflow;
-
-    while(newflow = bfs(source,sink,parent,adj,capacity)){
-        flow += newflow;
-        int currnode = sink;
-        while(currnode != source){
-            int prevnode = parent[currnode];
-            capacity[prevnode][currnode] -= newflow;
-            capacity[currnode][prevnode] += newflow;
-            currnode = prevnode;
-        }
+long long factorial(int n) {
+    long long result = 1;
+    for (int i = 1; i <= n; ++i) {
+        result *= i;
     }
-
-    return flow;
+    return result;
 }
+
+
 void solve(){
-    int n,m;
-    cin>>n>>m;
+    int n,d;
+    cin>>n>>d;
 
-    int source = 1;
-    int sink = n;
+    vector<int> ans;
 
-    vector<vector<int> > flowgraph (n+1,vector<int>(n+1,0));
+    if(n > 9){
+        cout<<1<<" ";
+        if(d == 3 or d==6 or d==9){
+            cout<<3<<" ";
+        }
 
-    vector<vector<int> > adj (n+1,vector<int>());
+        if(d == 5){
+            cout<<5<<" ";
+        }
 
-    set<pp> edges;
-
-    for(int i = 0; i<m; i++){
-        int u,v,c;
-        c = 1;
-        cin>>u>>v;
-        flowgraph[u][v] += c;
-        flowgraph[v][u] += c;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-        edges.insert({u,v});
-        edges.insert({v,u});
-    }
-
-    int ans = maxflow(source,sink,adj,flowgraph,n);
-
-    vector<int> parent(n+1, -1);
-
-    bfs(source,sink,parent,adj,flowgraph);
-
-    set<int> one;
-
-    for(int i = 1;i<=n; i++){
-        if(parent[i] != -1){
-            one.insert(i);
+        if(d == 3 or d==6 or d==9){
+            cout<<9<<" ";
         }
     }
 
-    set<int> two;
+    for(int i = 1; i<=9; i+=2){
 
-    for(int i = 1; i<=n; i++){
-        if(one.find(i) == one.end()){
-            two.insert(i);
+        int x = factorial(n);
+        vector<int> v(x,d);
+        if(isDivisibleBy(v, i)){
+            ans.push_back(i);
         }
     }
 
-    int ans1 = 0;
-
-    vector<pp> res;
-
-    for(auto x : edges){
-        int u = x.first;
-        int v = x.second;
-        if(one.find(u) != one.end() and two.find(v) != two.end()){
-            ans1++;
-            res.push_back({u,v});
-        }
+    for(auto x : ans){
+        cout<<x<<" ";
     }
 
-    cout<<ans1<<endl;
-
-    for(auto x : res){
-        cout<<x.first<<" "<<x.second<<endl;
-    }
-    
+    cout<<endl;
 }
 /* logic ends */
 
@@ -177,8 +123,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
