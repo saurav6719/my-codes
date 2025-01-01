@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2024.12.28 20:35:27
+ *    created: 2024.12.31 15:25:12
  **/
 
 /* includes and all */
@@ -57,58 +57,8 @@
 using namespace std;
 
 /* write core logic here */
-long long sumOfAP(long long a, long long d, long long n) {
-    // Calculate sum using the formula
-    return n * (2 * a + (n - 1) * d) / 2;
-}
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    int currl = 1;
-    int currr = n;
-
-    int currterms = 1;
-
-    int ans = 0;
-    bool lasteven = false;
-    if(n % 2 == 0){
-        lasteven = true;
-    }
-    while(currr >= k){
-
-        // debug(currr);
-        int size = currr - currl + 1;
-        if(size % 2 == 0){
-            int m = (currl + currr) / 2;
-            currr = m;
-            currterms *= 2;
-            lasteven = true;
-            continue;
-        }
-        else{
-            int curra = (currl + currr) / 2;
-            debug(curra);
-            int d;
-            if(lasteven){
-                d = size;
-            }
-            else d = size+1;
-            debug(d);
-            debug(currterms);
-            ans += sumOfAP(curra,d,currterms);
-            debug(ans);
-            currterms *= 2;
-            currr = ((currl + currr) / 2) - 1;
-            lasteven = false;
-        }
-        // debug(ans);
-        // debug(currr);
-    }
-
-    // 1 - 725 // 363
-    // 726 - 1450//1088
-
-    cout<<ans<<endl;
+    
 }
 /* logic ends */
 

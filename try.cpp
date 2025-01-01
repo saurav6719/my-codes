@@ -1,11 +1,13 @@
 /**
  *    author: Saurav
- *    created: 2024.12.28 20:52:07
+ *    created: 2025.01.02 02:35:59
  **/
 
 /* includes and all */
 
 #include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>  // For ordered set (tree)
+#include <ext/pb_ds/tree_policy.hpp>     // For tree policies
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -55,39 +57,60 @@
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
+using namespace __gnu_pbds;
+
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
+
 
 /* write core logic here */
-int f(int l, int r, int k){
-    debug(l);
-    debug(r);
-    if(r - l + 1< k){
-        return 0;
-    }
-    int ans = 0;
-    int size = r - l + 1;
-    int m = (l + r) / 2;
-
-    if(size & 1){
-        ans += f(l,m-1,k);
-        ans += m;
-        ans += f(m+1,r,k);
-    }
-    else{
-        ans += f(l,m,k);
-        ans += f(m+1,r,k);
-    }
-
-    return ans;
+int count_in_range(ordered_set& o_set, int l, int r) {
+    // Use lower_bound and upper_bound to find the range
+    return o_set.order_of_key(r + 1) - o_set.order_of_key(l);
 }
 void solve(){
-    int n,k;
-    cin>>n>>k;
+    int n,q;
+    cin>>n>>q;
+    vector<int> v(n);
+    for(auto &x : v){
+        cin>>x;
+    }
 
-    int l = 1;
-    int r = n;
+    map<int,vector<int> > queryend;
+    vector<pp> queries(q);
+    for(int i = 0; i<q; i++){
+        int l,r;
+        cin>>l>>r;
+        l--,r--;
+        queries[i] = make_pair(l,r);
+        queryend[r].emplace_back(i);
+    }
 
-    int ans = f(l,r,k);
-    cout<<ans<<endl;
+    map<int,int> mp;
+    ordered_set currele;
+    vector<int> ans(q);
+
+    for(int i = 0; i<n; i++){
+        int curr = v[i];
+        if(mp.find(curr) != mp.end()){
+            currele.erase(mp[curr]);
+            currele.insert(i);
+            mp[curr] = i;
+        }
+        else{
+            currele.insert(i);
+            mp[curr] = i;
+        }
+        for(auto ele : queryend[i]){
+            int l = queries[ele].first;
+            int r = queries[ele].second;
+            ans[ele] = count_in_range(currele,l,r);
+        }
+    }
+
+    for(auto x : ans){
+        cout<<x<<endl;
+    }
+
 }
 /* logic ends */
 
@@ -98,8 +121,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
