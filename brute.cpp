@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.01.08 12:57:34
+ *    created: 2025.01.11 01:05:52
  **/
 
 /* includes and all */
@@ -57,130 +57,93 @@
 using namespace std;
 
 /* write core logic here */
-int f(int a, int n, int cd){
-    // S = n/2 * (2*a + (n-1)*d)
-
-    return (n * (2*a + (n-1)*cd)) / 2;
-}
-
-class LazySegmentTree {
-private:
-    vector<int> st; // Segment Tree
-    vector<int> lazy; // Lazy propagation array storing first term 
-    vector<int> cdlazy; // store common difference  
-    int n;
-
-    // Build the segment tree
-    void buildTree(const vector<int>& arr, int i, int lo, int hi) {
-        if (lo == hi) {
-            st[i] = arr[lo];
-            return;
-        }
-        int mid = lo + (hi - lo) / 2;
-        buildTree(arr, 2 * i + 1, lo, mid);
-        buildTree(arr, 2 * i + 2, mid + 1, hi);
-        st[i] = st[2 * i + 1] + st[2 * i + 2];
-    }
-
-    // Propagate lazy updates to children
-    void propagate(int i, int lo, int hi) {
-        if (lazy[i] != 0) {
-            int range = hi - lo + 1;
-            st[i] += f(lazy[i] , range, cdlazy[i]); // Apply lazy value to the current node
-
-            if (lo != hi) { // Propagate to children if not a leaf
-                lazy[2 * i + 1] += lazy[i];
-                cdlazy[2 * i + 1] += cdlazy[i];
-                int mid = lo + (hi - lo) / 2;
-                int second = lazy[i] + (mid - lo + 1) * cdlazy[i];
-                lazy[2 * i + 2] += second;
-                cdlazy[2 * i + 2] += cdlazy[i];
+void  bfs(vector<vector<int> > &graph, int source, vector<int> &dist, vector<pp> &highs){
+    queue<int> q;
+    q.push(source);
+    dist[source] = 0;
+    pp first = {-1,-1};
+    pp second = {-1,-1};
+    pp third = {-1,-1};
+    while(!q.empty()){
+        int node = q.front();
+        q.pop();
+        for(auto child : graph[node]){
+            if(dist[child] == -1){
+                dist[child] = dist[node] + 1;
+                q.push(child);
+                third = second;
+                second = first;
+                first = {dist[child],child};
             }
-
-            lazy[i] = 0; // Clear the lazy value of the current node
-            cdlazy[i] = 0;
         }
     }
+    if(first.first != -1) highs.push_back(first);
+    if(second.first != -1)highs.push_back(second);
+    if(third.first != -1) highs.push_back(third);
 
-    // Range increment update
-    void updateRange(int i, int lo, int hi, int l, int r, int val = 1) {
-        propagate(i, lo, hi); // Ensure the current node is updated
-
-        if (l > hi || r < lo) return; // Out of range
-
-        if (lo >= l && hi <= r) { // Fully within range
-            lazy[i] += (lo - l + 1);// Add lazy update
-            cdlazy[i] ++;
-            propagate(i, lo, hi); // Apply the lazy operation
-            return;
-        }
-
-        int mid = lo + (hi - lo) / 2;
-        updateRange(2 * i + 1, lo, mid, l, r, val);
-        updateRange(2 * i + 2, mid + 1, hi, l, r, val);
-        st[i] = st[2 * i + 1] + st[2 * i + 2]; // Update the current node
-    }
-
-    // Range sum query
-    int queryRange(int i, int lo, int hi, int l, int r) {
-        propagate(i, lo, hi); // Ensure the current node is updated
-
-        if (l > hi || r < lo) return 0; // Out of range
-
-        if (lo >= l && hi <= r) return st[i]; // Fully within range
-
-        int mid = lo + (hi - lo) / 2;
-        int left = queryRange(2 * i + 1, lo, mid, l, r);
-        int right = queryRange(2 * i + 2, mid + 1, hi, l, r);
-        return left + right; // Combine results
-    }
-
-public:
-    LazySegmentTree(const vector<int>& arr) {
-        n = arr.size();
-        st.resize(4 * n, 0);
-        lazy.resize(4 * n, 0);
-        cdlazy.resize(4 * n, 0);
-        buildTree(arr, 0, 0, n - 1);
-
-    }
-
-    void updateRange(int l, int r, int val) {
-        updateRange(0, 0, n - 1, l, r, val);
-    }
-
-    int queryRange(int l, int r) {
-        return queryRange(0, 0, n - 1, l, r);
-    }
-};
-
+    return;
+}
 void solve(){
-    int n,q;
-    cin>>n>>q;
-    vector<int> a(n);
+    int n,m;
+    cin>>n>>m;
+    vector<vector<int> > graph(n);
+    vector<vector<int> > reverse_graph(n);
+    for(int i=0;i<m;i++){
+        int a,b;
+        cin>>a>>b;
+        a--,b--;
+        graph[a].push_back(b);
+        reverse_graph[b].push_back(a);
+    }
+
+    vector<vector<int> > dist(n, vector<int> (n, -1));
+    vector<vector<int> > reversedist(n, vector<int> (n, -1));
+    vector<vector<pp> > mainhigh(n, vector<pp> ());
+    vector<vector<pp> > reversehigh(n, vector<pp> ());
+
+
+
     for(int i=0;i<n;i++){
-        cin>>a[i];
+        bfs(graph,i, dist[i], mainhigh[i]);
+        bfs(reverse_graph,i, reversedist[i], reversehigh[i]);
     }
 
-    LazySegmentTree st(a);
+    int finalans = -1e15;
+    int finala = -1;
+    int finalb = -1;
+    int finalc = -1;
+    int finald = -1;
 
-    while(q--){
-        int type;
-        cin>>type;
-        if(type == 1){
-            int a,b;
-            cin>>a>>b;
-            a--,b--;
+    for(int b = 0; b<n; b++){
+        for(int c = 0; c<n; c++){
+            unordered_set<int> st;
+            st.insert(b);
+            st.insert(c);
+            for(auto ele1 : reversehigh[b]){
+                for(auto ele2 : mainhigh[c]){
+                    int a = ele1.second;
+                    int d = ele2.second;
 
-            st.updateRange(a,b,1);
-        }
-        else{
-            int a,b;
-            cin>>a>>b;
-            a--,b--;
-            cout<<st.queryRange(a,b)<<endl;
+                    st.insert(a);
+                    st.insert(d);
+
+                    if(st.size() < 4)  continue;
+                    if(dist[a][b] == -1 || dist[b][c] == -1 || dist[c][d] == -1) continue;
+
+                    int length = dist[a][b] + dist[b][c] + dist[c][d];
+                    if(length > finalans){
+                        finalans = length;
+                        finala = a;
+                        finalb = b;
+                        finalc = c;
+                        finald = d;
+                    }
+                }
+            }
         }
     }
+
+    cout<<finala+1<<" "<<finalb+1<<" "<<finalc+1<<" "<<finald+1<<endl;
 }
 /* logic ends */
 
