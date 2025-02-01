@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.01.31 21:57:47
+ *    created: 2025.02.01 13:08:51
  *    We stop at Candidate Master in 2025
  **/
 
@@ -59,41 +59,182 @@ using namespace std;
 
 /* write core logic here */
 
-int countAPTerms(int a, int maxVal, int d) {
-    if ((d > 0 && a > maxVal) || (d < 0 && a < maxVal)) {
-        return 0; // No valid terms
-    }
-    
-    if (d == 0) {
-        return (a <= maxVal) ? 1 : 0; // If d = 0, series is constant
+vector<vector<int> > choiceati;
+vector<vector<int> > dp;
+
+set<pp> changes;
+
+int f(int i, int j, vector<int> &endpoints, map<int,vector<int> > &mpleft){
+
+    if(i >= j){
+        return 0;
     }
 
-    int n = (maxVal - a) / d + 1;
-    return (a + (n - 1) * d <= maxVal) ? n : 0;
+    if(dp[i][j] != -1){
+        return dp[i][j];
+    }
+
+
+    int skipleft = 0;
+    int pick = 0;
+
+    // skipping left 
+
+    if(i + 1 <= j){
+        skipleft = f(i+1,j,endpoints,mpleft);
+    }
+
+    // picking
+    int bestpick = -1;
+
+    bool isthispresent = false;
+
+    for(auto ele : mpleft[i]){
+        if(ele == j){
+            isthispresent = true;
+            pick = 1; 
+            break;
+        }
+    }
+
+
+    for(int k = 0; k<mpleft[i].size(); k++){
+        int right = mpleft[i][k];
+        if(right < j){
+            int curr = 0;
+            if(isthispresent) curr++;
+            curr += f(i,right,endpoints,mpleft) + f(right,j,endpoints,mpleft); 
+            if(curr > pick){
+                pick = curr;
+                bestpick = right;
+            }
+        }
+    }
+
+    int maxi = max(skipleft,pick);
+    if(maxi == skipleft){
+        choiceati[i][j] = -1;
+    }
+    else{
+        choiceati[i][j] = bestpick;
+    }
+
+    return dp[i][j] = maxi;
+    
 }
 
-void solve(){
-    int u,v;
-    cin>>u>>v;
+vector<pp> ans;
 
-    int vmod4 = v%4;
-    int start = vmod4+1;
 
-    int umod4 = u%4;
-    int weneed = start;
-    int originalu = 0;
-    int times = 0;
-    while(u%4 != weneed){
-        u++;
-        times ++;
+void constructanswer(int i, int j, map<int,vector<int> > &mpleft){
+
+    if(i >= j){
+        return;
+    }
+    if(choiceati[i][j] == -1){
+        constructanswer(i+1,j,mpleft);
+        return;
+    }
+    if(choiceati[i][j] == -2){
+        constructanswer(i,j-1,mpleft);
+        return;
     }
 
-    int ans = 0;
+    int nextidx = choiceati[i][j];
+    ans.push_back({i,nextidx});
 
-    int onefgo = (v - u) / 4;
-    ans += onefgo * times;
+    if(changes.count({i,j}) == 0)constructanswer(i,nextidx-1,mpleft);
+    else{
+        constructanswer(i+1,nextidx,mpleft);
+    }
+    constructanswer(nextidx,j,mpleft);
+}
+void solve(){
+    int n;
+    cin>>n;
 
-    int remain
+    vector<pp> v(n);
+
+    map<int,vector<int> > mpleft;
+    map<pp, int> originalindex;
+
+    vector<int> endpoints;
+    for(int i = 0; i<n; i++){
+        int c,r;
+        cin>>c>>r;
+        int left = c-r;
+        int right = c+r;
+        v[i] = {left,right};
+        mpleft[left].emplace_back(right);
+        originalindex[{left,right}] = i+1;
+        endpoints.emplace_back(right);
+        endpoints.emplace_back(left);
+    }
+
+    sort(endpoints.begin(),endpoints.end());
+    endpoints.erase(unique(endpoints.begin(),endpoints.end()),endpoints.end());
+
+    map<int, vector<int> > mptemp;
+
+    print(endpoints);
+
+    for(int i = 0; i<endpoints.size(); i++){
+        int left = endpoints[i];
+        vector<int> &temp = mpleft[left];
+        sort(temp.begin(),temp.end());
+        for(auto ele : temp){
+            int right = ele;
+            int lb = lower_bound(endpoints.begin(),endpoints.end(),right) - endpoints.begin();
+            mptemp[i].emplace_back(lb);
+        }
+    }
+
+    mpleft = mptemp;
+
+    for(auto ele : mpleft){
+        debug(ele.first);
+        print(ele.second);
+    }
+    int m = endpoints.size();
+
+    choiceati.assign(m,vector<int> (m,-1));
+    dp.assign(m,vector<int> (m,-1));
+
+    int ans1 = f(0,m-1,endpoints,mpleft);
+
+    // debug(dp[0][3]);
+    // debug(dp[0][2]);
+    // debug(dp[1][2]);
+    // debug(dp[3][5]);
+
+    cout<<ans1<<endl;
+
+    constructanswer(0,m-1,mpleft);
+
+    vector<pp> leftrights;
+
+
+    for(auto ele : ans){
+        int left = endpoints[ele.first];
+        int right = endpoints[ele.second];
+        leftrights.push_back({left,right});
+    }
+
+    vector<int> finalans;
+
+
+    for(auto ele : leftrights){
+        finalans.push_back(originalindex[ele]);
+    }
+
+    sort(finalans.begin(),finalans.end());
+
+    for(auto ele : finalans){
+        cout<<ele<<" ";
+    }
+
+    cout<<endl;
+
 
 }
 /* logic ends */
@@ -105,8 +246,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
