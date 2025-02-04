@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 13:08:51
+ *    created: 2025.02.04 16:53:41
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,182 +58,138 @@
 using namespace std;
 
 /* write core logic here */
+const int MAX_N = 100005;  // Maximum number of nodes
+const int LOG = 20;        // log2(MAX_N) ~ 17, so we take slightly more
 
-vector<vector<int> > choiceati;
-vector<vector<int> > dp;
+vector<int> adj[MAX_N];    // Adjacency list
+int up[MAX_N][LOG];        // up[v][j] stores the 2^j-th ancestor of v
+int depth[MAX_N];          // Depth of each node
 
-set<pp> changes;
+// Preprocessing: Build the binary lifting table
+void dfs(int node, int parent) {
+    up[node][0] = parent; // Direct parent
 
-int f(int i, int j, vector<int> &endpoints, map<int,vector<int> > &mpleft){
-
-    if(i >= j){
-        return 0;
+    // Fill 2^j ancestors for this node
+    for (int j = 1; j < LOG; j++) {
+        if (up[node][j-1] != -1)
+            up[node][j] = up[up[node][j-1]][j-1];
+        else
+            up[node][j] = -1;
     }
 
-    if(dp[i][j] != -1){
-        return dp[i][j];
-    }
-
-
-    int skipleft = 0;
-    int pick = 0;
-
-    // skipping left 
-
-    if(i + 1 <= j){
-        skipleft = f(i+1,j,endpoints,mpleft);
-    }
-
-    // picking
-    int bestpick = -1;
-
-    bool isthispresent = false;
-
-    for(auto ele : mpleft[i]){
-        if(ele == j){
-            isthispresent = true;
-            pick = 1; 
-            break;
+    for (int child : adj[node]) {
+        if (child != parent) {
+            depth[child] = depth[node] + 1;
+            dfs(child, node);
         }
     }
-
-
-    for(int k = 0; k<mpleft[i].size(); k++){
-        int right = mpleft[i][k];
-        if(right < j){
-            int curr = 0;
-            if(isthispresent) curr++;
-            curr += f(i,right,endpoints,mpleft) + f(right,j,endpoints,mpleft); 
-            if(curr > pick){
-                pick = curr;
-                bestpick = right;
-            }
-        }
-    }
-
-    int maxi = max(skipleft,pick);
-    if(maxi == skipleft){
-        choiceati[i][j] = -1;
-    }
-    else{
-        choiceati[i][j] = bestpick;
-    }
-
-    return dp[i][j] = maxi;
-    
 }
 
-vector<pp> ans;
-
-
-void constructanswer(int i, int j, map<int,vector<int> > &mpleft){
-
-    if(i >= j){
-        return;
+// Find K-th ancestor of a node
+int getKthAncestor(int node, int k) {
+    for (int j = 0; j < LOG; j++) {
+        if (k & (1 << j)) { // Check if this bit is set
+            node = up[node][j];
+            if (node == -1) return -1; // If ancestor doesn't exist
+        }
     }
-    if(choiceati[i][j] == -1){
-        constructanswer(i+1,j,mpleft);
-        return;
-    }
-    if(choiceati[i][j] == -2){
-        constructanswer(i,j-1,mpleft);
-        return;
+    return node;
+}
+
+// Find LCA of two nodes
+int getLCA(int u, int v) {
+    if (depth[u] < depth[v]) swap(u, v); // Ensure u is deeper
+
+    // Bring u and v to the same depth
+    int diff = depth[u] - depth[v];
+    u = getKthAncestor(u, diff);
+
+    if (u == v) return u; // If v is the ancestor of u
+
+    // Lift both nodes upwards until their parents match
+    for (int j = LOG - 1; j >= 0; j--) {
+        if (up[u][j] != up[v][j]) {
+            u = up[u][j];
+            v = up[v][j];
+        }
     }
 
-    int nextidx = choiceati[i][j];
-    ans.push_back({i,nextidx});
+    return up[u][0]; // The LCA is the parent of u (or v)
+}
+vector<int> subtree;
 
-    if(changes.count({i,j}) == 0)constructanswer(i,nextidx-1,mpleft);
-    else{
-        constructanswer(i+1,nextidx,mpleft);
+int subtreesize(int node, int par){
+    int size = 1;
+    for(int child : adj[node]){
+        if(child != par){
+            size += subtreesize(child, node);
+        }
     }
-    constructanswer(nextidx,j,mpleft);
+    subtree[node] = size;
+    return size;
 }
 void solve(){
     int n;
     cin>>n;
-
-    vector<pp> v(n);
-
-    map<int,vector<int> > mpleft;
-    map<pp, int> originalindex;
-
-    vector<int> endpoints;
-    for(int i = 0; i<n; i++){
-        int c,r;
-        cin>>c>>r;
-        int left = c-r;
-        int right = c+r;
-        v[i] = {left,right};
-        mpleft[left].emplace_back(right);
-        originalindex[{left,right}] = i+1;
-        endpoints.emplace_back(right);
-        endpoints.emplace_back(left);
+    for(int i=0;i<n-1;i++){
+        int u,v;
+        cin>>u>>v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
 
-    sort(endpoints.begin(),endpoints.end());
-    endpoints.erase(unique(endpoints.begin(),endpoints.end()),endpoints.end());
+    subtree.assign(n+1,0);
+    subtreesize(1,-1);
 
-    map<int, vector<int> > mptemp;
+    // Initialize the binary lifting table
 
-    print(endpoints);
+    memset(up, -1, sizeof up);
 
-    for(int i = 0; i<endpoints.size(); i++){
-        int left = endpoints[i];
-        vector<int> &temp = mpleft[left];
-        sort(temp.begin(),temp.end());
-        for(auto ele : temp){
-            int right = ele;
-            int lb = lower_bound(endpoints.begin(),endpoints.end(),right) - endpoints.begin();
-            mptemp[i].emplace_back(lb);
+    // Assume 1 as the root and build the binary lifting table
+
+    depth[1] = 0;
+    dfs(1, -1);
+
+    int q;
+    cin>>q;
+
+    while(q--){
+        int a,b;
+        cin>>a>>b;
+
+        if(a==b){
+            cout<<n<<endl;
+            continue;
         }
+
+        int lca = getLCA(a,b);
+
+        int distancebetween = depth[a] + depth[b] - 2*depth[lca];
+
+        if(distancebetween % 2 == 1){
+            cout<<0<<endl;
+            continue;
+        }
+
+        if(depth[b] < depth[a]) swap(a,b);
+
+        int mid = getKthAncestor(b, distancebetween/2);
+
+        int currans = subtree[mid];
+        int justbelow = getKthAncestor(b, distancebetween/2 - 1);
+
+        currans -= subtree[justbelow];
+
+        justbelow = getKthAncestor(a, distancebetween/2 - 1);
+
+        int sizee = subtree[justbelow];
+        if(sizee < subtree[mid]){
+            currans -= sizee;
+        }
+
+        cout<<currans<<endl;
+
     }
-
-    mpleft = mptemp;
-
-    for(auto ele : mpleft){
-        debug(ele.first);
-        print(ele.second);
-    }
-    int m = endpoints.size();
-
-    choiceati.assign(m,vector<int> (m,-1));
-    dp.assign(m,vector<int> (m,-1));
-
-    int ans1 = f(0,m-1,endpoints,mpleft);
-
-    // debug(dp[0][3]);
-    // debug(dp[0][2]);
-    // debug(dp[1][2]);
-    // debug(dp[3][5]);
-
-    cout<<ans1<<endl;
-
-    constructanswer(0,m-1,mpleft);
-
-    vector<pp> leftrights;
-
-
-    for(auto ele : ans){
-        int left = endpoints[ele.first];
-        int right = endpoints[ele.second];
-        leftrights.push_back({left,right});
-    }
-
-    vector<int> finalans;
-
-
-    for(auto ele : leftrights){
-        finalans.push_back(originalindex[ele]);
-    }
-
-    sort(finalans.begin(),finalans.end());
-
-    for(auto ele : finalans){
-        cout<<ele<<" ";
-    }
-
-    cout<<endl;
 
 
 }

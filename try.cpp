@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 01:14:42
+ *    created: 2025.02.04 16:53:41
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,216 +58,168 @@
 using namespace std;
 
 /* write core logic here */
-bool cmp(pp a, pp b){
-    if(a.first == b.first){
-        return a.second > b.second;
+const int MAX_N = 100005;  // Maximum number of nodes
+const int LOG = 20;        // log2(MAX_N) ~ 17, so we take slightly more
+
+vector<int> adj[MAX_N];    // Adjacency list
+int up[MAX_N][LOG];        // up[v][j] stores the 2^j-th ancestor of v
+int depth[MAX_N];          // Depth of each node
+
+// Preprocessing: Build the binary lifting table
+void dfs(int node, int parent) {
+    up[node][0] = parent; // Direct parent
+
+    // Fill 2^j ancestors for this node
+    for (int j = 1; j < LOG; j++) {
+        if (up[node][j-1] != -1)
+            up[node][j] = up[up[node][j-1]][j-1];
+        else
+            up[node][j] = -1;
     }
-    return a.first < b.first;
+
+    for (int child : adj[node]) {
+        if (child != parent) {
+            depth[child] = depth[node] + 1;
+            dfs(child, node);
+        }
+    }
 }
 
-int dp[2005];
-
-int pickorleave[2005];
-
-int f(vector<pp> &input, vector<int> &next, vector<int> &under, int idx){
-    int n = input.size();
-    if(idx == n){
-        return 0;
+// Find K-th ancestor of a node
+int getKthAncestor(int node, int k) {
+    for (int j = 0; j < LOG; j++) {
+        if (k & (1 << j)) { // Check if this bit is set
+            node = up[node][j];
+            if (node == -1) return -1; // If ancestor doesn't exist
+        }
     }
-
-    if(dp[idx] != -1){
-        return dp[idx];
-    }
-    // pick this one
-    int pick = 1 + under[idx] + f(input,next,under,next[idx]);
-
-    // leave this one
-
-    int leave = f(input,next,under,idx+1);
-
-    if(pick > leave){
-        pickorleave[idx] = 1;
-    }
-    else{
-        pickorleave[idx] = 0;
-    }
-
-    return dp[idx] = max(pick,leave);
+    return node;
 }
 
-int f2(vector<pp> &input, int idx, vector<int> &picknotpick2, vector<int> &dp2){
-    int n = input.size();
-    if(idx >= n){
-        return 0;
-    }
+// Find LCA of two nodes
+int getLCA(int u, int v) {
+    if (depth[u] < depth[v]) swap(u, v); // Ensure u is deeper
 
-    if(dp2[idx] != -1){
-        return dp2[idx];
-    }
+    // Bring u and v to the same depth
+    int diff = depth[u] - depth[v];
+    u = getKthAncestor(u, diff);
 
-    int pick = 1;
-    for(int i = idx+1; i<n; i++){
-        if(input[idx].second <= input[i].first){
-            pick = 1 + f2(input,i,picknotpick2,dp2);
-            break;
+    if (u == v) return u; // If v is the ancestor of u
+
+    // Lift both nodes upwards until their parents match
+    for (int j = LOG - 1; j >= 0; j--) {
+        if (up[u][j] != up[v][j]) {
+            u = up[u][j];
+            v = up[v][j];
         }
     }
 
-    int leave = f2(input,idx+1,picknotpick2,dp2);
+    return up[u][0]; // The LCA is the parent of u (or v)
+}
+vector<int> subtree;
 
-    if(pick > leave){
-        picknotpick2[idx] = 1;
+int subtreesize(int node, int par){
+    int size = 1;
+    for(int child : adj[node]){
+        if(child != par){
+            size += subtreesize(child, node);
+        }
     }
-    else{
-        picknotpick2[idx] = 0;
-    }
-
-    return dp2[idx] = max(pick,leave);
+    subtree[node] = size;
+    return size;
 }
 void solve(){
     int n;
     cin>>n;
-
-    vector<pp> v(n);
-
-    map<pp,int> mp;
-
-    map<pp,int> mp2;
-
-    for(int i = 0; i<n; i++){
-        int c,r;
-        cin>>c>>r;
-        int left = c-r;
-        int right = c+r;
-        v[i] = {left,right};
-        mp[{left,right}] = i+1;
+    for(int i=0;i<n-1;i++){
+        int u,v;
+        cin>>u>>v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
 
-    sort(v.begin(),v.end(),cmp);
+    subtree.assign(n+1,0);
+    subtreesize(1,-1);
 
-    for(int i = 0; i<n; i++){
-        mp2[v[i]] = i+1;
-    }
+    // Initialize the binary lifting table
 
-    printpp(v);
+    memset(up, -1, sizeof up);
 
-    memset(dp,-1,sizeof(dp));
+    // Assume 1 as the root and build the binary lifting table
 
-    vector<int> howmanyunderthis(n,0);
+    depth[1] = 0;
+    dfs(1, -1);
 
-    vector<vector<pp> > underthis(n);
+    int q;
+    cin>>q;
 
-    for(int i = 0; i<n; i++){
-        int left1 = v[i].first;
-        int right1 = v[i].second;
-        vector<pp> temp;
-        for(int j = 0; j<n; j++){
-            if(i == j) continue;
-            int left2 = v[j].first;
-            int right2 = v[j].second;
+    while(q--){
+        int a,b;
+        cin>>a>>b;
 
-            if(left1 <= left2 && right1 >= right2){
-                temp.push_back(v[j]);
-            }
-        }
-
-        vector<int> picknotpick2(temp.size(),-1);
-        vector<int> dp2(temp.size(),-1);
-
-        if(temp.size() == 0){
-            howmanyunderthis[i] = 0;
+        if(a==b){
+            cout<<n<<endl;
             continue;
         }
+        int lca = getLCA(a,b);
 
-        howmanyunderthis[i] = f2(temp,0,picknotpick2,dp2);
+        if(lca == a or lca == b){
+            if(lca == b) swap(a,b);
+            int depthofa = depth[a];
+            int depthofb = depth[b];
+            int differenceindepth = depthofb - depthofa;
 
-        int curr2 = 0;
-
-        while(curr2 < temp.size()){
-            if(picknotpick2[curr2] == 1){
-                underthis[i].push_back(temp[curr2]);
-                bool found = false;
-                for(int j = curr2+1; j < temp.size(); j++){
-                    if(temp[curr2].second <= temp[j].first){
-                        curr2 = j;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) { // No valid next index was found: update curr2 to avoid infinite loop
-                    curr2++;  
-                }
+            if(differenceindepth % 2 == 0){
+                int z = getKthAncestor(b, differenceindepth/2);
+                int currans = subtree[z];
+                z = getKthAncestor(b, differenceindepth/2 - 1);
+                currans -= subtree[z];
+                cout<<currans<<endl;
             }
-            else{
-                curr2++;
-            }
-        }
-    }
-
-    print(howmanyunderthis);
-
-    vector<int> next(n,0);
-    vector<int> lefts(n,0);
-    for(int i = 0; i<n; i++){
-        lefts[i] = v[i].first;
-    }
-
-    for(int i = 0; i<n; i++){
-        int right = v[i].second;
-        int idx = lower_bound(lefts.begin(),lefts.end(),right) - lefts.begin();
-        next[i] = idx;
-    }
-
-    print(next);
-
-    int ans = f(v,next,howmanyunderthis,0);
-
-
-    for(int i = 0; i<n; i++){
-        debug(pickorleave[i]);
-    }
-
-    cout<<ans<<endl;
-
-    int curr = 0;
-
-    set<pp> s;
-
-    printpp(underthis[0]);
-
-    while(curr < n){
-        if(pickorleave[curr] == 1){
-            s.insert(v[curr]);
-            debug(v[curr].first);
-            debug(v[curr].second);
-            curr = next[curr];
+            else cout<< 0<<endl;
         }
         else{
-            curr++;
+            int x = depth[a] - depth[lca];
+            int y = depth[b] - depth[lca];
+
+            if(x != y){
+                int distancebetween = depth[a] + depth[b] - 2*depth[lca];
+
+                if(distancebetween % 2 == 1){
+                    cout<<0<<endl;
+                    continue;
+                }
+
+                if(depth[b] < depth[a]) swap(a,b);
+
+                int mid = getKthAncestor(b, distancebetween/2);
+
+                int currans = subtree[mid];
+                int justbelow = getKthAncestor(b, distancebetween/2 - 1);
+
+                currans -= subtree[justbelow];
+
+                justbelow = getKthAncestor(a, distancebetween/2 - 1);
+
+                int sizee = subtree[justbelow];
+                if(sizee < subtree[mid]){
+                    currans -= sizee;
+                }
+
+                cout<<currans<<endl;
+            }
+            else{
+                int ans = n;
+                int z = getKthAncestor(a, x-1);
+                ans -= subtree[z];
+                z = getKthAncestor(b, y-1);
+                ans -= subtree[z];
+
+                cout<<ans<<endl;
+            }
         }
     }
 
-    set<pp> unders;
-
-    for(auto ele : s){
-        int index = mp2[ele];
-        debug(index);
-        for(auto x : underthis[index-1]){
-            unders.insert(x);
-            debug(x.first);
-            debug(x.second);
-        }
-    }
-
-    for(auto ele : unders){
-        s.insert(ele);
-    }
-
-    for(auto x : s){
-        cout<<mp[x]<<" ";
-    }
-
-    cout<<endl;
 
 }
 /* logic ends */
