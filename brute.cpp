@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.04 16:53:41
+ *    created: 2025.02.18 21:22:12
  *    We stop at Candidate Master in 2025
  **/
 
@@ -51,147 +51,100 @@
 #endif
 #define endl "\n"
 #define int long long int
-#define mod 1000000007
+#define mod 998244353
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-const int MAX_N = 100005;  // Maximum number of nodes
-const int LOG = 20;        // log2(MAX_N) ~ 17, so we take slightly more
+const int MOD = 998244353;
 
-vector<int> adj[MAX_N];    // Adjacency list
-int up[MAX_N][LOG];        // up[v][j] stores the 2^j-th ancestor of v
-int depth[MAX_N];          // Depth of each node
-
-// Preprocessing: Build the binary lifting table
-void dfs(int node, int parent) {
-    up[node][0] = parent; // Direct parent
-
-    // Fill 2^j ancestors for this node
-    for (int j = 1; j < LOG; j++) {
-        if (up[node][j-1] != -1)
-            up[node][j] = up[up[node][j-1]][j-1];
-        else
-            up[node][j] = -1;
+// Function to calculate power in modular arithmetic
+long long power(long long x, long long y) {
+    long long res = 1;
+    x = x % MOD;
+    while (y > 0) {
+        if (y & 1)
+            res = (res * x) % MOD;
+        y = y >> 1; // y = y/2
+        x = (x * x) % MOD;
     }
-
-    for (int child : adj[node]) {
-        if (child != parent) {
-            depth[child] = depth[node] + 1;
-            dfs(child, node);
-        }
-    }
+    return res;
 }
 
-// Find K-th ancestor of a node
-int getKthAncestor(int node, int k) {
-    for (int j = 0; j < LOG; j++) {
-        if (k & (1 << j)) { // Check if this bit is set
-            node = up[node][j];
-            if (node == -1) return -1; // If ancestor doesn't exist
-        }
-    }
-    return node;
+// Function to calculate factorial in modular arithmetic
+long long factorial(int n) {
+    long long res = 1;
+    for (int i = 2; i <= n; ++i)
+        res = (res * i) % MOD;
+    return res;
 }
 
-// Find LCA of two nodes
-int getLCA(int u, int v) {
-    if (depth[u] < depth[v]) swap(u, v); // Ensure u is deeper
-
-    // Bring u and v to the same depth
-    int diff = depth[u] - depth[v];
-    u = getKthAncestor(u, diff);
-
-    if (u == v) return u; // If v is the ancestor of u
-
-    // Lift both nodes upwards until their parents match
-    for (int j = LOG - 1; j >= 0; j--) {
-        if (up[u][j] != up[v][j]) {
-            u = up[u][j];
-            v = up[v][j];
-        }
-    }
-
-    return up[u][0]; // The LCA is the parent of u (or v)
-}
-vector<int> subtree;
-
-int subtreesize(int node, int par){
-    int size = 1;
-    for(int child : adj[node]){
-        if(child != par){
-            size += subtreesize(child, node);
-        }
-    }
-    subtree[node] = size;
-    return size;
+// Function to calculate nCr in modular arithmetic
+long long nCr(int n, int r) {
+    if (r == 0 || r == n)
+        return 1;
+    long long numerator = factorial(n);
+    long long denominator = (factorial(r) * factorial(n - r)) % MOD;
+    return (numerator * power(denominator, MOD - 2)) % MOD;
 }
 void solve(){
     int n;
     cin>>n;
-    for(int i=0;i<n-1;i++){
-        int u,v;
-        cin>>u>>v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+    vector<int> input(n);
+    for(int i=0;i<n;i++){
+        cin>>input[i];
     }
 
-    subtree.assign(n+1,0);
-    subtreesize(1,-1);
-
-    // Initialize the binary lifting table
-
-    memset(up, -1, sizeof up);
-
-    // Assume 1 as the root and build the binary lifting table
-
-    depth[1] = 0;
-    dfs(1, -1);
-
-    int q;
-    cin>>q;
-
-    while(q--){
-        int a,b;
-        cin>>a>>b;
-
-        if(a==b){
-            cout<<n<<endl;
-            continue;
-        }
-
-        int lca = getLCA(a,b);
-
-        int distancebetween = depth[a] + depth[b] - 2*depth[lca];
-
-        if(distancebetween % 2 == 1){
-            cout<<0<<endl;
-            continue;
-        }
-
-        if(depth[b] < depth[a]) swap(a,b);
-
-        int mid = getKthAncestor(b, distancebetween/2);
-
-        int currans = subtree[mid];
-        int justbelow = getKthAncestor(b, distancebetween/2 - 1);
-
-        currans -= subtree[justbelow];
-
-        justbelow = getKthAncestor(a, distancebetween/2 - 1);
-
-        int sizee = subtree[justbelow];
-        if(sizee < subtree[mid]){
-            currans -= sizee;
-        }
-
-        cout<<currans<<endl;
-
+    vector<int> newv;
+    int ii = 0;
+    while(ii<n and input[ii] != 1){
+        ii++;
     }
 
+    int j = n-1;
+    while(j>=0 and input[j] != 3){
+        j--;
+    }
 
+    for(int a = ii; a<=j; a++){
+        newv.push_back(input[a]);
+    }
+
+    int active3 = 0;
+    int totalcurr =0 ;
+    int piche2 = 0;
+    int ans = 0;
+    n = newv.size();
+    for(int i = 0; i<n; i++){
+        if(newv[i] == 3){
+            active3++;
+            totalcurr += power(2, piche2);
+        }
+        if(newv[i] == 2){
+            piche2++;
+        }
+    }
+
+    debug(totalcurr);
+
+    for(int i = 0; i<n; i++){
+        if(newv[i] == 1){
+            ans += (totalcurr - active3);
+            debug(totalcurr);
+            debug(active3);
+            debug(ans);
+        }
+        if(newv[i] == 2){
+            totalcurr /= 2;
+        }
+        if(newv[i] == 3){
+            active3--;
+        }
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -202,11 +155,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
 return 0;
 }
-

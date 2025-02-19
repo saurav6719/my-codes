@@ -1,6 +1,7 @@
 /**
  *    author: Saurav
- *    created: 2025.01.06 18:02:53
+ *    created: 2025.02.13 20:40:54
+ *    We stop at Candidate Master in 2025
  **/
 
 /* includes and all */
@@ -57,59 +58,53 @@
 using namespace std;
 
 /* write core logic here */
-int query(int i, int j){
-    cout<<"? "<<i<<" "<<j<<endl;
+int query(int c){
+    cout<<"+ "<<c<<endl;
     cout<<flush;
     int x;
     cin>>x;
     return x;
 }
-void printl(int x, int y){
-    cout<<"! "<<x<<" "<<y<<endl;
+void printans(int x){
+    cout<<"! "<<x<<endl;
     cout<<flush;
-
 }
 void solve(){
     int n;
     cin>>n;
+    int curradded = 0;
 
-    set<int> st;
-    for(int i = 1; i<=n; i++){
-        st.insert(i);
-    }
+    int lo = 1;
+    int hi = n - 1;
+    int ans = -1;
 
-    while(st.size() > 2){
-        auto temp = st.begin();
-        int one = *temp;
-        temp++;
+    while(lo <= hi){
+        int mid = (lo + hi) >> 1;
+        debug(mid);
+        int ifmidthen = mid + curradded;
+        debug(ifmidthen);
+        int reqtoadd;
+        int modd = ifmidthen % n;
+        reqtoadd = (n - modd) % n;
+        debug(reqtoadd);
 
-        int two = *temp;
+        int aanachahiye = (ifmidthen + reqtoadd) / n;
+        debug(aanachahiye);
 
-        temp++;
-        int three = *temp;
+        int aaya = query(reqtoadd);
+        debug(aaya);
+        curradded += reqtoadd;
 
-
-        int query1 = query(one, three);
-        int query2 = query(two, three);
-
-        if(query1 == query2){
-            st.erase(three);
-        }
-        else if(query1 < query2){
-            st.erase(one);
+        if(aanachahiye == aaya){
+            ans = mid;
+            lo = mid + 1;
         }
         else{
-            st.erase(two);
+            hi = mid - 1;
         }
     }
 
-    auto temp = st.begin();
-    int x = *temp;
-    temp++;
-    int y = *temp;
-
-    printl(x, y);
-
+    printans(ans);
 }
 /* logic ends */
 
@@ -120,8 +115,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

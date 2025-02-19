@@ -20,26 +20,24 @@ vector<vector<int>> generate_random_grid(int rows, int cols) {
 
 // Function to generate a random test case in the specified format
 string generate_test_case() {
-    int t = rand() % 10000 + 1; // Random number of test cases between 1 and 10^4 (adjust as needed)
+    int t = 10; // Number of test cases (adjust as needed)
+    string test_case = to_string(t) + "\n";
     
-    string test_case = to_string(t) + "\n"; // Start with the number of test cases
     for (int i = 0; i < t; ++i) {
-        int n = rand() % 100 + 1; // Random rows between 1 and 100
-        int m = rand() % 100 + 1; // Random columns between 1 and 100
-        test_case += to_string(n) + " " + to_string(m) + "\n"; // Add rows and columns for this test case
-
-        // Generate the grid
-        vector<vector<int>> grid = generate_random_grid(n, m);
-        for (const auto& row : grid) {
-            for (int val : row) {
-                test_case += to_string(val) + " ";
-            }
-            test_case += "\n";
+        int n = rand() % 10 + 1; // Array size between 1 and 10
+        test_case += to_string(n) + "\n";
+        
+        // Generate the 1D array with random numbers in [-1000, 1000]
+        for (int j = 0; j < n; ++j) {
+            int val = rand() % 2001 - 1000; // rand() % 2001 gives 0 to 2000, subtract 1000 to get [-1000, 1000]
+            test_case += to_string(val) + " ";
         }
+        test_case += "\n";
     }
     
     return test_case;
 }
+
 
 // Function to write a test case to a file
 void write_test_case(const string& test_case) {
