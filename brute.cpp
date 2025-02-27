@@ -1,164 +1,153 @@
-/**
- *    author: Saurav
- *    created: 2025.02.18 21:22:12
- *    We stop at Candidate Master in 2025
- **/
+//****************************Template Begins****************************//
 
-/* includes and all */
+// Header Files
+#include<iostream>
+#include<iomanip>
+#include<algorithm>
+#include<vector>
+#include<utility>
+#include<set>
+#include<unordered_set>
+#include<list>
+#include<iterator>
+#include<deque>
+#include<queue>
+#include<stack>
+#include<set>
+#include<bitset>
+#include<random>
+#include<map>
+#include<unordered_map>
+#include<stdio.h>
+#include<complex>
+#include<math.h>
+#include<cstring>
+#include<chrono>
+#include<string>
+#include "ext/pb_ds/assoc_container.hpp"
+#include "ext/pb_ds/tree_policy.hpp"
+// Header Files End
 
-#include<bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
-
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#endif
-#define endl "\n"
-#define int long long int
-#define mod 998244353
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int>
 using namespace std;
+using namespace __gnu_pbds;
+template<class T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update> ;
 
-/* write core logic here */
-const int MOD = 998244353;
+template<class key, class value, class cmp = std::less<key>>
+using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
+// find_by_order(k)  returns iterator to kth element starting from 0;
+// order_of_key(k) returns count of elements strictly smaller than k;
 
-// Function to calculate power in modular arithmetic
-long long power(long long x, long long y) {
-    long long res = 1;
-    x = x % MOD;
-    while (y > 0) {
-        if (y & 1)
-            res = (res * x) % MOD;
-        y = y >> 1; // y = y/2
-        x = (x * x) % MOD;
+#define DIVYA ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL)
+#define ll long long
+#define umap unordered_map
+#define uset unordered_set
+#define lb lower_bound
+#define ub upper_bound
+#define fo(i,a,b) for(i=a;i<=b;i++)
+#define all(v) (v).begin(),(v).end()
+#define all1(v) (v).begin()+1,(v).end()
+#define allr(v) (v).rbegin(),(v).rend()
+#define allr1(v) (v).rbegin()+1,(v).rend()
+#define sort0(v) sort(all(v))
+typedef pair<int, int> pii;
+typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef pair<ll, ll> pll;
+#define sz(x) (ll)x.size()
+#define pb push_back
+#define ppb pop_back
+#define mkp make_pair
+#define inf 1000000000000000005
+const ll mod = 1e9 + 7;
+
+ll inv(ll i) {if (i == 1) return 1; return (mod - ((mod / i) * inv(mod % i)) % mod) % mod;}
+
+ll mod_mul(ll a, ll b) {a = a % mod; b = b % mod; return (((a * b) % mod) + mod) % mod;}
+
+ll mod_add(ll a, ll b) {a = a % mod; b = b % mod; return (((a + b) % mod) + mod) % mod;}
+
+ll gcd(ll a, ll b) { if (b == 0) return a; return gcd(b, a % b);}
+
+ll ceil_div(ll a, ll b) {return a % b == 0 ? a / b : a / b + 1;}
+
+ll pwr(ll a, ll b) {a %= mod; ll res = 1; while (b > 0) {if (b & 1) res = res * a % mod; a = a * a % mod; b >>= 1;} return res;}
+//****************************Template Ends*******************************//
+vector<vll>adj;
+ll cnt;
+vector<bool>vis;
+
+void dfs(ll curr_node)
+{
+    vis[curr_node] = true;
+    cnt++;
+    for(auto x : adj[curr_node])
+    {
+        if(vis[x])continue;
+        dfs(x);
     }
-    return res;
 }
 
-// Function to calculate factorial in modular arithmetic
-long long factorial(int n) {
-    long long res = 1;
-    for (int i = 2; i <= n; ++i)
-        res = (res * i) % MOD;
-    return res;
+int main() {
+    DIVYA;
+    ll t, n, i, j, ans, temp, sum;
+    string sans;
+    t = 1;
+    cin >> t;
+    while (t--)
+    {
+        sans = "NO";
+        ans = temp = sum = 0;
+        cin >> n;
+        adj.assign(n+1,{});
+        vis.assign(n+1,false);
+        cnt = 0;
+        vll a(n+1,0),b(n+1,0);
+        fo(i,1,n)
+        {
+            cin>>a[i];
+        }
+        fo(i,1,n)
+        {
+            cin>>b[i];
+            adj[a[i]].pb(b[i]);
+            adj[b[i]].pb(a[i]);
+        }
+        ll tot = 0;
+        fo(i,1,n)
+        {
+            if(!vis[i])
+            {
+                cnt = 0;
+                dfs(i);
+                tot+=(cnt/2);
+            }
+        }
+
+        // cout<<tot<<endl;
+        // fo(i,1,tot)
+        // {
+        //     ans-=2*i;
+        // }
+        // for(i=n;i>=n-tot+1;i--)
+        // {
+        //     ans+=2*i;
+        // }
+        // cout<<ans<<"\n";
+
+        int last = n-1;
+        for(int i = 0; i<tot; i++){
+            ans += 2*last;
+            last-=2;
+        }
+
+        cout<<ans<<endl;
+    }
+    return 0;
 }
 
-// Function to calculate nCr in modular arithmetic
-long long nCr(int n, int r) {
-    if (r == 0 || r == n)
-        return 1;
-    long long numerator = factorial(n);
-    long long denominator = (factorial(r) * factorial(n - r)) % MOD;
-    return (numerator * power(denominator, MOD - 2)) % MOD;
-}
-void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-    for(int i=0;i<n;i++){
-        cin>>input[i];
-    }
 
-    vector<int> newv;
-    int ii = 0;
-    while(ii<n and input[ii] != 1){
-        ii++;
-    }
 
-    int j = n-1;
-    while(j>=0 and input[j] != 3){
-        j--;
-    }
 
-    for(int a = ii; a<=j; a++){
-        newv.push_back(input[a]);
-    }
 
-    int active3 = 0;
-    int totalcurr =0 ;
-    int piche2 = 0;
-    int ans = 0;
-    n = newv.size();
-    for(int i = 0; i<n; i++){
-        if(newv[i] == 3){
-            active3++;
-            totalcurr += power(2, piche2);
-        }
-        if(newv[i] == 2){
-            piche2++;
-        }
-    }
 
-    debug(totalcurr);
-
-    for(int i = 0; i<n; i++){
-        if(newv[i] == 1){
-            ans += (totalcurr - active3);
-            debug(totalcurr);
-            debug(active3);
-            debug(ans);
-        }
-        if(newv[i] == 2){
-            totalcurr /= 2;
-        }
-        if(newv[i] == 3){
-            active3--;
-        }
-    }
-
-    cout<<ans<<endl;
-}
-/* logic ends */
-
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
-    int t;
-    cin>>t;
-    //t = 1;
-    while(t--){
-        solve();
-    }
-return 0;
-}
