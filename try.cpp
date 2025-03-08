@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.27 02:10:42
+ *    created: 2025.03.08 10:34:16
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,78 +58,81 @@
 using namespace std;
 
 /* write core logic here */
+int query(int l,int r){
+	cout<<"? "<<l<<" "<<r<<endl;
+	cout.flush();
+	int x;
+	cin>>x;
+	return x;
+}
+void printans(int i,int j, int k){
+	cout<<"! "<<i<<" "<<j<<" "<<k<<endl;
+	cout.flush();
+}
 void solve(){
-	int n,m;
-	cin>>n>>m;
-	vector<int> input(n);
-	for(int i = 0; i<n; i++){
-		cin>>input[i];
-	}
+	int n;
+	cin>>n;
 
-	vector<pp> inputcopy;
-	for(int i =0 ; i<n; i++){
-		inputcopy.push_back({input[i], i});
-	}
+	int lo = 1;
+	int hi = n;
+	int k = -1;
+	int total = query(1,n);
+	map<int,int> mp;
 
-	sort(inputcopy.begin(), inputcopy.end());
+	mp[n] = total;
 
-	vector<int> winloss(n, 0);
-	int i = 0;
-
-	multiset<pp> haraya;
-
-	printpp(inputcopy);
-	int haraycnt = 0;
-	while(m>=0 and i < n){
-		int req = inputcopy[i].first;
-		int have = m;
-		if(have >= req){
-			winloss[inputcopy[i].second] = 1;
-			haraya.insert({inputcopy[i].first, inputcopy[i].second});
-			m-= req;
-			haraycnt++;
+	while(lo <= hi){
+		int mid = lo + (hi - lo)/2;
+		int x;
+		if(mp.find(mid) != mp.end()){
+			x = mp[mid];
 		}
-		else {
-			if(!haraya.empty()){
-				pp largest = * haraya.rbegin();
-				int diff = req - largest.first;
-				if(m>=diff){
-					winloss[largest.second] = 0;
-					winloss[inputcopy[i].second] = 1;
-					haraycnt++;
-				}
-			}
+		else x = query(1, mid);
+		mp[mid] = x;
+		if(x == total){
+			k = mid;
+			hi = mid - 1;
+		}
+		else{
+			lo = mid + 1;
+		}
+	}
+
+	int y1 = query(1,k);
+	int y2 = query(1, k-1);
+	int diff = y1 - y2;
+
+	int j = k- diff;
+
+	int y3 = query(1,j);
+	int ix;
+
+	lo = 1;
+	hi = n;
+
+	int res = -1;
+
+	while(lo <= hi){
+		int mid = lo + (hi - lo) /2;
+		int sum = (mid) * (mid + 1) / 2;
+		if(sum == y3){
+			res = mid;
 			break;
 		}
-		i++;
-	}
-	debug(haraycnt);
-
-	cout<<n-haraycnt + 1<<endl;
-	return;
-
-
-	int youwintotal = accumulate(winloss.begin(), winloss.end(), 0ll);
-
-	vector<int> v;
-
-	for(int i =0 ; i<n; i++){
-		int curr =0 ;
-		if(winloss[i] == 0) curr = 1;
-		curr += i;
-		v.push_back(curr);
+		else if(sum < y3){
+			lo = mid + 1;
+		}
+		else{
+			hi = mid - 1;
+		}
 	}
 
-	sort(v.begin(), v.end(), greater<int> ());
-	print(winloss);
-	print(v);
+	ix = j - (res + 1);
 
-	int rank = 1;
-	for(int i = 0; i<v.size(); i++){
-		if(v[i] > youwintotal) rank++;
-	}
+	printans(ix,j,k);
+	cout<<endl;
 
-	cout<<rank<<endl;
+	
 }
 /* logic ends */
 
