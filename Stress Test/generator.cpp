@@ -8,7 +8,7 @@ int getRand(int L, int R) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 4) {  // We now require 5 parameters + program name
+    if (argc < 2) {  // We now require 5 parameters + program name
         cerr << "Usage: " << argv[0] << " <T> <n> <maxVal> <q> <maxX>\n";
         return 1;
     }
@@ -19,30 +19,32 @@ int main(int argc, char* argv[]) {
     // int T = stoi(argv[1]);  // Number of test cases
     int T = 1;
     int n = stoi(argv[1]);  // Array size
-    int maxVal = stoi(argv[2]);  // Max value in array
-    int minVal = stoi(argv[3]);  // Min value in array
-    int minX = stoi(argv[5]);  // Min value of x in query
-    int maxX = stoi(argv[6]);  // Max value of x in query
-    int q = stoi(argv[4]);  // Number of queries
+    // int maxVal = stoi(argv[2]);  // Max value in array
+    // int minVal = stoi(argv[3]);  // Min value in array
+    // int minX = stoi(argv[5]);  // Min value of x in query
+    // int maxX = stoi(argv[6]);  // Max value of x in query
+    // int q = stoi(argv[4]);  // Number of queries
     // cout << T << "\n";  // First line: number of test cases
 
     while (T--) {
         // Generate array
-        cout << n << "\n";
-        for (int i = 0; i < n; i++) {
-            cout << getRand(minVal, maxVal) << " ";
-        }
+        int val = getRand(1, n);
+
+        cout << val << "\n";
+        // for (int i = 0; i < n; i++) {
+        //     cout << getRand(minVal, maxVal) << " ";
+        // }
         cout << "\n";
     }
 
-    cout<<q<<endl;
+    // cout<<q<<endl;
 
-    while(q--){
-        int l = getRand(1, n);
-        int r = getRand(l, n);
-        int x = getRand(minX, maxX);
-        cout<<l<<" "<<r<<" "<<x<<endl;
-    }
+    // while(q--){
+    //     int l = getRand(1, n);
+    //     int r = getRand(l, n);
+    //     int x = getRand(minX, maxX);
+    //     cout<<l<<" "<<r<<" "<<x<<endl;
+    // }
 
     return 0;
 }
