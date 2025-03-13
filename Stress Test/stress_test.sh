@@ -1,13 +1,20 @@
 #!/bin/bash
 
-# Default constraints if not provided
-N=${2:-10}        # Default array size
-Q=${3:-500}       # Default number of queries (if needed)
-MIN_VAL=${4:-1}   # Default min array value
-MAX_VAL=${5:-1000000} # Default max array value
-MAX_X = ${6:-1000000} # Default max value of x
-MIN_X = ${7:--1000000} # Default min value of x
+#how to run this file
+#go to strees test folder if not by cd Stre tab 
+#./stress_test.sh
 
+
+# Default constraints if not provided
+N=${1:-10000}        # Default array size
+Q=${4:-500}       # Default number of queries (if needed)
+MIN_VAL=${3:-1}   # Default min array value
+MAX_VAL=${2:-100} # Default max array value
+MAX_X=${6:-1000} # Default max value of x
+MIN_X=${5:--1000} # Default min value of x
+
+#note beware of spaces in between 
+# arrange {x:-y} x is argument number you are passing y is value 
 # Ensure the failed cases directory exists
 mkdir -p failed_cases
 
@@ -16,12 +23,13 @@ g++-13 -std=c++17 -O2 -o generator generator.cpp
 g++-13 -std=c++17 -O2 -o validator validator.cpp
 g++-13 -std=c++17 -O2 -o optimal optimal.cpp
 g++-13 -std=c++17 -O2 -o brute brute.cpp
+g++-13 -std=c++17 -O2 -o checker checker.cpp  
 
 while true; do
     echo -e "\n🔹 Generating test case..."
 
     # Generate a test case
-    ./generator "$N" "$MAX_VAL" "$MIN_VAL" "$Q" "$MIN_X" "$MAX_X" > test_case.txt
+    ./generator "$N" > test_case.txt
 
     # i am giving only 1 test and running infintely 
 
@@ -37,8 +45,8 @@ while true; do
     ./brute < test_case.txt > brute_output.txt
 
     # Compare outputs
-    if ! diff -q optimal_output.txt brute_output.txt > /dev/null; then
-        TIMESTAMP=$(date +%s)  # Unique timestamp for failed case
+    if ! ./checker test_case.txt optimal_output.txt brute_output.txt; then
+        TIMESTAMP=$(date +%s)    # Unique timestamp for failed case
 
         echo -e "\n🚨 Mismatch found! 🚨"
         echo "===================================="
