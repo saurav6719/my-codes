@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 17:26:27
+ *    created: 2025.03.14 03:31:43
  *    We stop at Candidate Master in 2025
  **/
 
@@ -59,7 +59,27 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    vector<int> input(n);
+    for(auto &x : input){
+        cin>>x;
+    }
+    int q;
+    cin>>q;
+    while(q--){
+        int l,r,x;
+        cin>>l>>r>>x;
+        l--,r--;
+        set<int> ans;
+        for(int i = l; i<=r; i++){
+            if(input[i] <= x){
+                ans.insert(input[i]);
+            }
+        }
+        cout<<ans.size()<<endl;
+    }
+
 }
 /* logic ends */
 
@@ -70,7 +90,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();
