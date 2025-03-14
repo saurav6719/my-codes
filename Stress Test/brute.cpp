@@ -1,193 +1,219 @@
-/*
-Author : MadhavCoding
-*/
+/**
+ *    author: Saurav
+ *    created: 2025.03.14 00:27:37
+ *    We stop at Candidate Master in 2025
+ **/
+
+/* includes and all */
 
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 
-#define ll long long
-#define ld long double
-#define pi pair<int, int>
-#define pll pair<ll, ll>
-#define endl "\n"
-
-const ll MOD = 1e9 + 7;
-const ll N = 1e5;
-
-using namespace std;
 using namespace __gnu_pbds;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
-typedef tree<ll, ll, less<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_map;
+using namespace std;
 
-struct query
-{
-	ll l, r, x, ind;
-};
+template <typename T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+#ifndef ONLINE_JUDGE
+#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
+#define print(v) do { \
+					cout << "vect--" << #v << " = [ "; \
+					for (int i = 0; i < v.size(); i++) { \
+						cout << v[i] << " "; \
+					} \
+					cout << " ]" << endl; \
+				} while(0)
+#define print2d(v) do { \
+					cout << "vect-- starts" << endl; \
+					for (int i = 0; i < v.size(); i++) { \
+						cout << "[" << " "; \
+						for (int j = 0; j < v[i].size(); j++) { \
+							cout << v[i][j] << " "; \
+						} \
+						cout << "]" << endl; \
+					} \
+					cout << "vect-- ends" << endl; \
+				} while(0)
+#define printmap(m) do { \
+					cout << "map-- starts" << endl; \
+					for (auto it = m.begin(); it != m.end(); ++it) { \
+						cout << it->first << " -> " << it->second << endl; \
+					} \
+					cout << "map-- ends" << endl; \
+				} while(0)
 
-bool cmp(query q1, query q2)
-{
-	return q1.r < q2.r;
-}
+#define printpp(v) do { \
+					cout << "vect--" << " = [ "; \
+					for (int i = 0; i < v.size(); i++) { \
+						cout << "(" << v[i].first << ", " << v[i].second << ") "; \
+					} \
+					cout << " ]" << endl; \
+				} while(0)
+#else
+#define debug(x)
+#define print(v)
+#define print2d(v)
+#define printmap(m)
+#define printpp(v)
+#endif
+#define endl "\n"
+#define int long long int
+#define mod 1000000007
+#define mn(a,b,c) min(a,min(b,c))
+#define mx(a,b,c) max(a,max(b,c))
+#define pp pair<int,int>
 
-class SegTree
-{
-	ll size;
-	vector<ordered_set> sums;
-	ordered_set NEUTRAL = {};
+/* write core logic here */
 
-public:
-
-	void init(ll n)
-	{
-		size = 1;
-		while(size < n) size *= 2;
-
-		sums.resize(2 * size - 1, NEUTRAL);
-	}
-
-	void set_x(ll i, ll v, ll x, ll lx, ll rx, ll& olval)
-	{
-		if(rx - lx == 1)
-		{
-			if(!sums[x].empty()) olval = *sums[x].begin();
-			sums[x].clear();
-			sums[x].insert(v);
-			return;
-		}
-
-		ll m = lx + (rx - lx) / 2;
-
-		if(i < m) 
-		{
-			set_x(i, v, 2 * x + 1, lx, m, olval);
-			if(olval != -1)
-			{
-				if(sums[2 * x + 2].find(olval) == sums[2 * x + 2].end())
-				{
-					sums[x].erase(olval);
-				}
-				else
-				{
-					olval = -1;
-				}
-			}
-		}
-		else 
-		{
-			set_x(i, v, 2 * x + 2, m, rx, olval);
-			if(olval != -1)
-			{
-				if(sums[2 * x + 1].find(olval) == sums[2 * x + 1].end())
-				{
-					sums[x].erase(olval);
-				}
-				else
-				{
-					olval = -1;
-				}
-			}
-		}
-
-		sums[x].insert(v);
-	}
-
-	void set_x(ll i, ll v)
-	{
-		ll olval = -1;
-		set_x(i, v, 0, 0, size, olval);
-	}
-
-	ll find_sum(ll l, ll r, ll x, ll lx, ll rx, ll xnum)
-	{
-		if(r <= lx || rx <= l) return 0;
-		else if(l <= lx && r >= rx) 
-        {
-            ll sz = sums[x].size();
-            ll temp = sums[x].order_of_key(xnum);
-            return sz - temp;
-        }
-
-		ll m = lx + (rx - lx) / 2;
-
-		ll s1 = find_sum(l, r, 2 * x + 1, lx, m, xnum);
-		ll s2 = find_sum(l, r, 2 * x + 2, m, rx, xnum);
-
-		return s1 + s2;
-	}
-
-	ll find_sum(ll l, ll r, ll xnum)
-	{
-		return find_sum(l, r, 0, 0, size, xnum);
-	}
-};
-
-void solve()
-{
-	ll n; cin>>n;
-	vector<ll> a(n);
-
-	map<ll, ll> mpp;
-	set<ll> colour;
-
-	for (int i = 0; i < n; i++)
-	{
-		cin>>a[i];
-		colour.insert(a[i]);
-	}
-
-	ll d; cin>>d;
-	vector<query> vec(d);
-	for (int i = 0; i < d; i++)
-	{
-		ll l, r; cin>>l>>r;
-		l--; r--;
-		ll x; cin>>x;
-		colour.insert(x);
-		vec[i] = {l, r, x, i};
-	}
+class SegmentTree {
+	private:
+		int n;
+		vector<ordered_set<int>> st;
 	
-	sort(vec.begin(), vec.end(), cmp);
+		void build(int node, int l, int r, const vector<int> &arr) {
+			if (l == r) {
+				st[node].insert(arr[l]);
+				return;
+			}
+			int mid = (l + r) / 2;
+			build(2 * node + 1, l, mid, arr);
+			build(2 * node + 2, mid + 1, r, arr);
+			merge(st[2 * node + 1], st[2 * node + 2], st[node]);
+		}
+	
+		void merge(const ordered_set<int> &left, const ordered_set<int> &right, ordered_set<int> &parent) {
+			parent = left;  // Copy left child
+			for (int x : right) parent.insert(x);  // Merge right child
+		}
+	
+		void updateUtil(int node, int l , int r, int idx, int oldval, int newval) {
+			if (l == r) {
+				st[node].clear();
+				st[node].insert(newval);
+				return;
+			}
+			int mid = (l + r) / 2;
+			if (idx <= mid) {
+				updateUtil(2 * node + 1, l, mid, idx, oldval, newval);
+			} else {
+				updateUtil(2 * node + 2, mid + 1, r, idx, oldval, newval);
+			}
+			st[node].erase(st[node].find(oldval));
+			st[node].insert(newval);
+		}
+	
+		int queryUtil(int node, int l, int r, int start, int end, int x) {
+			if (start > r || end < l) {
+				return 0;
+			}
+			if (start <= l && r <= end) {
+				return st[node].order_of_key(x + 1);
+			}
+			int mid = (l + r) / 2;
+			return queryUtil(2 * node + 1, l, mid, start, end, x) + 
+				   queryUtil(2 * node + 2, mid + 1, r, start, end, x);
+		}
+	
+	public:
+		SegmentTree(const vector<int> &arr) {
+			n = arr.size();
+			st.resize(4 * n);
+			build(0, 0, n - 1, arr);
+		}
+	
+		void update(int idx, int oldval, int newval) {
+			updateUtil(0, 0, n - 1, idx, oldval, newval);
+		}
+	
+		int query(int start, int end, int x) {
+			return queryUtil(0, 0, n - 1, start, end, x);
+		}
 
-	ll temp = 0;
-	for(auto i : colour)
-	{
-		mpp[i] = temp++;
+		void prints(){
+			for(auto x : st){
+				for(auto y : x){
+					cout<<y<<" ";
+				}
+				cout<<endl;
+			}
+		}
+};
+
+struct queries{
+	int l , r , x , idx;
+};
+
+bool cmp(queries &a, queries &b){
+	return a.r < b.r ;
+}
+void solve(){
+	int n;
+	cin>>n;
+	vector<int> input(n);
+
+	for(auto &x : input){
+		cin>>x;
 	}
-	ll num = colour.size();
 
-	SegTree st;
-	st.init(num);
+	int q;
+	cin>>q;
 
-	vector<ll> res(d);
+	vector<queries> query(q);
+	for(int i = 0; i<q; i++){
+		cin>>query[i].l>>query[i].r>>query[i].x;
+		query[i].l-- , query[i].r-- ;
+		query[i].idx = i ;
+	}
 
-	int ind = 0;
-	for(ll r = 0; r < n; r++)
-	{
-		st.set_x(mpp[a[r]], r);
-		while(ind < d && r == vec[ind].r)
-		{
-			// cout<<"r : "<<r<<endl;
-			// cout<<"query : "<<vec[ind].l<<" "<<vec[ind].r<<" "<<vec[ind].x<<" "<<vec[ind].ind<<endl;
-			ll temp = st.find_sum(0, mpp[vec[ind].x] + 1, vec[ind].l);
-			res[vec[ind].ind] = temp;
-			ind++;
+	sort(query.begin(), query.end(), cmp);
+
+	map<int,int> lastoccurence;
+
+	int queryidx = 0;
+
+	vector<int> arr(n, 1e9+5);
+	SegmentTree st(arr);
+	
+
+	vector<int> ans(q);
+
+	for(int i =0; i<n; i++){
+		int curr = input[i];
+		if(lastoccurence.find(curr) == lastoccurence.end()){
+			st.update(i, 1e9+5, curr);
+		}
+		else{
+			st.update(lastoccurence[curr], curr, 1e9+5);
+			st.update(i, 1e9+5, curr);
+		}
+
+		lastoccurence[curr] = i;
+
+		while(queryidx < q and query[queryidx].r == i){
+			ans[query[queryidx].idx] = st.query(query[queryidx].l, query[queryidx].r, query[queryidx].x);
+			queryidx++;
 		}
 	}
 
-	for(auto i : res) cout<<i<<endl;
+	for(auto x : ans){
+		cout<<x<<endl;
+	}
+
 }
+/* logic ends */
 
-int main(int argc, char const *argv[])
-{
-	std::ios::sync_with_stdio(false);
-	std::cin.tie(nullptr); std::cout.tie(nullptr);
-
-	int t = 1;
+signed main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	#ifndef ONLINE_JUDGE
+		freopen("Error.txt" , "w" , stderr);
+	#endif
+	int t;
 	// cin>>t;
-	while(t--)
-	{
+	t = 1;
+	while(t--){
 		solve();
 	}
-	return 0;
+return 0;
 }
