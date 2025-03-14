@@ -28,13 +28,7 @@ bool is_valid_solution(ifstream &input, ifstream &optimal, ifstream &brute) {
     // If both outputs are exactly the same, it's valid
     if (given_output == expected_output) return true;
 
-    // Check if both outputs have the same parity (assuming single-line output)
-    
-    int given_outputinint = stoi(given_output[0]);
-    int expected_outputinint = stoi(expected_output[0]);
-
-    if (given_outputinint % 2 == expected_outputinint % 2) return true;
-    return false; // If none of the conditions matched, it's incorrect
+    return false;
 }
 
 int main(int argc, char *argv[]) {
