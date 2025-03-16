@@ -5,10 +5,10 @@
 # ./stress_test.sh
 
 # Default constraints if not provided
-N=${1:-100000}
-Q=${4:-100000}
-MIN_VAL=${3:--1000000000}
-MAX_VAL=${2:-1000000000}
+N=${1:-10}
+Q=${2:-100}
+MIN_VAL=${4:--1000000000}
+MAX_VAL=${3:-1000000000}
 MIN_X=${5:--1000000000}
 MAX_X=${6:-1000000000}
 
@@ -50,7 +50,7 @@ while true; do
 
     ((test_case++))
 
-    ./generator "$N" "$MAX_VAL" "$MIN_VAL" "$Q" "$MIN_X" "$MAX_X" > test_case.txt
+    ./generator "$N" "$Q" "$MAX_VAL" "$MIN_VAL" "$MIN_X" "$MAX_X" > test_case.txt
 
     if ! ./validator < test_case.txt; then
         echo -e "\n❌ Test case failed validation! Exiting..."

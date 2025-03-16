@@ -1,55 +1,47 @@
 /**
  *    author: Saurav
- *    created: 2025.03.14 00:27:37
+ *    created: 2025.02.01 17:26:27
  *    We stop at Candidate Master in 2025
  **/
 
 /* includes and all */
 
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-
-using namespace __gnu_pbds;
-using namespace std;
-
-template <typename T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+#include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
-					cout << "vect--" << #v << " = [ "; \
-					for (int i = 0; i < v.size(); i++) { \
-						cout << v[i] << " "; \
-					} \
-					cout << " ]" << endl; \
-				} while(0)
+                    cout << "vect--" << #v << " = [ "; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << v[i] << " "; \
+                    } \
+                    cout << " ]" << endl; \
+                } while(0)
 #define print2d(v) do { \
-					cout << "vect-- starts" << endl; \
-					for (int i = 0; i < v.size(); i++) { \
-						cout << "[" << " "; \
-						for (int j = 0; j < v[i].size(); j++) { \
-							cout << v[i][j] << " "; \
-						} \
-						cout << "]" << endl; \
-					} \
-					cout << "vect-- ends" << endl; \
-				} while(0)
+                    cout << "vect-- starts" << endl; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << "[" << " "; \
+                        for (int j = 0; j < v[i].size(); j++) { \
+                            cout << v[i][j] << " "; \
+                        } \
+                        cout << "]" << endl; \
+                    } \
+                    cout << "vect-- ends" << endl; \
+                } while(0)
 #define printmap(m) do { \
-					cout << "map-- starts" << endl; \
-					for (auto it = m.begin(); it != m.end(); ++it) { \
-						cout << it->first << " -> " << it->second << endl; \
-					} \
-					cout << "map-- ends" << endl; \
-				} while(0)
+                    cout << "map-- starts" << endl; \
+                    for (auto it = m.begin(); it != m.end(); ++it) { \
+                        cout << it->first << " -> " << it->second << endl; \
+                    } \
+                    cout << "map-- ends" << endl; \
+                } while(0)
 
 #define printpp(v) do { \
-					cout << "vect--" << " = [ "; \
-					for (int i = 0; i < v.size(); i++) { \
-						cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-					} \
-					cout << " ]" << endl; \
-				} while(0)
+                    cout << "vect--" << " = [ "; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
+                    } \
+                    cout << " ]" << endl; \
+                } while(0)
 #else
 #define debug(x)
 #define print(v)
@@ -63,157 +55,104 @@ using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statisti
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
+#define minf -1e18
+#define inf 1e18
+using namespace std;
 
 /* write core logic here */
 
-class SegmentTree {
-	private:
-		int n;
-		vector<ordered_set<int>> st;
-	
-		void build(int node, int l, int r, const vector<int> &arr) {
-			if (l == r) {
-				st[node].insert(arr[l]);
-				return;
-			}
-			int mid = (l + r) / 2;
-			build(2 * node + 1, l, mid, arr);
-			build(2 * node + 2, mid + 1, r, arr);
-			merge(st[2 * node + 1], st[2 * node + 2], st[node]);
-		}
-	
-		void merge(const ordered_set<int> &left, const ordered_set<int> &right, ordered_set<int> &parent) {
-			parent = left;  // Copy left child
-			for (int x : right) parent.insert(x);  // Merge right child
-		}
-	
-		void updateUtil(int node, int l , int r, int idx, int oldval, int newval) {
-			if (l == r) {
-				st[node].clear();
-				st[node].insert(newval);
-				return;
-			}
-			int mid = (l + r) / 2;
-			if (idx <= mid) {
-				updateUtil(2 * node + 1, l, mid, idx, oldval, newval);
-			} else {
-				updateUtil(2 * node + 2, mid + 1, r, idx, oldval, newval);
-			}
-			st[node].erase(st[node].find(oldval));
-			st[node].insert(newval);
-		}
-	
-		int queryUtil(int node, int l, int r, int start, int end, int x) {
-			if (start > r || end < l) {
-				return 0;
-			}
-			if (start <= l && r <= end) {
-				return st[node].order_of_key(x + 1);
-			}
-			int mid = (l + r) / 2;
-			return queryUtil(2 * node + 1, l, mid, start, end, x) + 
-				   queryUtil(2 * node + 2, mid + 1, r, start, end, x);
-		}
-	
-	public:
-		SegmentTree(const vector<int> &arr) {
-			n = arr.size();
-			st.resize(4 * n);
-			build(0, 0, n - 1, arr);
-		}
-	
-		void update(int idx, int oldval, int newval) {
-			updateUtil(0, 0, n - 1, idx, oldval, newval);
-		}
-	
-		int query(int start, int end, int x) {
-			return queryUtil(0, 0, n - 1, start, end, x);
-		}
-
-		void prints(){
-			for(auto x : st){
-				for(auto y : x){
-					cout<<y<<" ";
-				}
-				cout<<endl;
-			}
-		}
+struct node{
+    int answer;
+    int rangemin;
+    int rangemax;
 };
 
-struct queries{
-	int l , r , x , idx;
-};
+vector<node> segment_tree;
 
-bool cmp(queries &a, queries &b){
-	return a.r < b.r ;
+void build(int index, int l, int r, vector<int> &arr){
+    if(l == r){
+        segment_tree[index].answer = minf;
+        segment_tree[index].rangemin = arr[l];
+        segment_tree[index].rangemax = arr[l];
+        return;
+    }
+
+    int mid = (l + r) / 2;
+
+    build(2 * index + 1, l, mid, arr);
+    build(2 * index + 2, mid + 1, r, arr);
+
+    segment_tree[index].answer = mx(segment_tree[2 * index + 1].answer, segment_tree[2 * index + 2].answer, segment_tree[2 * index + 2].rangemax - segment_tree[2 * index + 1].rangemin);
+    segment_tree[index].rangemin = min(segment_tree[2 * index + 1].rangemin, segment_tree[2 * index + 2].rangemin);
+    segment_tree[index].rangemax = max(segment_tree[2 * index + 1].rangemax, segment_tree[2 * index + 2].rangemax);
+
 }
+
+void update(int index,int lo, int hi, int idx, int val, vector<int> &arr){
+    if(lo == hi){
+        arr[idx] = val;
+        segment_tree[index].rangemin = val;
+        segment_tree[index].rangemax = val;
+        return;
+    }
+
+    int mid = (lo + hi) / 2;
+
+    if(idx <= mid){
+        update(2 * index + 1, lo, mid, idx, val, arr);
+    }else{
+        update(2 * index + 2, mid + 1, hi, idx, val, arr);
+    }
+
+    segment_tree[index].answer = mx(segment_tree[2 * index + 1].answer, segment_tree[2 * index + 2].answer, segment_tree[2 * index + 2].rangemax - segment_tree[2 * index + 1].rangemin);
+    segment_tree[index].rangemin = min(segment_tree[2 * index + 1].rangemin, segment_tree[2 * index + 2].rangemin);
+    segment_tree[index].rangemax = max(segment_tree[2 * index + 1].rangemax, segment_tree[2 * index + 2].rangemax);
+
+}
+
+int query(){
+    return segment_tree[0].answer;
+}
+
 void solve(){
-	int n;
-	cin>>n;
-	vector<int> input(n);
+    segment_tree.clear();
+    int n;
+    cin>>n;
+    int q;
+    cin>>q;
+    vector<int> arr(n);
+    for(int i = 0; i < n; i++){
+        cin>>arr[i];
+    }
+    segment_tree.resize(4 * n);
 
-	for(auto &x : input){
-		cin>>x;
-	}
+    build(0, 0, n - 1, arr);
 
-	int q;
-	cin>>q;
+    cout<<query()<<" ";
 
-	vector<queries> query(q);
-	for(int i = 0; i<q; i++){
-		cin>>query[i].l>>query[i].r>>query[i].x;
-		query[i].l-- , query[i].r-- ;
-		query[i].idx = i ;
-	}
+    while(q--){
+        int idx, val;
+        cin>>idx>>val;
+        idx--;
+        update(0, 0, n - 1, idx, val, arr);
+        cout<<query()<<" ";
+    }
 
-	sort(query.begin(), query.end(), cmp);
-
-	map<int,int> lastoccurence;
-
-	int queryidx = 0;
-
-	vector<int> arr(n, 1e9+5);
-	SegmentTree st(arr);
-	
-
-	vector<int> ans(q);
-
-	for(int i =0; i<n; i++){
-		int curr = input[i];
-		if(lastoccurence.find(curr) == lastoccurence.end()){
-			st.update(i, 1e9+5, curr);
-		}
-		else{
-			st.update(lastoccurence[curr], curr, 1e9+5);
-			st.update(i, 1e9+5, curr);
-		}
-
-		lastoccurence[curr] = i;
-
-		while(queryidx < q and query[queryidx].r == i){
-			ans[query[queryidx].idx] = st.query(query[queryidx].l, query[queryidx].r, query[queryidx].x);
-			queryidx++;
-		}
-	}
-
-	for(auto x : ans){
-		cout<<x<<endl;
-	}
-
+    cout<<endl;
 }
 /* logic ends */
 
 signed main(){
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	#ifndef ONLINE_JUDGE
-		freopen("Error.txt" , "w" , stderr);
-	#endif
-	int t;
-	// cin>>t;
-	t = 1;
-	while(t--){
-		solve();
-	}
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    #ifndef ONLINE_JUDGE
+        freopen("Error.txt" , "w" , stderr);
+    #endif
+    int t;
+    // cin>>t;
+    t = 1;
+    while(t--){
+        solve();
+    }
 return 0;
 }
