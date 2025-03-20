@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 17:26:27
+ *    created: 2025.02.17 17:29:36
  *    We stop at Candidate Master in 2025
  **/
 
@@ -59,40 +59,81 @@ using namespace std;
 
 /* write core logic here */
 
-bool istrue(vector<int> &v){
-    int n = v.size();
-    if(v.size() == 1) return true;
-    for(int i = 1; i<n; i++){
-        if(v[i] <= v[i-1]) return false;
-    }
-    vector<int> diffarr(n-1);
-    for(int i = 1; i<n; i++){
-        diffarr[i-1] = v[i] - v[i-1];
+struct CHT {
+
+    struct Line {
+        int slope, yIntercept;
+
+        Line(int slope, int yIntercept) : slope(slope), yIntercept(yIntercept) {}
+
+        int val(int x) {
+            return slope * x + yIntercept;
+        }
+
+        int intersect(Line y) {
+            return (y.yIntercept - yIntercept + slope - y.slope - 1) / (slope - y.slope);
+        }
+    };
+
+    deque<pair<Line, int>> dq;
+
+    void insert(int slope, int yIntercept) {
+        Line newLine(slope, yIntercept);
+
+        while (!dq.empty() && dq.back().second >= dq.back().first.intersect(newLine))
+            dq.pop_back();
+
+        if (dq.empty()) {
+            dq.emplace_back(newLine, 0);
+            return;
+        }
+
+        dq.emplace_back(newLine, dq.back().first.intersect(newLine));
     }
 
-    return istrue(diffarr);
-}
+    int query(int x) {
+
+        while (dq.size() > 1) {
+            if (dq[1].second <= x) dq.pop_front();
+            else break;
+        }
+
+        return dq[0].first.val(x);
+    }
+
+    int query2(int x) {
+        auto qry = *lower_bound(dq.rbegin(), dq.rend(),
+                                make_pair(Line(0, 0), x),
+                                [&](const pair<Line, int> &a, const pair<Line, int> &b) {
+                                    return a.second > b.second;
+                                });
+
+        return qry.first.val(x);
+    }
+};
 void solve(){
     int n;
     cin>>n;
-    vector<int> v(n);
-
-    for(auto &x : v){
-        cin>>x;
+    int c;
+    cin>>c;
+    vector<int> heights(n);
+    for(int i=0;i<n;i++){
+        cin>>heights[i];
     }
 
-    for(int i = 0; i<n; i++){
-        vector<int> phle = v;
-        phle.erase(phle.begin() + i);
-        if(istrue(phle)){
-            cout<<1;
-        }
-        else{
-            cout<<0;
-        }
+    CHT cht;
+
+    vector<int> dp(n);
+    dp[0] =0;
+
+    cht.insert(-2*heights[0] , (heights[0] * heights[0]) + dp[0]);
+
+    for(int i = 1; i<n; i++){
+        dp[i] = cht.query(heights[i]) + (heights[i] * heights[i]) + c;
+        cht.insert(-2*heights[i] , (heights[i] * heights[i]) + dp[i]);
     }
 
-    cout<<endl;
+    cout<<dp[n-1]<<endl;
 }
 /* logic ends */
 
@@ -110,4 +151,3 @@ signed main(){
     }
 return 0;
 }
-

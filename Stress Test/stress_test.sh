@@ -5,10 +5,10 @@
 # ./stress_test.sh
 
 # Default constraints if not provided
-N=${1:-10}
+N=${1:-20}
 Q=${2:-100}
-MIN_VAL=${4:--1000000000}
-MAX_VAL=${3:-1000000000}
+MIN_VAL=${4:-1}
+MAX_VAL=${3:-10}
 MIN_X=${5:--1000000000}
 MAX_X=${6:-1000000000}
 

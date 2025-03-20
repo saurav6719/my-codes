@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.03.16 11:48:08
+ *    created: 2025.03.19 20:48:03
  *    We stop at Candidate Master in 2025
  **/
 
@@ -59,7 +59,170 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    vector<int> input(n);
+
+    for(auto &x : input){
+        cin>>x;
+    }
+
+    vector<int> diffarr;
+
+    for(int i=1; i<n; i++){
+        diffarr.push_back(input[i]-input[i-1]);
+    }
+
+    vector<int> baad(n);
+    baad[n-1] = 1;
+    baad[n-2] = 1;
+
+    if(input[n-2] >= input[n-1]){
+        baad[n-2] = 0;
+    }
+
+    for(int i = n-3; i>=0; i--){
+        int agla = input[i+2] - input[i+1];
+        int abhi = input[i+1] - input[i];
+        if(abhi <= 0){
+            baad[i] = 0;
+            continue;
+        }
+        if(baad[i+1] == 0){
+            baad[i] = 0;
+            continue;
+        }
+        int a = agla;
+        int b = abhi*2 - 1;
+        if(a == 1 and b == 1){
+            baad[i] = 0;
+            continue;
+        }
+        if(a >= b){
+            baad[i] = 1;
+        }
+        else{
+            baad[i] = 0;
+        }
+    }
+
+    print(baad);
+
+    vector<int> phle(n);
+    phle[0] = 1;
+    phle[1] = 1;
+    if(input[1] <= input[0]){
+        phle[1] = 0;
+    }
+
+    for(int i = 2; i<n; i++){
+        int pichla = input[i-1] - input[i-2];
+        int abhi = input[i] - input[i-1];
+        if(abhi <= 0){
+            phle[i] = 0;
+            continue;
+        }
+
+        
+        if(phle[i-1] == 0){
+            phle[i] = 0;
+            continue;
+        }
+
+        int a = pichla*2 -1;
+        int b = abhi;
+        if(b >= a){
+            phle[i] = 1;
+        }
+        else {
+            phle[i] = 0;
+        }
+    }
+
+    print(phle);
+
+    {
+        if(baad[1] == 1){
+            cout<<1;
+        }
+        else{
+            cout<<0;
+        }
+    }
+    {
+        for(int i = 1; i<n-1; i++){
+            // ith index hataya
+            int a = phle[i-1];
+            int b = baad[i+1];
+            if(a != 1 or b != 1){
+                cout<<0;
+                continue;
+            }
+            
+            int diff1 = input[i+1] - input[i-1];
+            if(diff1 <= 0){
+                cout<<0;
+                continue;
+            }
+            int pichladiff = -1e15;
+            if(i-2 >=0){
+                pichladiff = input[i-1] - input[i-2];
+            }
+            int agladiff = 1e15;
+
+            if(i+2 < n){
+                agladiff =input[i+2] - input[i+1];
+            }
+
+            debug(pichladiff);
+            debug(agladiff);
+            debug(diff1);
+
+            vector<int> v;
+            if(pichladiff != -1e15) v.push_back(pichladiff);
+            v.push_back(diff1);
+            if(agladiff != 1e15) v.push_back(agladiff);
+            vector<int> diffarr2;
+            for(int i = 1; i<v.size(); i++){
+                diffarr2.push_back(v[i]-v[i-1]);
+            }
+            debug(i);
+            print(v);
+            print(diffarr2);
+
+            if(diffarr2.size() < 1){
+                cout<<1;
+                continue;
+            }
+            else if(diffarr2.size() == 1){
+                if(diffarr2[0] > 0){
+                    cout<<1;
+                }
+                else{
+                    cout<<0;
+                }
+            }
+            else{
+                if(diffarr2[1] > diffarr2[0]){
+                    cout<<1;
+                }
+                else{
+                    cout<<0;
+                }
+            }
+        }
+    }
+
+    {
+        if(phle[n-2] == 1){
+            cout<<1;
+        }
+        else{
+            cout<<0;
+        }
+    }
+
+    cout<<endl;
 }
 /* logic ends */
 

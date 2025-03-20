@@ -25,11 +25,10 @@ int main(int argc, char* argv[]) {
     int maxX = stoi(argv[6]);  // Max value of x in query
     int q = stoi(argv[2]);  // Number of queries
     // cout << T << "\n";  // First line: number of test cases
+    q = 0;
 
     while (T--) {
         // Generate array
-        
-
         cout << n << " ";
         cout<<q<<endl;
 

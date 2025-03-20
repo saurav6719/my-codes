@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 17:26:27
+ *    created: 2025.03.19 20:48:03
  *    We stop at Candidate Master in 2025
  **/
 
@@ -55,87 +55,136 @@
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
-#define minf -1e18
-#define inf 1e18
 using namespace std;
 
 /* write core logic here */
-
-struct node{
-    int answer;
-    int rangemin;
-    int rangemax;
-};
-
-vector<node> segment_tree;
-
-void build(int index, int l, int r, vector<int> &arr){
-    if(l == r){
-        segment_tree[index].answer = minf;
-        segment_tree[index].rangemin = arr[l];
-        segment_tree[index].rangemax = arr[l];
-        return;
-    }
-
-    int mid = (l + r) / 2;
-
-    build(2 * index + 1, l, mid, arr);
-    build(2 * index + 2, mid + 1, r, arr);
-
-    segment_tree[index].answer = mx(segment_tree[2 * index + 1].answer, segment_tree[2 * index + 2].answer, segment_tree[2 * index + 2].rangemax - segment_tree[2 * index + 1].rangemin);
-    segment_tree[index].rangemin = min(segment_tree[2 * index + 1].rangemin, segment_tree[2 * index + 2].rangemin);
-    segment_tree[index].rangemax = max(segment_tree[2 * index + 1].rangemax, segment_tree[2 * index + 2].rangemax);
-
-}
-
-void update(int index,int lo, int hi, int idx, int val, vector<int> &arr){
-    if(lo == hi){
-        arr[idx] = val;
-        segment_tree[index].rangemin = val;
-        segment_tree[index].rangemax = val;
-        return;
-    }
-
-    int mid = (lo + hi) / 2;
-
-    if(idx <= mid){
-        update(2 * index + 1, lo, mid, idx, val, arr);
-    }else{
-        update(2 * index + 2, mid + 1, hi, idx, val, arr);
-    }
-
-    segment_tree[index].answer = mx(segment_tree[2 * index + 1].answer, segment_tree[2 * index + 2].answer, segment_tree[2 * index + 2].rangemax - segment_tree[2 * index + 1].rangemin);
-    segment_tree[index].rangemin = min(segment_tree[2 * index + 1].rangemin, segment_tree[2 * index + 2].rangemin);
-    segment_tree[index].rangemax = max(segment_tree[2 * index + 1].rangemax, segment_tree[2 * index + 2].rangemax);
-
-}
-
-int query(){
-    return segment_tree[0].answer;
-}
-
 void solve(){
-    segment_tree.clear();
     int n;
     cin>>n;
-    int q;
-    cin>>q;
-    vector<int> arr(n);
-    for(int i = 0; i < n; i++){
-        cin>>arr[i];
+    vector<int> input(n);
+
+    for(auto &x : input){
+        cin>>x;
     }
-    segment_tree.resize(4 * n);
 
-    build(0, 0, n - 1, arr);
+    vector<int> diffarr;
 
-    cout<<query()<<" ";
+    for(int i=1; i<n; i++){
+        diffarr.push_back(input[i]-input[i-1]);
+    }
 
-    while(q--){
-        int idx, val;
-        cin>>idx>>val;
-        idx--;
-        update(0, 0, n - 1, idx, val, arr);
-        cout<<query()<<" ";
+    vector<int> baad(n);
+    baad[n-1] = 1;
+    baad[n-2] = 1;
+
+    if(input[n-2] >= input[n-1]){
+        baad[n-2] = 0;
+    }
+
+    for(int i = n-3; i>=0; i--){
+        int agla = input[i+2] - input[i+1];
+        int abhi = input[i+1] - input[i];
+        if(abhi <= 0){
+            baad[i] = 0;
+            continue;
+        }
+        if(baad[i+1] == 0){
+            baad[i] = 0;
+            continue;
+        }
+        int a = agla;
+        int b = abhi*2;
+        if(a > b){
+            baad[i] = 1;
+        }
+        else{
+            baad[i] = 0;
+        }
+    }
+
+    // print(baad);
+
+    vector<int> phle(n);
+    phle[0] = 1;
+    phle[1] = 1;
+    if(input[1] <= input[0]){
+        phle[1] = 0;
+    }
+
+    for(int i = 2; i<n; i++){
+        int pichla = input[i-1] - input[i-2];
+        int abhi = input[i] - input[i-1];
+        if(abhi <= 0){
+            phle[i] = 0;
+            continue;
+        }
+
+        
+        if(phle[i-1] == 0){
+            phle[i] = 0;
+            continue;
+        }
+
+        int a = pichla*2;
+        int b = abhi;
+        if(a > b){
+            phle[i] = 0;
+        }
+        else{
+            phle[i] = 1;
+        }
+    }
+
+    // print(phle);
+
+    {
+        if(baad[1] == 1){
+            cout<<1;
+        }
+        else{
+            cout<<0;
+        }
+    }
+    {
+        for(int i = 1; i<n-1; i++){
+            // ith index hataya
+            int a = phle[i-1];
+            int b = baad[i+1];
+            if(a != 1 or b != 1){
+                cout<<0;
+                continue;
+            }
+            int diff1 = input[i+1] - input[i-1];
+            if(diff1 <= 0){
+                cout<<0;
+                continue;
+            }
+            int pichladiff = -1e15;
+            if(i-2 >=0){
+                pichladiff = input[i-1] - input[i-2];
+            }
+            int agladiff = 1e15;
+
+            if(i+2 < n){
+                agladiff = input[i+2] - input[i+1];
+            }
+
+            if(pichladiff*2 <= diff1 and diff1*2 <= agladiff){
+                cout<<1;
+            }
+            else{
+                cout<<0;
+            }
+        }
+    }
+
+    {
+        if(phle[n-2] == 1){
+            cout<<1;
+        }
+        else{
+            cout<<0;
+        }
     }
 
     cout<<endl;
@@ -156,3 +205,4 @@ signed main(){
     }
 return 0;
 }
+

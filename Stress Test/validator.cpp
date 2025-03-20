@@ -33,6 +33,8 @@ int main() {
             }
         }
 
+        q = 0;
+
         for (int i = 0; i < q; i++){
             // if there is no query just comment this part
             int idx, x;
