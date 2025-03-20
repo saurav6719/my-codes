@@ -24,25 +24,27 @@ int main(int argc, char* argv[]) {
     int minX = stoi(argv[5]);  // Min value of x in query
     int maxX = stoi(argv[6]);  // Max value of x in query
     int q = stoi(argv[2]);  // Number of queries
-    // cout << T << "\n";  // First line: number of test cases
-    q = 0;
+    // cout << T << "\n";  // First line: number of test case
 
     while (T--) {
         // Generate array
-        cout << n << " ";
-        cout<<q<<endl;
+        cout << n << endl;
 
         for (int i = 0; i < n; i++) {
             cout << getRand(minVal, maxVal) << " ";
         }
         cout << "\n";
+
+        cout<<q<<endl;
+
     }
 
 
     while(q--){
-        int i = getRand(1, n);
+        int l = getRand(1, n);
+        int r = getRand(l, n);
         int x = getRand(minX, maxX);
-        cout<<i<<" "<<x<<endl;
+        cout<<l<<" "<<r<<" "<<x<<endl;
     }
 
     return 0;
