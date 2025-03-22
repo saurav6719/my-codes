@@ -59,7 +59,74 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n,r,c;
+    cin>>n>>r>>c;
+
+    string str;
+    cin>>str;
+    str = '#' + str;
+
+    vector<int> south(n+1, 0);
+    vector<int> north(n+1, 0);
+    vector<int> east(n+1, 0);
+    vector<int> west(n+1, 0);
+
+    for(int i = 1; i<=n; i++){
+        if(str[i] == 'E'){
+            east[i] = 1;
+            west[i] = -1;
+        }
+        if(str[i] == 'N'){
+            north[i] = 1;
+            south[i] = -1;
+        }
+        if(str[i] == 'W'){
+            west[i] = 1;
+            east[i] = -1;
+        }
+        if(str[i] == 'S'){
+            south[i] = 1;
+            north[i] = -1;
+        }
+    }
+
+    for(int i = 1; i<=n; i++){
+        south[i] = max(south[i-1] + south[i] , 0ll);
+        north[i] = max(north[i-1] + north[i] , 0ll);
+        east[i] = max(east[i-1] + east[i] , 0ll);
+        west[i] = max(west[i-1] + west[i] , 0ll);
+    }
+
+    print(north);
+    print(east);
+
+    if(r <= 0 and c <= 0){
+        //n w
+
+        int a = abs(r);
+        int b = abs(c);
+
+        for(int i = 1; i<=n; i++){
+            if(north[i] >= a and west[i] >= b){
+                cout<<1;
+            }
+            else cout<<0;
+        }
+    }
+
+    else if(r <= 0 and c >= 0){
+        // n e
+
+        int a = abs(r);
+        int b = abs(c);
+
+        for(int i = 1; i<=n; i++){
+            if(north[i] >= a and east[i] >= b){
+                cout<<1;
+            }
+            else cout<<0;
+        }
+    }
 }
 /* logic ends */
 

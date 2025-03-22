@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 17:26:27
+ *    created: 2025.03.22 20:03:24
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,41 +58,9 @@
 using namespace std;
 
 /* write core logic here */
-
-bool istrue(vector<int> &v){
-    int n = v.size();
-    if(v.size() == 1) return true;
-    for(int i = 1; i<n; i++){
-        if(v[i] <= v[i-1]) return false;
-    }
-    vector<int> diffarr(n-1);
-    for(int i = 1; i<n; i++){
-        diffarr[i-1] = v[i] - v[i-1];
-    }
-
-    return istrue(diffarr);
-}
 void solve(){
     int n;
     cin>>n;
-    vector<int> v(n);
-
-    for(auto &x : v){
-        cin>>x;
-    }
-
-    for(int i = 0; i<n; i++){
-        vector<int> phle = v;
-        phle.erase(phle.begin() + i);
-        if(istrue(phle)){
-            cout<<1;
-        }
-        else{
-            cout<<0;
-        }
-    }
-
-    cout<<endl;
 }
 /* logic ends */
 
@@ -103,8 +71,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
