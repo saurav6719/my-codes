@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 17:26:27
+ *    created: 2025.03.25 21:19:31
  *    We stop at Candidate Master in 2025
  **/
 
@@ -59,74 +59,67 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,r,c;
-    cin>>n>>r>>c;
-
-    string str;
-    cin>>str;
-    str = '#' + str;
-
-    vector<int> south(n+1, 0);
-    vector<int> north(n+1, 0);
-    vector<int> east(n+1, 0);
-    vector<int> west(n+1, 0);
-
-    for(int i = 1; i<=n; i++){
-        if(str[i] == 'E'){
-            east[i] = 1;
-            west[i] = -1;
-        }
-        if(str[i] == 'N'){
-            north[i] = 1;
-            south[i] = -1;
-        }
-        if(str[i] == 'W'){
-            west[i] = 1;
-            east[i] = -1;
-        }
-        if(str[i] == 'S'){
-            south[i] = 1;
-            north[i] = -1;
+    int n,m,d;
+    cin>>n>>m>>d;
+    vector<vector<char> > grid(n, vector<char>(m));
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            cin>>grid[i][j];
         }
     }
+    vector<int> directdp(m, 0);
+    vector<int> indirectdp(m, 0);
 
-    for(int i = 1; i<=n; i++){
-        south[i] = max(south[i-1] + south[i] , 0ll);
-        north[i] = max(north[i-1] + north[i] , 0ll);
-        east[i] = max(east[i-1] + east[i] , 0ll);
-        west[i] = max(west[i-1] + west[i] , 0ll);
+    for(int i = 0;i<m; i++){
+        if(grid[0][i] == 'X'){
+            directdp[i] = 1;
+        }
+        if(i>0) directdp[i] += directdp[i-1];
     }
 
-    print(north);
-    print(east);
+    for(int i = 0; i<m; i++){
+        if(grid[0][i] == 'X'){
+            int left = max(0ll, i-d);
+            int right = min(m-1, i+d);
+            int cnt = directdp[right] - (left>0?directdp[left-1]:0);
+            indirectdp[i] = cnt;
+        }
 
-    if(r <= 0 and c <= 0){
-        //n w
+        if(i>0) indirectdp[i] += indirectdp[i-1];
+    }
 
-        int a = abs(r);
-        int b = abs(c);
+    print(directdp);
+    print(indirectdp);
 
-        for(int i = 1; i<=n; i++){
-            if(north[i] >= a and west[i] >= b){
-                cout<<1;
+    for(int i = 1; i<n; i++){
+        vector<int> newdirectdp(m, 0);
+        vector<int> newindirectdp(m, 0);
+        for(int j = 0; j<m; j++){
+            if(grid[i][j] == 'X'){
+                int left = max(0ll, j-(d-1));
+                int right = min(m-1, j+(d-1));
+                int cnt = indirectdp[right] - (left>0?indirectdp[left-1]:0);
+                newdirectdp[j] = cnt;
             }
-            else cout<<0;
+            if(j>0) newdirectdp[j] += newdirectdp[j-1];
         }
-    }
-
-    else if(r <= 0 and c >= 0){
-        // n e
-
-        int a = abs(r);
-        int b = abs(c);
-
-        for(int i = 1; i<=n; i++){
-            if(north[i] >= a and east[i] >= b){
-                cout<<1;
+        for(int j = 0; j<m; j++){
+            if(grid[i][j] == 'X'){
+                int left = max(0ll, j-d);
+                int right = min(m-1, j+d);
+                int cnt = newdirectdp[right] - (left>0?newdirectdp[left-1]:0);
+                newindirectdp[j] = cnt;
             }
-            else cout<<0;
+            if(j>0) newindirectdp[j] += newindirectdp[j-1];
         }
+        directdp = newdirectdp;
+        indirectdp = newindirectdp;
     }
+
+    print(directdp);
+    print(indirectdp);
+
+    cout<<indirectdp[m-1]<<endl;
 }
 /* logic ends */
 
@@ -137,8 +130,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
