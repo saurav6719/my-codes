@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.03.25 21:19:31
+ *    created: 2025.04.05 09:11:32
  *    We stop at Candidate Master in 2025
  **/
 
@@ -59,67 +59,7 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,m,d;
-    cin>>n>>m>>d;
-    vector<vector<char> > grid(n, vector<char>(m));
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++){
-            cin>>grid[i][j];
-        }
-    }
-    vector<int> directdp(m, 0);
-    vector<int> indirectdp(m, 0);
-
-    for(int i = 0;i<m; i++){
-        if(grid[0][i] == 'X'){
-            directdp[i] = 1;
-        }
-        if(i>0) directdp[i] += directdp[i-1];
-    }
-
-    for(int i = 0; i<m; i++){
-        if(grid[0][i] == 'X'){
-            int left = max(0ll, i-d);
-            int right = min(m-1, i+d);
-            int cnt = directdp[right] - (left>0?directdp[left-1]:0);
-            indirectdp[i] = cnt;
-        }
-
-        if(i>0) indirectdp[i] += indirectdp[i-1];
-    }
-
-    print(directdp);
-    print(indirectdp);
-
-    for(int i = 1; i<n; i++){
-        vector<int> newdirectdp(m, 0);
-        vector<int> newindirectdp(m, 0);
-        for(int j = 0; j<m; j++){
-            if(grid[i][j] == 'X'){
-                int left = max(0ll, j-(d-1));
-                int right = min(m-1, j+(d-1));
-                int cnt = indirectdp[right] - (left>0?indirectdp[left-1]:0);
-                newdirectdp[j] = cnt;
-            }
-            if(j>0) newdirectdp[j] += newdirectdp[j-1];
-        }
-        for(int j = 0; j<m; j++){
-            if(grid[i][j] == 'X'){
-                int left = max(0ll, j-d);
-                int right = min(m-1, j+d);
-                int cnt = newdirectdp[right] - (left>0?newdirectdp[left-1]:0);
-                newindirectdp[j] = cnt;
-            }
-            if(j>0) newindirectdp[j] += newindirectdp[j-1];
-        }
-        directdp = newdirectdp;
-        indirectdp = newindirectdp;
-    }
-
-    print(directdp);
-    print(indirectdp);
-
-    cout<<indirectdp[m-1]<<endl;
+    
 }
 /* logic ends */
 
