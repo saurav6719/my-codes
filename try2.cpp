@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 17:26:27
+ *    created: 2025.04.05 11:36:23
  *    We stop at Candidate Master in 2025
  **/
 
@@ -59,73 +59,20 @@ using namespace std;
 
 /* write core logic here */
 
-long f(string &s){
-    int n = s.size();
-    vector<long> dp(n, 0);
-    int zcnt = 0;
-    long msum= 0;
+int f(vector<int> &v, int y){
+    int x = y;
 
-    for(int i = n-1; i>=0; i--){
-        if(s[i] == 'Z'){
-            zcnt++;
-        }
-        if(s[i] == 'M'){
-            dp[i] = zcnt;
-            msum += dp[i];
-        }
-        if(s[i] == 'A'){
-            dp[i] = msum;
-        }
+    for(auto ele : v){
+        if(ele > x) x++;
+        else if(ele < x) x--;
     }
 
-    long ans = 0;
-    for(int i = 0; i<n; i++){
-        if(s[i] == 'A'){
-            ans += dp[i];
-        }
-    }
-
-    return ans;
+    return x;
 }
-long getmax(string s){
-    long ans = 0;
-    string news1 = 'A' + s;
-    string news2 = s + 'Z';
 
-    ans = max(ans, f(news1));
-    ans = max(ans, f(news2));
-
-    vector<int> phlea;
-    vector<int> baadz;
-    int n = s.size();
-    int beforea = 0;
-    int totalz = 0;
-
-    for(int i = 0; i<n; i++){
-        if(s[i] == 'Z'){
-            totalz++;
-        }
-    }
-    
-    int afterz = totalz;
-
-    int originalans = f(s);
-
-    for(int i = 0; i<n-1; i++){
-        if(s[i] == 'A') beforea ++;
-        if(s[i] == 'Z') afterz--;
-        long curr = originalans + (beforea * afterz);
-        ans = max(ans, curr);
-    }
-
-    return ans;
-}
 void solve(){
-    string str;
-    cin>>str;
-    int n = str.size();
-    long ans = getmax(str);
-    cout<<ans<<endl;
+    vector<int> v = {2,1,3,4};
+    cout<<f(v,3);
 }
 /* logic ends */
 
@@ -136,8 +83,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }

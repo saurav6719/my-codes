@@ -1,143 +1,118 @@
-/*
-Author : MadhavCoding
-*/
+/**
+ *    author: Saurav
+ *    created: 2025.04.16 21:14:00
+ *    We stop at Candidate Master in 2025
+ **/
 
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
+/* includes and all */
 
-#define ll long long
-#define ld long double
-#define pi pair<int, int>
-#define pll pair<ll, ll>
+#include<bits/stdc++.h>
+#ifndef ONLINE_JUDGE
+#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
+#define print(v) do { \
+					cout << "vect--" << #v << " = [ "; \
+					for (int i = 0; i < v.size(); i++) { \
+						cout << v[i] << " "; \
+					} \
+					cout << " ]" << endl; \
+				} while(0)
+#define print2d(v) do { \
+					cout << "vect-- starts" << endl; \
+					for (int i = 0; i < v.size(); i++) { \
+						cout << "[" << " "; \
+						for (int j = 0; j < v[i].size(); j++) { \
+							cout << v[i][j] << " "; \
+						} \
+						cout << "]" << endl; \
+					} \
+					cout << "vect-- ends" << endl; \
+				} while(0)
+#define printmap(m) do { \
+					cout << "map-- starts" << endl; \
+					for (auto it = m.begin(); it != m.end(); ++it) { \
+						cout << it->first << " -> " << it->second << endl; \
+					} \
+					cout << "map-- ends" << endl; \
+				} while(0)
+
+#define printpp(v) do { \
+					cout << "vect--" << " = [ "; \
+					for (int i = 0; i < v.size(); i++) { \
+						cout << "(" << v[i].first << ", " << v[i].second << ") "; \
+					} \
+					cout << " ]" << endl; \
+				} while(0)
+#else
+#define debug(x)
+#define print(v)
+#define print2d(v)
+#define printmap(m)
+#define printpp(v)
+#endif
 #define endl "\n"
-
-const ll MOD = 1e9 + 7;
-const ll N = 1e5;
-
+#define int long long int
+#define mod 1000000007
+#define mn(a,b,c) min(a,min(b,c))
+#define mx(a,b,c) max(a,max(b,c))
+#define pp pair<int,int>
 using namespace std;
-using namespace __gnu_pbds;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
-typedef tree<ll, ll, less<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_map;
 
-struct query
-{
-	ll l, r, x, ind;
-};
+/* write core logic here */
+bool check (string &str, int k){
+	int n = str.size();
+	vector<int> blocks;
+    int i = 0;
+    while(i<n){
+        int j = i;
+        while(j<n and str[j] == str[i]){
+            j++;
+        }
+        blocks.push_back(j-i);
+        i = j;
+    }
 
-bool cmp(query q1, query q2)
-{
-	return q1.r < q2.r;
+	for(auto ele : blocks){
+		if(ele >= k){
+			return false;
+		}
+	}
+	return true;
 }
+void solve(){
+	int n,k;
+	cin>>n>>k;
+	string str;
+	cin>>str;
 
-void solve()
-{
-	
-	ll n; cin>>n;
-	vector<ll> a(n);
-	for (int i = 0; i < n; i++)
-	{
-		cin>>a[i];
-	}
-	
-	ll blocks = sqrtl(n) + 2;
-	// cout<<"blocks : "<<blocks<<endl;
-	vector<vector<query>> q(blocks, vector<query>());
+	// reverse every possible substring 
 
-	ll d; cin>>d;
-	for (int i = 0; i < d; i++)
-	{
-		ll l, r; cin>>l>>r; 
-		l--; r--;
-		ll x; cin>>x;
-		query qi = {l, r, x, i};
-		q[l / blocks].push_back(qi);
-	}
-	
-	for(auto &v : q) sort(v.begin(), v.end(), cmp);
-
-	vector<ll> res(d);
-
-	ll ckpt = blocks;
-	for(auto v : q)
-	{
-		// cout<<"ckpt : "<<ckpt<<endl;
-
-		ll last = ckpt;
-		ordered_set os;
-		map<ll, ll> freq;
-
-		for(auto qi : v)
-		{
-			// cout<<"last : "<<last<<endl;
-			// cout<<"qi "<<qi.l<<" "<<qi.r<<" "<<qi.x<<" "<<qi.ind<<endl;
-			if(qi.r <= ckpt)
-			{
-				for(int i = qi.l; i <= qi.r; i++)
-				{
-					freq[a[i]]++;
-					os.insert(a[i]);
-				}
-
-				res[qi.ind] = os.order_of_key(qi.x + 1);
-
-				for(int i = qi.r; i >= qi.l; i--)
-				{
-					freq[a[i]]--;
-					if(freq[a[i]] == 0)
-					{
-						os.erase(a[i]);
-						freq.erase(a[i]);
-					}
-				}
-			}
-
-			else
-			{
-				for(int i = last + 1; i <= qi.r; i++)
-				{
-					freq[a[i]]++;
-					os.insert(a[i]);
-				}
-
-				last = qi.r;
-
-				for(int i = qi.l; i <= ckpt; i++)
-				{
-					freq[a[i]]++;
-					os.insert(a[i]);
-				}
-
-				res[qi.ind] = os.order_of_key(qi.x + 1);
-
-				for(int i = ckpt; i >= qi.l; i--)
-				{
-					freq[a[i]]--;
-					if(freq[a[i]] == 0)
-					{
-						os.erase(a[i]);
-						freq.erase(a[i]);
-					}
-				}
+	for(int i = 0; i<n; i++){
+		for(int j = i; j<n; j++){
+			string temp = str;
+			reverse(temp.begin() + i, temp.begin() + j + 1);
+			if(check(temp, k)){
+				cout<<"YES"<<endl;
+				return;
 			}
 		}
-
-		ckpt += blocks;
 	}
 
-	for(auto i : res) cout<<i<<endl;
+	cout<<"NO"<<endl;
 }
+/* logic ends */
 
-int main(int argc, char const *argv[])
-{
-	std::ios::sync_with_stdio(false);
-	std::cin.tie(nullptr); std::cout.tie(nullptr);
-
-	int t = 1;
-	// cin>>t;
-	while(t--)
-	{
+signed main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	#ifndef ONLINE_JUDGE
+		freopen("Error.txt" , "w" , stderr);
+	#endif
+	int t;
+	cin>>t;
+	//t = 1;
+	while(t--){
 		solve();
 	}
-	return 0;
+return 0;
 }
+

@@ -7,49 +7,31 @@ int getRand(int L, int R) {
     return uniform_int_distribution<int>(L, R)(rng);
 }
 
-int main(int argc, char* argv[]) {
-    if (argc < 7) {  // We now require 5 parameters + program name
-        cerr << "Usage: " << argv[0] << " <T> <n> <maxVal> <q> <maxX>\n";
-        return 1;
-    }
-
-    // argc[0] is the program name
-    // rest all are the parameters or contraints i need to pass 
-
-    // int T = stoi(argv[1]);  // Number of test cases
-    int T = 1;
-    int n = stoi(argv[1]);  // Array size
-    int maxVal = stoi(argv[3]);  // Max value in array
-    int minVal = stoi(argv[4]);  // Min value in array
-    int minX = stoi(argv[5]);  // Min value of x in query
-    int maxX = stoi(argv[6]);  // Max value of x in query
-    int q = stoi(argv[2]);  // Number of queries
-    // cout << T << "\n";  // First line: number of test case
-
-    while (T--) {
-        // Generate array
-        cout << n << endl;
-
-        for (int i = 0; i < n; i++) {
-            cout << getRand(minVal, maxVal) << " ";
-        }
-        cout << "\n";
-
-        cout<<q<<endl;
-
-    }
-
-
-    while(q--){
-        int l = getRand(1, n);
-        int r = getRand(l, n);
-        int x = getRand(minX, maxX);
-        cout<<l<<" "<<r<<" "<<x<<endl;
-    }
-
-    return 0;
+char getRandChar() {
+    return (getRand(0, 1) == 0) ? 'B' : 'G';
 }
 
-//open terminal and run the following command
-//g++ generator.cpp -o generator
-//./generator 1 5 10 3 5 > input.txt
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cerr << "Usage: " << argv[0] << " <T> <minN> <maxN> <maxK>\n";
+        return 1;
+    }
+    
+    int maxN = stoi(argv[1]);
+    int T = 1;
+
+    cout << T << "\n";
+
+    while (T--) {
+        int N = getRand(2, maxN);
+        int K = getRand(2, N);
+
+        cout << N << " " << K << "\n";
+
+        for (int i = 0; i < N; ++i) {
+            cout << getRandChar();
+        }
+        cout << "\n";
+    }
+    return 0;
+}

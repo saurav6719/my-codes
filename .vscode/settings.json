@@ -107,7 +107,10 @@
         "stdfloat": "cpp",
         "stop_token": "cpp",
         "syncstream": "cpp",
-        "execution": "cpp"
+        "execution": "cpp",
+        "print": "cpp",
+        "generator": "cpp",
+        "text_encoding": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabledIfIncludesResolve"
 }

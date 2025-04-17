@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.03.19 20:48:03
+ *    created: 2025.04.16 20:39:12
  *    We stop at Candidate Master in 2025
  **/
 
@@ -59,135 +59,110 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> input(n);
-
-    for(auto &x : input){
-        cin>>x;
-    }
-
-    vector<int> diffarr;
-
-    for(int i=1; i<n; i++){
-        diffarr.push_back(input[i]-input[i-1]);
-    }
-
-    vector<int> baad(n);
-    baad[n-1] = 1;
-    baad[n-2] = 1;
-
-    if(input[n-2] >= input[n-1]){
-        baad[n-2] = 0;
-    }
-
-    for(int i = n-3; i>=0; i--){
-        int agla = input[i+2] - input[i+1];
-        int abhi = input[i+1] - input[i];
-        if(abhi <= 0){
-            baad[i] = 0;
-            continue;
+    int n,k;
+    cin>>n>>k;
+    string str;
+    cin>>str;
+    int maxi = 2*(k-1);
+    vector<int> blocks;
+    int i = 0;
+    while(i<n){
+        int j = i;
+        while(j<n and str[j] == str[i]){
+            j++;
         }
-        if(baad[i+1] == 0){
-            baad[i] = 0;
-            continue;
+        blocks.push_back(j-i);
+        i = j;
+    }
+
+    // print(blocks);
+
+    for(auto ele : blocks){
+        if(ele > maxi){
+            cout<<"NO"<<endl;
+            return;
         }
-        int a = agla;
-        int b = abhi*2;
-        if(a > b){
-            baad[i] = 1;
+    }
+
+    vector<int> galat;
+    for(int i = 0; i<blocks.size(); i++){
+        if(blocks[i] >= k){
+            galat.push_back(i);
+        }
+    }
+
+    // print(galat);
+
+    if(galat.size() == 0){
+        cout<<"YES"<<endl;
+        return;
+    }
+
+    if(galat.size() > 2){
+        cout<<"NO"<<endl;
+        return;
+    }
+
+    if(galat.size() == 2){
+        if(galat[0] % 2 == galat[1] % 2 ){
+            cout<<"NO"<<endl;
+            return;
         }
         else{
-            baad[i] = 0;
+            cout<<"YES"<<endl;
+            return;
         }
-    }
-
-    // print(baad);
-
-    vector<int> phle(n);
-    phle[0] = 1;
-    phle[1] = 1;
-    if(input[1] <= input[0]){
-        phle[1] = 0;
-    }
-
-    for(int i = 2; i<n; i++){
-        int pichla = input[i-1] - input[i-2];
-        int abhi = input[i] - input[i-1];
-        if(abhi <= 0){
-            phle[i] = 0;
-            continue;
-        }
-
         
-        if(phle[i-1] == 0){
-            phle[i] = 0;
-            continue;
-        }
-
-        int a = pichla*2;
-        int b = abhi;
-        if(a > b){
-            phle[i] = 0;
-        }
-        else{
-            phle[i] = 1;
-        }
     }
 
-    // print(phle);
+    if(galat.size() == 1){
+        int index = galat[0];
+        if(index>0){
+            // left swap
+            if(index % 2 != blocks.size() % 2 ){
+                cout<<"YES"<<endl;
+                return;
+            }
 
-    {
-        if(baad[1] == 1){
-            cout<<1;
+            for(int j = index - 1; j>=0; j-=2){
+                if(blocks[j] > 1){
+                    cout<<"YES"<<endl;
+                    return;
+                }
+            }
+
+            for(int j = index - 2; j>=0; j-=2){
+                if(blocks[index] + blocks[j] <= maxi){
+                    cout<<"YES"<<endl;
+                    return;
+                }
+            }
         }
-        else{
-            cout<<0;
+        if(index < blocks.size() - 1){
+            // right swap
+
+            if(index % 2 == blocks.size() % 2 ){
+                cout<<"YES"<<endl;
+                return;
+            }
+
+            for(int j = index + 1; j<blocks.size(); j+=2){
+                if(blocks[j] > 1){
+                    cout<<"YES"<<endl;
+                    return;
+                }
+            }
+
+            for(int j = index + 2; j<blocks.size(); j+=2){
+                if(blocks[index] + blocks[j] <= maxi){
+                    cout<<"YES"<<endl;
+                    return;
+                }
+            }
         }
+        cout<<"NO"<<endl;
     }
-    {
-        for(int i = 1; i<n-1; i++){
-            // ith index hataya
-            int a = phle[i-1];
-            int b = baad[i+1];
-            if(a != 1 or b != 1){
-                cout<<0;
-                continue;
-            }
-            int diff1 = input[i+1] - input[i-1];
-            if(diff1 <= 0){
-                cout<<0;
-                continue;
-            }
-            int pichladiff = -1e15;
-            if(i-2 >=0){
-                pichladiff = input[i-1] - input[i-2];
-            }
-            int agladiff = 1e15;
-
-            if(i+2 < n){
-                agladiff = input[i+2] - input[i+1];
-            }
-
-            if(pichladiff*2 <= diff1 and diff1*2 <= agladiff){
-                cout<<1;
-            }
-            else{
-                cout<<0;
-            }
-        }
-    }
-
-    {
-        if(phle[n-2] == 1){
-            cout<<1;
-        }
-        else{
-            cout<<0;
-        }
-    }
-
-    cout<<endl;
+    
 }
 /* logic ends */
 
@@ -198,8 +173,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
