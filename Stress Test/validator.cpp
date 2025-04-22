@@ -13,20 +13,15 @@ int main() {
 
     while (T--) {
         int N, K;
-        if (!(cin >> N >> K) || N <= 0 || K < 2 || K > N) {
+        if (!(cin >> N >> K) || N <= 0 || K < 0) {
             cerr << "Error: Invalid values of N or K (N > 0, K ≥ 0).\n";
             return 1;
         }
 
-        string S;
-        if (!(cin >> S) || (int)S.size() != N) {
-            cerr << "Error: Invalid string length. Expected length = " << N << ".\n";
-            return 1;
-        }
-
-        for (char c : S) {
-            if (c != 'B' && c != 'G') {
-                cerr << "Error: Invalid character in string. Only 'B' or 'G' allowed.\n";
+        while(N--) {
+            int x;
+            if (!(cin >> x) || x < 0 || x > 1e9) {
+                cerr << "Error: Invalid value in the array (0 ≤ x ≤ 1e9).\n";
                 return 1;
             }
         }

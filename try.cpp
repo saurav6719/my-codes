@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.04.16 21:47:59
+ *    created: 2025.04.22 15:27:34
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,92 +58,59 @@
 using namespace std;
 
 /* write core logic here */
+void dfs(int node, int par, vector<vector<int> > &tree, vector<int> &parent){
+    parent[node] = par;
+    for(auto child : tree[node]){
+        if(child == par) continue;
+        dfs(child, node, tree, parent);
+    }
+}
+
+int f(int i, int p, int turn, vector<int> &parent, vector<vector<vector<int> > > &dp, vector<vector<int> > &tree){
+
+    if(i==1) return 0;
+
+    if(dp[i][p][turn] != -1) return dp[i][p][turn];
+    
+    if(turn == 1){
+        return dp[i][p][turn] = f(parent[i] , p, 0, parent, dp, tree) + 1;
+    }
+    else{
+        int ans1 = f(parent[i], p, 1, parent, dp, tree) + 2*tree[i].size() - 1;
+        int ans2 = 1e15;
+
+        if(p>0){
+            ans2 = f(parent[i], p-1, 1, parent, dp, tree) + 1;
+        }
+
+        return dp[i][p][turn] = min(ans1, ans2);
+    }
+}
 void solve(){
-    int n;
-    cin>>n;
-    vector<vector<int>> grid(n, vector<int> (n));
-    for(int i = 0; i<n; i++){
-        for(int j = 0 ; j<n; j++){
-            cin>>grid[i][j];
-        }
+    int n,q;
+    cin>>n>>q;
+    vector<vector<int> > tree(n+1);
+    for(int i = 0; i<n-1; i++){
+        int u,v;
+        cin>>u>>v;
+        tree[u].push_back(v);
+        tree[v].push_back(u);
     }
 
-    set<int> k_contenders;
+    vector<vector<vector<int> > > dp(n+1, vector<vector<int> > (n+1, vector<int> (2, -1)));
+
+    vector<int> parent(n+1);
+
+    dfs(1,0, tree, parent);
+
+    print(parent);
+
+    while(q--){
+        int i, p;
+        cin>>i>>p;
+        cout<<f(i, p, 1, parent, dp, tree)<<endl;
+    }
     
-    for(auto ele : grid[0]){
-        k_contenders.insert(ele);
-        k_contenders.insert(ele-1);
-        k_contenders.insert(ele+1);
-    }
-
-    vector<int> ks;
-    for(auto ele : k_contenders){
-        ks.push_back(ele);
-    }
-    sort(ks.begin(), ks.end());
-    print(ks);
-
-    map<int,int> mp2;
-
-    
-        for(int i = 0; i<n; i++){
-            vector<int> v = grid[0];
-            sort(v.begin(), v.end());
-            int j = 0; // ks pointer
-            int k = 0; // v pointer
-            int currsum = 0;
-
-            while(j<ks.size() and k < v.size()){
-                while(v[k] <= ks[j]){
-                    currsum += v[k];
-                    k++;
-                }
-                mp2[ks[j]] += currsum;
-                mp2[ks[j]] += (n-k)*ks[j];
-                j++;
-            }
-
-        }
-
-        printmap(mp2);
-    
-
-    map<int,int> mp;
-
-    for(int i = 1; i<n; i++){
-        vector<int> v = grid[i];
-        sort(v.begin(), v.end());
-        int j = 0; // ks pointer
-        int k = 0; // v pointer
-        int currsum = 0;
-        int thiss = 0;
-        while(j<ks.size() and k < v.size()){
-            while(v[k] <= ks[j]){
-                currsum += v[k];
-                k++;
-            }
-            thiss += currsum;
-            thiss += (n-k)*ks[j];
-
-            if(thiss > mp2[ks[j]]){
-                mp[ks[j]]++;
-            }
-            j++;
-        }
-    }
-
-    debug(mp[6]);
-
-    int ans = 0;
-    int reqk = -1;
-    for(auto ele : mp){
-        if(ele.second > ans){
-            ans = ele.second;
-            reqk = ele.first;
-        }
-    }
-
-    cout<<reqk<<endl;
 }
 /* logic ends */
 

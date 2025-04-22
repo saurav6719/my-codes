@@ -126,7 +126,8 @@
 # Default constraints if not provided
 
 
-MAX_N=${1:-10}
+MAX_N=${1:-100}
+MAX_K=${2:-100}
 
 
 mkdir -p failed_cases
@@ -167,7 +168,7 @@ while true; do
 
     ((test_case++))
 
-    ./generator "$MAX_N"  > test_case.txt
+    ./generator "$MAX_N" "$MAX_K" > test_case.txt
 
     if ! ./validator < test_case.txt; then
         echo -e "\n❌ Test case failed validation! Exiting..."

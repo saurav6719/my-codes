@@ -12,24 +12,25 @@ char getRandChar() {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
+    if (argc < 3) {
         cerr << "Usage: " << argv[0] << " <T> <minN> <maxN> <maxK>\n";
         return 1;
     }
     
     int maxN = stoi(argv[1]);
+    int maxK = stoi(argv[2]);
     int T = 1;
 
     cout << T << "\n";
 
     while (T--) {
-        int N = getRand(2, maxN);
-        int K = getRand(2, N);
+        int N = getRand(1, maxN);
+        int K = getRand(0, maxK);
 
         cout << N << " " << K << "\n";
 
         for (int i = 0; i < N; ++i) {
-            cout << getRandChar();
+            cout << getRand(0,1e9) << " ";
         }
         cout << "\n";
     }

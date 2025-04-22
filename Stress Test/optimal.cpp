@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.04.16 20:39:12
+ *    created: 2025.04.19 00:19:45
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,111 +58,74 @@
 using namespace std;
 
 /* write core logic here */
+
+bool cmp(int a, int b, map<int,int> &mp){
+    return mp[a] < mp[b];
+}
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    string str;
-    cin>>str;
-    int maxi = 2*(k-1);
-    vector<int> blocks;
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    vector<int> input(n);
+    set<int> st;
+
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+        st.insert(input[i]);
+    }
+
+    vector<int> v;
+    for(auto ele : st){
+        v.push_back(ele);
+    }
+
+    int reqmex = -1;
+
+    for(int i = n; i>=0; i--){
+        int chhote = lower_bound(v.begin(), v.end(), i) - v.begin();
+        chhote--;
+        int chahiyeaur = i - chhote - 1;
+        if(k>=chahiyeaur){
+            reqmex = i;
+            break;
+        }
+    }
+
+    map<int,int> mp;
+    for(auto ele : input){
+        if(ele >= reqmex){
+            mp[ele]++;
+        }
+    }
+
+    vector<int> v2;
+    for(auto ele : input){
+        if(ele >= reqmex){
+            v2.push_back(ele);
+        }
+    }
+
+    sort(v2.begin(), v2.end(), [&](int a, int b){
+        return cmp(a, b, mp);
+    });
+
     int i = 0;
-    while(i<n){
-        int j = i;
-        while(j<n and str[j] == str[i]){
-            j++;
-        }
-        blocks.push_back(j-i);
-        i = j;
+
+    while(k-- and i<v2.size()){
+        i++;
     }
 
-    // print(blocks);
+    set<int> remaining;
 
-    for(auto ele : blocks){
-        if(ele > maxi){
-            cout<<"NO"<<endl;
-            return;
-        }
+    for(int j = i; j<v2.size(); j++){
+        remaining.insert(v2[j]);
     }
 
-    vector<int> galat;
-    for(int i = 0; i<blocks.size(); i++){
-        if(blocks[i] >= k){
-            galat.push_back(i);
-        }
-    }
+    int ans = remaining.size();
 
-    // print(galat);
+    cout<<ans<<endl;
 
-    if(galat.size() == 0){
-        cout<<"YES"<<endl;
-        return;
-    }
-
-    if(galat.size() > 2){
-        cout<<"NO"<<endl;
-        return;
-    }
-
-    if(galat.size() == 2){
-        if(galat[0] % 2 == galat[1] % 2 ){
-            cout<<"NO"<<endl;
-            return;
-        }
-        else{
-            cout<<"YES"<<endl;
-            return;
-        }
-        
-    }
-
-    if(galat.size() == 1){
-        int index = galat[0];
-        if(index>0){
-            // left swap
-            if(index % 2 != blocks.size() % 2 ){
-                cout<<"YES"<<endl;
-                return;
-            }
-
-            for(int j = index - 1; j>=0; j-=2){
-                if(blocks[j] > 1){
-                    cout<<"YES"<<endl;
-                    return;
-                }
-            }
-
-            for(int j = index - 2; j>=0; j-=2){
-                if(blocks[index] + blocks[j] <= maxi){
-                    cout<<"YES"<<endl;
-                    return;
-                }
-            }
-        }
-        if(index < blocks.size() - 1){
-            // right swap
-
-            if(index % 2 == blocks.size() % 2 ){
-                cout<<"YES"<<endl;
-                return;
-            }
-
-            for(int j = index + 1; j<blocks.size(); j+=2){
-                if(blocks[j] > 1){
-                    cout<<"YES"<<endl;
-                    return;
-                }
-            }
-
-            for(int j = index + 2; j<blocks.size(); j+=2){
-                if(blocks[index] + blocks[j] <= maxi){
-                    cout<<"YES"<<endl;
-                    return;
-                }
-            }
-        }
-        cout<<"NO"<<endl;
-    }
-    
 }
 /* logic ends */
 

@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.04.16 21:14:00
+ *    created: 2025.04.19 01:11:16
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,46 +58,80 @@
 using namespace std;
 
 /* write core logic here */
-bool check (string &str, int k){
-	int n = str.size();
-	vector<int> blocks;
-    int i = 0;
-    while(i<n){
-        int j = i;
-        while(j<n and str[j] == str[i]){
-            j++;
-        }
-        blocks.push_back(j-i);
-        i = j;
+bool cmp(int a, int b, map<int,int> &mp){
+    return mp[a] < mp[b];
+}
+
+void solve(){
+	int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    vector<int> input(n);
+    set<int> st;
+
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+        st.insert(input[i]);
     }
 
-	for(auto ele : blocks){
-		if(ele >= k){
-			return false;
-		}
-	}
-	return true;
-}
-void solve(){
-	int n,k;
-	cin>>n>>k;
-	string str;
-	cin>>str;
+    vector<int> v;
+    for(auto ele : st){
+        v.push_back(ele);
+    }
 
-	// reverse every possible substring 
+	set<int> reqqst;
 
-	for(int i = 0; i<n; i++){
-		for(int j = i; j<n; j++){
-			string temp = str;
-			reverse(temp.begin() + i, temp.begin() + j + 1);
-			if(check(temp, k)){
-				cout<<"YES"<<endl;
-				return;
+    int reqmex = -1;
+
+    for(int i = n; i>=0; i--){
+        int chhote = lower_bound(v.begin(), v.end(), i) - v.begin();
+        chhote--;
+        int chahiyeaur = i - chhote - 1;
+        if(k>=chahiyeaur){
+			reqqst.insert(i);
+        }
+    }
+
+	int ans = 1e15;
+
+	for(auto ele : reqqst){
+		reqmex = ele;
+		int kcopy = k;
+
+		map<int,int> mp;
+		for(auto ele : input){
+			if(ele >= reqmex){
+				mp[ele]++;
 			}
 		}
+
+		vector<int> v2;
+		for(auto ele : input){
+			if(ele >= reqmex){
+				v2.push_back(ele);
+			}
+		}
+
+		sort(v2.begin(), v2.end(), [&](int a, int b){
+			return cmp(a, b, mp);
+		});
+
+		int i = 0;
+		while(kcopy-- and i<v2.size()){
+			i++;
+		}
+
+		set<int> remaining;
+
+		for(int j = i; j<v2.size(); j++){
+			remaining.insert(v2[j]);
+		}
+
+		ans = min(ans, (int) remaining.size());
 	}
 
-	cout<<"NO"<<endl;
+	cout<<ans<<endl;
 }
 /* logic ends */
 
