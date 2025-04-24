@@ -1,1 +1,0 @@
-{"name":"Local: 283911C","url":"/Users/saurav/Desktop/programming/platform questions/codeforces/283911C.cpp","tests":[{"id":1707222478870,"input":"5 5\n3 3 5 8 9\n2 4 8 1 10","output":"1\n3\n4\n1\n6"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/platform questions/codeforces/283911C.cpp","group":"local","local":true}

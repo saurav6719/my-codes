@@ -1,1 +1,0 @@
-{"name":"Local: KRUSKALS","url":"/Users/saurav/Desktop/programming/c++ dsa /graphs/KRUSKALS.cpp","tests":[{"id":1707569196550,"input":"5 7\n1 2 20\n1 3 50\n1 4 70\n1 5 90\n2 3 30\n3 4 40\n4 5 60","output":"150"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/c++ dsa /graphs/KRUSKALS.cpp","group":"local","local":true}

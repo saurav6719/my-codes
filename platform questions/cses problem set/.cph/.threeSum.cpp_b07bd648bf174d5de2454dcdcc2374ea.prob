@@ -1,1 +1,0 @@
-{"name":"Local: threeSum","url":"/Users/saurav/Desktop/programming/platform questions/cses problem set/threeSum.cpp","tests":[{"id":1709499275328,"input":"7 3\n2 1 1 2 2 1 1","output":"2 3 7"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/platform questions/cses problem set/threeSum.cpp","group":"local","local":true}

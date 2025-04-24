@@ -1,2 +1,0 @@
-reverse(st);
-    print(st);
