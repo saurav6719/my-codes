@@ -1,0 +1,1 @@
+(ans(k-1) + ans(k-2) + ans(k-3) + ans(k-4) + ans(k-5) + ans(k-6));

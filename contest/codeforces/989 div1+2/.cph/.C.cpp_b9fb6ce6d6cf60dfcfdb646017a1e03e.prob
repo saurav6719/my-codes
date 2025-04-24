@@ -1,0 +1,1 @@
+{"name":"Local: C","url":"/Users/saurav/Desktop/programming/contest/codeforces/989 div1+2/C.cpp","tests":[{"id":1732980459086,"input":"3\n3 3\nUUU\nL?R\nDDD\n2 3\n???\n???\n3 3\n?U?\nR?L\nRDL","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/contest/codeforces/989 div1+2/C.cpp","group":"local","local":true}

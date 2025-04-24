@@ -1,0 +1,1 @@
+{"name":"Local: B","url":"/Users/saurav/Desktop/programming/contest/codeforces/989 div1+2/B.cpp","tests":[{"id":1732977926225,"input":"3\n5 1 1\n10101\n5 2 1\n10101\n6 3 2\n000000\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/contest/codeforces/989 div1+2/B.cpp","group":"local","local":true}

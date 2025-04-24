@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(lldb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/Users/saurav/Desktop/programming/a.out", // Full path to your compiled executable
+            "args": [], // Command-line arguments if any, otherwise leave empty
+            "stopAtEntry": false,
+            "cwd": "/Users/saurav/Desktop/programming", // Working directory
+            "environment": [],
+            "externalConsole": false, // Change to true if you want to use an external terminal
+            "MIMode": "lldb" // Using LLDB on macOS
+        }
+    ]
+}

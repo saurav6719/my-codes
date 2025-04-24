@@ -1,0 +1,2 @@
+reverse(st);
+    print(st);

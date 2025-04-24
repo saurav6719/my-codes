@@ -1,0 +1,1 @@
+{"name":"Local: 1967A","url":"/Users/saurav/Desktop/programming/platform questions/codeforces/1967A.cpp","tests":[{"id":1716556293633,"input":"1\n3 4\n6 1 8","output":"11\n15\n15\n22\n28\n32\n28\n36"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/platform questions/codeforces/1967A.cpp","group":"local","local":true}
