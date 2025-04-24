@@ -5,6 +5,7 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(0);
 
+<<<<<<< HEAD
     int T;
     if (!(cin >> T) || T <= 0) {
         cerr << "Error: Invalid number of test cases T.\n";
@@ -22,10 +23,48 @@ int main() {
             int x;
             if (!(cin >> x) || x < 0 || x > 1e9) {
                 cerr << "Error: Invalid value in the array (0 ≤ x ≤ 1e9).\n";
+=======
+    int T = 1;
+    // if (!(cin >> T) || T <= 0) {
+    //     cerr << "Error: Invalid number of test cases T.\n";
+    //     return 1;
+    // }
+
+    while (T--) {
+        int n, q;
+        if (!(cin >> n) || n <= 0) {
+            cerr << "Error: Invalid n (array size).\n";
+            return 1;
+        }
+
+        vector<int> arr(n);
+        for (int i = 0; i < n; i++) {
+            if (!(cin >> arr[i]) || arr[i] < -1e9 || arr[i] > 1e9){
+                // manually update contrainst as per the question
+                cerr << "Error: Array value out of bounds (1 ≤ ai ≤ 1e9).\n";
+                return 1;
+            }
+        }
+
+        if (!(cin >> q) || q < 0) {
+            // if there is no query just comment this part
+            cerr << "Error: Invalid number of queries q.\n";
+            return 1;
+        }
+
+        for (int i = 0; i < q; i++){
+            // if there is no query just comment this part
+            int l, r, x;
+            if (!(cin >> l >> r >> x) || l < 1 || l > r || r > n || x < -1e9 || x > 1e9) {
+                cerr << "Error: Invalid query (1 ≤ l ≤ r ≤ n, -1e9 ≤ x ≤ 1e9).\n";
+>>>>>>> 2a644fa18ee9cad7d1b3f10abf85e98e62a67a4c
                 return 1;
             }
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2a644fa18ee9cad7d1b3f10abf85e98e62a67a4c
     return 0;
 }

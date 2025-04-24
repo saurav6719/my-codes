@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 real 0.02
 user 0.02
 sys 0.00
+=======
+real 1.63
+user 1.57
+sys 0.05
+>>>>>>> 2a644fa18ee9cad7d1b3f10abf85e98e62a67a4c

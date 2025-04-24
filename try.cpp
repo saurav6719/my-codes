@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  *    author: Saurav
  *    created: 2025.04.25 03:15:09
@@ -216,3 +217,6 @@ signed main(){
 return 0;
 }
 
+=======
+bas
+>>>>>>> 2a644fa18ee9cad7d1b3f10abf85e98e62a67a4c
