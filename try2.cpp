@@ -58,183 +58,107 @@
 using namespace std;
 
 /* write core logic here */
-struct node{
-    vector<int> count;
-    int total;
-};
-
-vector<node> segmenttree;
-vector<int> input;
-int k;
-
-void build(int i, int lo, int hi){
-    if(lo == hi){
-        segmenttree[i].count.resize(k);
-        segmenttree[i].count[input[lo] % k]++;
-        segmenttree[i].total = input[lo] % k;
-        return;
-    }
-    int mid = (lo + hi) / 2;
-    build(2*i + 1, lo, mid);
-    build(2*i + 2, mid + 1, hi);
-    segmenttree[i].count.clear();
-    segmenttree[i].count.resize(k);
-    vector<int> &leftcount = segmenttree[2*i + 1].count;
-    vector<int> &rightcount = segmenttree[2*i + 2].count;
-    for(int a = 0; a<k; a++){
-        segmenttree[i].count[a] = leftcount[a];
-    }
-    int total = segmenttree[2*i + 1].total;
-    for(int a = 0; a<k; a++){
-        int newval;
-        
-        newval = (total * a) % k;
-        segmenttree[i].count[newval] += rightcount[a];
-    }
-
-    int lefttotal = segmenttree[2*i + 1].total;
-    int righttotal = segmenttree[2*i + 2].total;
-
-    segmenttree[i].total = (lefttotal * righttotal) % k;
-}
-
-void pointupdate(int i, int lo, int hi, int idx, int val){
-    if(lo == hi){
-        segmenttree[i].count.clear();
-        segmenttree[i].count.resize(k);
-        segmenttree[i].count[input[lo] % k]++;
-        segmenttree[i].total = input[lo] % k;
-        return;
-    }
-
-    int mid = (lo + hi) / 2;
-    if(idx <= mid){
-        pointupdate(2*i + 1, lo, mid, idx, val);
-    }
-    else{
-        pointupdate(2*i + 2, mid + 1, hi, idx, val);
-    }
-    segmenttree[i].count.clear();
-    segmenttree[i].count.resize(k);
-    vector<int> &leftcount = segmenttree[2*i + 1].count;
-    vector<int> &rightcount = segmenttree[2*i + 2].count;
-    for(int a = 0; a<k; a++){
-        segmenttree[i].count[a] = leftcount[a];
-    }
-    int total = segmenttree[2*i + 1].total;
-    for(int a = 0; a<k; a++){
-        int newval;
-        
-        newval = (total * a) % k;
-        segmenttree[i].count[newval] += rightcount[a];
-    }
-
-    int lefttotal = segmenttree[2*i + 1].total;
-    int righttotal = segmenttree[2*i + 2].total;
-    segmenttree[i].total = (lefttotal * righttotal) % k;
-}
-
-int query(int i, int lo, int hi, int l,int r, int x, int &prevtotal, int k){
-    // l se n-1 tak me how many cnt[x]
-
-    // out of range 
-    if(l > hi || r < lo){
-        return 0;
-    }
-
-    int chahiye = -1;
-    if(prevtotal == -1) chahiye = x;
-    else{
-        for(int a = 0; a<k; a++){
-            if((prevtotal * a) % k == x){
-                chahiye = a;
-                break;
+class LazySegmentTree {
+    private:
+        vector<int> st; // Segment Tree
+        vector<int> lazy; // Lazy propagation array
+        int n;
+    
+        // Build the segment tree
+        void buildTree(const vector<int>& arr, int i, int lo, int hi) {
+            if (lo == hi) {
+                st[i] = 0;
+                return;
+            }
+            int mid = lo + (hi - lo) / 2;
+            buildTree(arr, 2 * i + 1, lo, mid);
+            buildTree(arr, 2 * i + 2, mid + 1, hi);
+            st[i] = min(st[2 * i + 1] , st[2 * i + 2]);
+        }
+    
+        // Propagate lazy updates to children
+        void propagate(int i, int lo, int hi) {
+            if (lazy[i] != 0) {
+                int range = hi - lo + 1;
+                st[i] += lazy[i]; // Apply lazy value to the current node
+    
+                if (lo != hi) { // Propagate to children if not a leaf
+                    lazy[2 * i + 1] += lazy[i];
+                    lazy[2 * i + 2] += lazy[i];
+                }
+    
+                lazy[i] = 0; // Clear the lazy value of the current node
             }
         }
-    }
-    // completely in range
-
-    if(l <= lo && hi <= r){
-        prevtotal *= segmenttree[i].total;
-        prevtotal %= k;
-        if(chahiye == -1) return 0;
-        return segmenttree[i].count[chahiye];
-    }
-    // partially in range
-    int mid = (lo + hi) / 2;
-
-    int left = query(2*i + 1, lo, mid, l, r, x, prevtotal, k);
-    int right = query(2*i + 2, mid + 1, hi, l,r, x, prevtotal, k);
-
-    if(x == 0 and left > 0){
-        return left + (hi - mid);
-    }
-
-    return left + right;    
-
-}
-
-vector<int> resultArray(vector<int>& nums, int k1, vector<vector<int>>& queries) {
-    int n = nums.size();
-    input = nums;
-    k = k1;
-    segmenttree.resize(4*n);
-    build(0, 0, n - 1);
-    vector<int> result;
-
-    for(auto ele : queries){
-        int idx = ele[0];
-        int val = ele[1];
-        input[idx] = val;
-        pointupdate(0, 0, n - 1, idx, val);
-
-        int l = ele[2];
-        int x = ele[3];
-
-        int prevtotal = -1;
-
-        int ans = query(0, 0, n - 1, l,n-1,  x, prevtotal, k);
-        result.push_back(ans);
-    }
-
-    return result;
-
-}
-
-
+    
+        // Range increment update
+        void updateRange(int i, int lo, int hi, int l, int r, int val) {
+            propagate(i, lo, hi); // Ensure the current node is updated
+    
+            if (l > hi || r < lo) return; // Out of range
+    
+            if (lo >= l && hi <= r) { // Fully within range
+                lazy[i] += val; // Add lazy update
+                propagate(i, lo, hi); // Apply the lazy operation
+                return;
+            }
+    
+            int mid = lo + (hi - lo) / 2;
+            updateRange(2 * i + 1, lo, mid, l, r, val);
+            updateRange(2 * i + 2, mid + 1, hi, l, r, val);
+            st[i] = min(st[2 * i + 1], st[2 * i + 2]); // Update the current node
+        }
+    
+        // Range sum query
+        int queryRange(int i, int lo, int hi, int l, int r) {
+            propagate(i, lo, hi); // Ensure the current node is updated
+    
+            if (l > hi || r < lo) return 1e15; // Out of range
+    
+            if (lo >= l && hi <= r) return st[i]; // Fully within range
+    
+            int mid = lo + (hi - lo) / 2;
+            int left = queryRange(2 * i + 1, lo, mid, l, r);
+            int right = queryRange(2 * i + 2, mid + 1, hi, l, r);
+            return min(left , right) ; // Combine results
+        }
+    
+    public:
+        LazySegmentTree(const vector<int>& arr) {
+            n = arr.size();
+            st.resize(4 * n, 0);
+            lazy.resize(4 * n, 0);
+            buildTree(arr, 0, 0, n - 1);
+        }
+    
+        void updateRange(int l, int r, int val) {
+            updateRange(0, 0, n - 1, l, r, val);
+        }
+    
+        int queryRange(int l, int r) {
+            return queryRange(0, 0, n - 1, l, r);
+        }
+    };
+    
 void solve(){
-    int n;
-    cin>>n;
+    int n,q;
+    cin>>n>>q;
+    vector<int> arr(n,0);
+    LazySegmentTree st(arr);
 
-    int k1;
-    cin>>k1;
-
-    vector<int> nums(n);
-
-    for(int i = 0; i<n; i++){
-        cin>>nums[i];
-    }
-
-    int q;
-    cin>>q;
-
-    vector<vector<int>> queries(q, vector<int>(4));
-
-    for(int i = 0; i<q; i++){
-        int a, b, c, d;
-        cin>>a>>b>>c>>d;
-
-        queries[i][0] = a;
-        queries[i][1] = b;
-        queries[i][2] = c;
-        queries[i][3] = d;
-
-    }
-
-    vector<int> result = resultArray(nums, k1, queries);
-
-    for(auto ele : result){
-        cout<<ele<<endl;
+    while(q--){
+        int type;
+        cin>>type;
+        if(type == 1){
+            int l,r,x;
+            cin>>l>>r>>x;
+            st.updateRange(l,r-1,x);
+        }
+        else{
+            int l,r;
+            cin>>l>>r;
+            cout<<st.queryRange(l,r-1)<<endl;
+        }
     }
 }
 /* logic ends */

@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.04.22 15:27:34
+ *    created: 2025.04.25 03:15:09
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,59 +58,146 @@
 using namespace std;
 
 /* write core logic here */
-void dfs(int node, int par, vector<vector<int> > &tree, vector<int> &parent){
-    parent[node] = par;
-    for(auto child : tree[node]){
-        if(child == par) continue;
-        dfs(child, node, tree, parent);
-    }
-}
-
-int f(int i, int p, int turn, vector<int> &parent, vector<vector<vector<int> > > &dp, vector<vector<int> > &tree){
-
-    if(i==1) return 0;
-
-    if(dp[i][p][turn] != -1) return dp[i][p][turn];
-    
-    if(turn == 1){
-        return dp[i][p][turn] = f(parent[i] , p, 0, parent, dp, tree) + 1;
-    }
-    else{
-        int ans1 = f(parent[i], p, 1, parent, dp, tree) + 2*tree[i].size() - 1;
-        int ans2 = 1e15;
-
-        if(p>0){
-            ans2 = f(parent[i], p-1, 1, parent, dp, tree) + 1;
-        }
-
-        return dp[i][p][turn] = min(ans1, ans2);
-    }
-}
 void solve(){
     int n,q;
     cin>>n>>q;
-    vector<vector<int> > tree(n+1);
-    for(int i = 0; i<n-1; i++){
-        int u,v;
-        cin>>u>>v;
-        tree[u].push_back(v);
-        tree[v].push_back(u);
+    vector<int> input(n+1);
+    map<int,int> mp;
+    for(int i = 1; i<=n; i++){
+        cin>>input[i];
+        mp[input[i]] = i;
     }
-
-    vector<vector<vector<int> > > dp(n+1, vector<vector<int> > (n+1, vector<int> (2, -1)));
-
-    vector<int> parent(n+1);
-
-    dfs(1,0, tree, parent);
-
-    print(parent);
-
     while(q--){
-        int i, p;
-        cin>>i>>p;
-        cout<<f(i, p, 1, parent, dp, tree)<<endl;
+        int l,r,x;
+        cin>>l>>r>>x;
+
+        if(mp[x] < l or mp[x] > r){
+            cout<<-1<<" ";
+            continue;
+        }
+
+        vector<int> galat;
+        vector<int> sahi;
+        int jahajaana = mp[x];
+        int lo = l;
+        int hi = r;
+        while(lo <= hi){
+            int mid = (lo + hi)/2;
+            if(mid == jahajaana){
+                break;
+            }
+            else if(mid < jahajaana){
+                // we will go to right 
+                if(input[mid] < x){
+                    // sahi me push kro 
+                    sahi.push_back(input[mid]);
+                }
+                else{
+                    // galat me push kro 
+                    galat.push_back(input[mid]);
+                }
+                lo = mid + 1;
+            }
+            else{
+                // we will go to left 
+                if(input[mid] > x){
+                    // sahi me push kro 
+                    sahi.push_back(input[mid]);
+                }
+                else{
+                    // galat me push kro 
+                    galat.push_back(input[mid]);
+                }
+                hi = mid - 1;
+            }
+        }
+
+        print(galat);
+        print(sahi);
+
+        set<int> galatchhota;
+        set<int> galatbada;
+        set<int> sahiwale;
+
+        for(auto ele : galat){
+            if(ele < x){
+                galatchhota.insert(ele);
+            }
+            else{
+                galatbada.insert(ele);
+            }
+        }
+        set<int> used;
+
+        for(auto ele : sahi){
+            used.insert(ele);
+        }
+
+        int ans = 0;
+
+        if(galatchhota.empty() and galatbada.empty()){
+            cout<<0<<" ";
+            continue;
+        }
+        while(!galatchhota.empty() and !galatbada.empty()){
+            used.insert(*galatchhota.begin());
+            used.insert(*galatbada.begin());
+            galatbada.erase(galatbada.begin());
+            galatchhota.erase(galatchhota.begin());
+            
+            ans+= 2;
+        }
+
+        if(!galatchhota.empty()){
+            int req = galatchhota.size();
+            int hai = 0;
+            for(int i = x+1; i<=n; i++){
+                if(used.find(i) == used.end()){
+                    hai++;
+                }
+                if(hai == req){
+                    break;
+                }
+            }
+
+            if(hai != req){
+                cout<<-1<<" ";
+                continue;
+            }
+            else{
+                ans+= 2*hai;
+                cout<<ans<<" ";
+                continue;
+            }
+        }
+
+        if(!galatbada.empty()){
+            int req = galatbada.size();
+            int hai = 0;
+            for(int i = x-1; i>=1; i--){
+                if(used.find(i) == used.end()){
+                    hai++;
+                }
+                if(hai == req){
+                    break;
+                }
+            }
+
+            if(hai != req){
+                cout<<-1<<" ";
+                continue;
+            }
+            else{
+                ans+= 2*hai;
+                cout<<ans<<" ";
+                continue;
+            }
+        }
+
+        cout<<ans<<" ";
     }
-    
+
+    cout<<endl;
 }
 /* logic ends */
 
