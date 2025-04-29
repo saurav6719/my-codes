@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.04.26 20:26:35
+ *    created: 2025.02.01 17:26:27
  *    We stop at Candidate Master in 2025
  **/
 
@@ -58,69 +58,8 @@
 using namespace std;
 
 /* write core logic here */
-int processResult(int N, const vector<int>& maleHeights, const vector<int>& femaleHeights) {
-    set<int> malepositive;
-    set<int> malenegative;
-    set<int> femalepositive;
-    set<int> femalenegative;
-
-    for(auto ele: maleHeights){
-        if(ele>0){
-            malepositive.insert(ele);
-        }
-        else{
-            malenegative.insert(abs(ele));
-        }
-    }
-    for(auto ele: femaleHeights){
-        if(ele>0){
-            femalepositive.insert(ele);
-        }
-        else{
-            femalenegative.insert(abs(ele));
-        }
-    }
-
-    int ans =0 ;
-
-
-    for(int i = 0; i<maleHeights.size(); i++){
-        int curr = maleHeights[i];
-        if(curr > 0){
-            // inko apne se bada chahiye female negative me 
-            auto it = femalenegative.upper_bound(curr);
-            if(it != femalenegative.end()){
-                ans++;
-                femalenegative.erase(it);
-            }
-        }
-        else{
-            // inko apne se chhota chahiye female positive me 
-            auto it = femalepositive.lower_bound(abs(curr));
-            if(it != femalepositive.begin()){
-                it--;
-                ans++;
-                femalepositive.erase(it);
-            }
-        }
-    }
-
-    return ans;
-}
-    
 void solve(){
-    int N;
-    cin>>N;
-    vector<int> maleHeights(N);
-    vector<int> femaleHeights(N);
-    for(int i=0;i<N;i++){
-        cin>>maleHeights[i];
-    }
-    for(int i=0;i<N;i++){
-        cin>>femaleHeights[i];
-    }
-
-    cout<<processResult(N, maleHeights, femaleHeights)<<endl;
+    
 }
 /* logic ends */
 
@@ -131,8 +70,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
