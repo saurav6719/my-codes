@@ -69,10 +69,213 @@
 using namespace std;
 
 /* write core logic here */
+int query(int idx){
+    cout<<"? "<<idx<<endl;
+    cout<<flush;
+    int x;
+    cin>>x;
+    return x;
+}
+
+bool iscycle(vector<int> &a, vector<int> &b) {
+    int n = a.size();
+    if (n != b.size()) return false;
+
+    for (int shift = 0; shift < n; ++shift) {
+        if (b[shift] == a[0]) {
+            bool match = true;
+            for (int i = 0; i < n; ++i) {
+                if (a[i] != b[(i + shift) % n]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) return true;
+        }
+    }
+
+    return false;
+}
+
+void printans(int ans1, int ans2){
+    if(ans1 == -1){
+        cout<<"! -1"<<endl;
+        cout<<flush;
+        return;
+    }
+    cout<<"! "<<ans1<<" "<<ans2<<endl;
+    cout<<flush;
+    return;
+}
+
 void solve(){
-    int n;
-    cin>>n;
-    cout<<n<<endl;
+    int n,k;
+    cin>>n>>k;
+
+    if(n==2*k){
+        printans(k,k);
+        return;
+    }
+
+    vector<int> firstk(1, n+1);
+    for(int i =1 ; i<=k; i++){
+        firstk.push_back(query(i));
+    }
+    vector<int> lastk;
+    for(int i = n-k+1; i<=n; i++){
+        lastk.push_back(query(i));
+    }
+
+    if(n <= 3*k){
+        int a = 0;
+        int b = n+1;
+
+        deque<int> dqa;
+        map<int,int> mp;
+        for(int i = 1; i<=k; i++){
+            int ele = firstk[i];
+            dqa.push_back(ele);
+        }
+        for(int i = 1; i<=n; i++){
+            int x = query(i);
+            mp[i] = x;
+            if(x != dqa.front()) break;
+            else {
+                a++;
+                dqa.push_back(dqa.front());
+                dqa.pop_front();
+            }
+        }
+        deque<int> dqb;
+        for(auto ele : lastk){
+            dqb.push_front(ele);
+        }
+        for(int i = n; i>=1; i--){
+            int x ;
+            if(mp.find(i) != mp.end()){
+                x = mp[i];
+            }
+            else{
+                x = query(i);
+            }
+            if(x != dqb.front()) break;
+            else {
+                b--;
+                dqb.push_back(dqb.front());
+                dqb.pop_front();
+            }
+        }
+        debug(a);
+        debug(b);
+
+        if(a > b){
+            printans(-1, 5);
+            return;
+        }
+        else{
+            a = min(a, n-k);
+            printans(a, n-a);
+            return;
+        }
+    }
+    
+
+    {
+        vector<int> v;
+        for(int i = 1; i<=k; i++){
+            v.push_back(firstk[i]);
+        }
+        if(iscycle(v, lastk)){
+            printans(-1, 5);
+            return;
+        }
+    }
+
+    
+    int idx;
+    {
+        //finding idx which is different in both 
+        int curroriginalidx = n;
+        for(int i = k-1; i>=0; i--){
+            int b = lastk[i];
+            int originalidx = curroriginalidx;
+            int modi = originalidx % k;
+            if(modi == 0) modi = k;
+            int a = firstk[modi];
+            if(a != b){
+                idx = originalidx % k;
+                break;
+            }
+            curroriginalidx--;
+        }
+    }
+    debug(idx);
+
+    int lo = 1; int hi = (n-k) / k;
+    int max = 0;
+    while(lo <= hi){
+        int mid = (lo + hi)/ 2;
+        int index = mid * k;
+        index += idx;
+        if(index > n - k){
+            hi = mid - 1;
+            continue;
+        }
+        int modi = index % k;
+        if(modi == 0) modi = k;
+        int honachahiye = firstk[modi];
+        int hai = query(index);
+        if(honachahiye == hai){
+            max = mid;
+            lo = mid + 1;
+        }
+        else{
+            hi = mid - 1;
+        }
+    }
+    debug(max);
+
+    {   
+        int curr = max*k;
+        while(true){
+            int index = curr;
+            int modi = index % k;
+            if(modi == 0) modi = k;
+            int honachahiye = firstk[modi];
+            int hai = query(index);
+            if(honachahiye != hai){
+                break;
+            }
+            else {
+                max = curr;
+            }
+            curr++;
+            if(curr > n-k){
+                break;
+            }
+        }
+    }
+    //either answer is max or -1
+    debug(max);
+
+    if(max == k){
+        printans(max, n-max);
+        return;
+    }
+    {
+        //checking if answer is -1
+        vector<int> ekpichese;
+        for(int i = max-1; i< max-1+k; i++){
+            ekpichese.push_back(query(i));
+        }
+
+        if(iscycle(lastk, ekpichese)){
+            printans(-1, 5);
+        }
+        else{
+            printans(max, n-max);
+        }
+    }
 }
 /* logic ends */
 
