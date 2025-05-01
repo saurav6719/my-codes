@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.02.01 17:26:27
+ *    created: 2025.05.01 05:23:43
  *    We stop at Candidate Master in 2025
  **/
 
@@ -35,6 +35,14 @@
                     cout << "map-- ends" << endl; \
                 } while(0)
 
+#define printset(s) do { \
+    cout << "set-- starts" << endl; \
+    for (auto it = s.begin(); it != s.end(); ++it) { \
+        cout << *it << endl; \
+    } \
+    cout << "set-- ends" << endl; \
+} while(0)
+
 #define printpp(v) do { \
                     cout << "vect--" << " = [ "; \
                     for (int i = 0; i < v.size(); i++) { \
@@ -50,8 +58,11 @@
 #define printpp(v)
 #endif
 #define endl "\n"
+#define MOD 1000000007
+#define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
+#define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
+#define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
 #define int long long int
-#define mod 1000000007
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
@@ -70,8 +81,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
