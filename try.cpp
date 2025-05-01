@@ -70,7 +70,9 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    cout<<n<<endl;
 }
 /* logic ends */
 
