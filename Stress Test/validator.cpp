@@ -6,6 +6,10 @@ int main() {
     cin.tie(0);
 
     int T = 1;
+    // if (!(cin >> T) || T <= 0) {
+    //     cerr << "Error: Invalid number of test cases";
+    //     return 1;
+    // }
 
     while (T--) {
         int N;
@@ -13,21 +17,10 @@ int main() {
             cerr << "Error: Invalid values of N ";
             return 1;
         }
-
-        while(N--) {
-            int x;
-            if (!(cin >> x) || x < -2500 || x > 2500) {
-                cerr << "Error: Invalid value in the array (0 ≤ x ≤ 1e9).\n";
-                return 1;
-            }
-        }
-        
-        while(N--) {
-            int x;
-            if (!(cin >> x) || x < -2500 || x > 2500) {
-                cerr << "Error: Invalid value in the array (0 ≤ x ≤ 1e9).\n";
-                return 1;
-            }
+        int K;
+        if (!(cin >> K) || K <= 0) {
+            cerr << "Error: Invalid values of N ";
+            return 1;
         }
     }
     return 0;

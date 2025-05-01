@@ -8,7 +8,7 @@ int getRand(int L, int R) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 4) {  // We now require 3 parameters + program name
+    if (argc < 1) {  // We now require 3 parameters + program name
         cerr << "Usage: " << argv[0] << " <T> <n> <maxVal> <q> <maxX>\n";
         return 1;
     }
@@ -16,24 +16,14 @@ int main(int argc, char* argv[]) {
     // argc[0] is the program name
     // rest all are the parameters or contraints i need to pass 
 
-    // int T = stoi(argv[1]);  // Number of test cases
-    int T = 1;
-    int n = stoi(argv[1]);  // Array size
-    int maxVal = stoi(argv[2]);  // Max value in array
-    int minVal = stoi(argv[3]);  // Min value in array
+    int T = 1;  // Number of test cases
 
     while (T--) {
         // Generate array
+        int n = getRand(1, 1000000000);
+        int k = getRand(1, 10);
         cout << n << "\n";
-        for (int i = 0; i < n; i++) {
-            cout << getRand(minVal, maxVal) << " ";
-        }
-        cout << "\n";
-
-        for(int i = 0; i < n; i++) {
-            cout << getRand(minVal, maxVal) << " ";
-        }
-        cout << "\n";
+        cout << k << "\n";
     }
 
     return 0;

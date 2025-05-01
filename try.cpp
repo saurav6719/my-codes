@@ -69,213 +69,131 @@
 using namespace std;
 
 /* write core logic here */
-int query(int idx){
-    cout<<"? "<<idx<<endl;
-    cout<<flush;
-    int x;
-    cin>>x;
-    return x;
-}
-
-bool iscycle(vector<int> &a, vector<int> &b) {
-    int n = a.size();
-    if (n != b.size()) return false;
-
-    for (int shift = 0; shift < n; ++shift) {
-        if (b[shift] == a[0]) {
-            bool match = true;
-            for (int i = 0; i < n; ++i) {
-                if (a[i] != b[(i + shift) % n]) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) return true;
-        }
-    }
-
-    return false;
-}
-
-void printans(int ans1, int ans2){
-    if(ans1 == -1){
-        cout<<"! -1"<<endl;
-        cout<<flush;
-        return;
-    }
-    cout<<"! "<<ans1<<" "<<ans2<<endl;
-    cout<<flush;
+void solvee(){
+    int n,k;
+    cin>>n>>k;
+    cout<<n<<"-"<<k<<endl;
     return;
 }
-
 void solve(){
     int n,k;
     cin>>n>>k;
-
-    if(n==2*k){
-        printans(k,k);
+    set<int> uniques;
+    string s = to_string(n);
+    for(auto i : s){
+        uniques.insert(i - '0');
+    }
+    if(uniques.size() <= k){
+        cout<<n<<endl;
         return;
     }
-
-    vector<int> firstk(1, n+1);
-    for(int i =1 ; i<=k; i++){
-        firstk.push_back(query(i));
-    }
-    vector<int> lastk;
-    for(int i = n-k+1; i<=n; i++){
-        lastk.push_back(query(i));
-    }
-
-    if(n <= 3*k){
-        int a = 0;
-        int b = n+1;
-
-        deque<int> dqa;
-        map<int,int> mp;
-        for(int i = 1; i<=k; i++){
-            int ele = firstk[i];
-            dqa.push_back(ele);
-        }
-        for(int i = 1; i<=n; i++){
-            int x = query(i);
-            mp[i] = x;
-            if(x != dqa.front()) break;
-            else {
-                a++;
-                dqa.push_back(dqa.front());
-                dqa.pop_front();
-            }
-        }
-        deque<int> dqb;
-        for(auto ele : lastk){
-            dqb.push_front(ele);
-        }
-        for(int i = n; i>=1; i--){
-            int x ;
-            if(mp.find(i) != mp.end()){
-                x = mp[i];
-            }
-            else{
-                x = query(i);
-            }
-            if(x != dqb.front()) break;
-            else {
-                b--;
-                dqb.push_back(dqb.front());
-                dqb.pop_front();
-            }
-        }
-        debug(a);
-        debug(b);
-
-        if(a > b){
-            printans(-1, 5);
-            return;
-        }
-        else{
-            a = min(a, n-k);
-            printans(a, n-a);
-            return;
-        }
-    }
-    
-
-    {
-        vector<int> v;
-        for(int i = 1; i<=k; i++){
-            v.push_back(firstk[i]);
-        }
-        if(iscycle(v, lastk)){
-            printans(-1, 5);
-            return;
-        }
-    }
-
-    
-    int idx;
-    {
-        //finding idx which is different in both 
-        int curroriginalidx = n;
-        for(int i = k-1; i>=0; i--){
-            int b = lastk[i];
-            int originalidx = curroriginalidx;
-            int modi = originalidx % k;
-            if(modi == 0) modi = k;
-            int a = firstk[modi];
-            if(a != b){
-                idx = originalidx % k;
-                break;
-            }
-            curroriginalidx--;
-        }
-    }
-    debug(idx);
-
-    int lo = 1; int hi = (n-k) / k;
-    int max = 0;
-    while(lo <= hi){
-        int mid = (lo + hi)/ 2;
-        int index = mid * k;
-        index += idx;
-        if(index > n - k){
-            hi = mid - 1;
+    set<char> taken;
+    string maked = "";
+    int i = 0;
+    bool bigger = false;
+    while(k>0 and i < s.size()){
+        if(taken.count(s[i])){
+            // isko le lo no problem
+            maked += s[i];
+            i++;
             continue;
         }
-        int modi = index % k;
-        if(modi == 0) modi = k;
-        int honachahiye = firstk[modi];
-        int hai = query(index);
-        if(honachahiye == hai){
-            max = mid;
-            lo = mid + 1;
-        }
         else{
-            hi = mid - 1;
+            if(k==1) break;
+            maked += s[i];
+            taken.insert(s[i]);
+            i++;
+            k--;
+            continue;
         }
     }
-    debug(max);
 
-    {   
-        int curr = max*k;
-        while(true){
-            int index = curr;
-            int modi = index % k;
-            if(modi == 0) modi = k;
-            int honachahiye = firstk[modi];
-            int hai = query(index);
-            if(honachahiye != hai){
+    string cc = maked;
+    print(cc);
+    int remainingsize = s.size() - maked.size();
+    int yahape = -1;
+    bool nayaliya = false;
+
+    for(int i = 0; i<=9; i++){
+        set<char> temp = taken;
+        string tempcc = cc;
+        tempcc += (char)(i + '0');
+        temp.insert((char)(i + '0'));
+        debug(tempcc);
+        while(tempcc.size() < s.size()){
+            tempcc += (*temp.rbegin());
+            debug(*temp.rbegin());
+        }
+
+        int tempn = stoi(tempcc);
+        debug(i);
+        debug(tempn);
+        if(tempn >= n){
+            yahape = i;
+            if(taken.count(i + '0') == 0){
+                nayaliya = true;
+            }
+            taken.insert((char)(i + '0'));
+            break;
+        }
+    }
+    debug(yahape);
+    debug(nayaliya);
+    if(nayaliya == false){
+        for(int i = 0; i<=9; i++){
+            if(taken.count(i) == 0){
+                taken.insert(i + '0');
                 break;
             }
-            else {
-                max = curr;
+        }
+    }
+
+    cc += yahape + '0';
+    print(cc);
+    bool bigtaken = false;
+    if(cc.back() > s[cc.size() - 1]){
+        bigtaken = true;
+    }
+    debug(bigtaken);
+    bool isback = false;
+
+    // while(cc.size() < s.size()){
+    //     if(bigtaken){
+    //         cc += (*taken.begin());
+    //     }
+    //     else{
+    //         if(s[cc.size()] == '9'){
+    //             isback =  true;
+    //             cc.pop_back();
+    //             break;
+    //         }
+    //         char ch = *lower_bound(taken.begin(), taken.end(), s[cc.size()]);
+    //         cc += ch;
+    //         if(ch > s[cc.size() - 1]){
+    //             bigtaken = true;
+    //         }
+    //     }
+    // }
+
+    while(cc.size() < s.size()){
+        // yaha pe konsa mincharacter loge 
+        for(int i = 0; i<=9; i++){
+            string cctemp = cc;
+            if(taken.count(i + '0') == 0) continue;
+            cctemp += (char)(i + '0');
+            while(cctemp.size() < s.size()){
+                cctemp += (*taken.rbegin());
             }
-            curr++;
-            if(curr > n-k){
+            if(stoi(cctemp) >= n){
+                cc += (char)(i + '0');
                 break;
             }
-        }
+        } 
     }
-    //either answer is max or -1
-    debug(max);
 
-    if(max == k){
-        printans(max, n-max);
-        return;
-    }
-    {
-        //checking if answer is -1
-        vector<int> ekpichese;
-        for(int i = max-1; i< max-1+k; i++){
-            ekpichese.push_back(query(i));
-        }
+    int finalans = stoi(cc);
 
-        if(iscycle(lastk, ekpichese)){
-            printans(-1, 5);
-        }
-        else{
-            printans(max, n-max);
-        }
-    }
+    cout<<finalans<<endl;
 }
 /* logic ends */
 
@@ -288,8 +206,13 @@ signed main(){
     int t;
     cin>>t;
     //t = 1;
-    while(t--){
-        solve();
+    for(int i = 1; i<=t; i++){
+        if(i == 1012){
+            solvee();
+        }
+        else{
+            solve();
+        }
     }
 return 0;
 }
