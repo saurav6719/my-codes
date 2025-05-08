@@ -1,140 +1,91 @@
-#include <bits/stdc++.h>
-#pragma GCC optimize ("O3")
-#pragma GCC target ("sse4")
- 
-using namespace std;
- 
-typedef long long ll;
-typedef long double ld;
-typedef complex<ld> cd;
- 
-typedef pair<int, int> pi;
-typedef pair<ll,ll> pl;
-typedef pair<ld,ld> pd;
- 
-typedef vector<int> vi;
-typedef vector<ld> vd;
-typedef vector<ll> vl;
-typedef vector<pi> vpi;
-typedef vector<pl> vpl;
-typedef vector<cd> vcd;
+/**
+ *    author: Saurav
+ *    created: 2025.05.01 05:23:43
+ *    We stop at Candidate Master in 2025
+ **/
 
-template<class T> using pq = priority_queue<T>;
-template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
- 
-#define FOR(i, a, b) for (int i=a; i<(b); i++)
-#define F0R(i, a) for (int i=0; i<(a); i++)
-#define FORd(i,a,b) for (int i = (b)-1; i >= a; i--)
-#define F0Rd(i,a) for (int i = (a)-1; i >= 0; i--)
-#define trav(a,x) for (auto& a : x)
-#define uid(a, b) uniform_int_distribution<int>(a, b)(rng)
- 
-#define sz(x) (int)(x).size()
-#define mp make_pair
-#define pb push_back
-#define f first
-#define s second
-#define lb lower_bound
-#define ub upper_bound
-#define all(x) x.begin(), x.end()
-#define ins insert
+/* includes and all */
 
-template<class T> bool ckmin(T& a, const T& b) { return b < a ? a = b, 1 : 0; }
-template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
- 
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+#include<bits/stdc++.h>
+#ifndef ONLINE_JUDGE
+#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
+#define print(v) do { \
+                    cout << "vect--" << #v << " = [ "; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << v[i] << " "; \
+                    } \
+                    cout << " ]" << endl; \
+                } while(0)
+#define print2d(v) do { \
+                    cout << "vect-- starts" << endl; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << "[" << " "; \
+                        for (int j = 0; j < v[i].size(); j++) { \
+                            cout << v[i][j] << " "; \
+                        } \
+                        cout << "]" << endl; \
+                    } \
+                    cout << "vect-- ends" << endl; \
+                } while(0)
+#define printmap(m) do { \
+                    cout << "map-- starts" << endl; \
+                    for (auto it = m.begin(); it != m.end(); ++it) { \
+                        cout << it->first << " -> " << it->second << endl; \
+                    } \
+                    cout << "map-- ends" << endl; \
+                } while(0)
 
-void __print(int x) {cerr << x;}
-void __print(long x) {cerr << x;}
-void __print(long long x) {cerr << x;}
-void __print(unsigned x) {cerr << x;}
-void __print(unsigned long x) {cerr << x;}
-void __print(unsigned long long x) {cerr << x;}
-void __print(float x) {cerr << x;}
-void __print(double x) {cerr << x;}
-void __print(long double x) {cerr << x;}
-void __print(char x) {cerr << '\'' << x << '\'';}
-void __print(const char *x) {cerr << '\"' << x << '\"';}
-void __print(const string &x) {cerr << '\"' << x << '\"';}
-void __print(bool x) {cerr << (x ? "true" : "false");}
+#define printset(s) do { \
+    cout << "set-- starts" << endl; \
+    for (auto it = s.begin(); it != s.end(); ++it) { \
+        cout << *it << endl; \
+    } \
+    cout << "set-- ends" << endl; \
+} while(0)
 
-template<typename T, typename V>
-void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ", "; __print(x.second); cerr << '}';}
-template<typename T>
-void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? ", " : ""), __print(i); cerr << "}";}
-void _print() {cerr << "]\n";}
-template <typename T, typename... V>
-void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
-#ifdef DEBUG
-#define dbg(x...) cerr << "\e[91m"<<__func__<<":"<<__LINE__<<" [" << #x << "] = ["; _print(x); cerr << "\e[39m" << endl;
+#define printpp(v) do { \
+                    cout << "vect--" << " = [ "; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
+                    } \
+                    cout << " ]" << endl; \
+                } while(0)
 #else
-#define dbg(x...)
+#define debug(x)
+#define print(v)
+#define print2d(v)
+#define printmap(m)
+#define printpp(v)
 #endif
+#define endl "\n"
+#define MOD 1000000007
+#define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
+#define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
+#define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
+#define int long long int
+#define mn(a,b,c) min(a,min(b,c))
+#define mx(a,b,c) max(a,max(b,c))
+#define pp pair<int,int>
+using namespace std;
 
-
-const int MOD = 1000000007;
-const char nl = '\n';
-const int MX = 100001; 
-
-int K;
-vi digs;
-int pre;
-set<int> used;
-
-int go(int rem, bool match) {
-    if (rem == 0) {
-        return pre;
-    }
-    int p = sz(digs) - rem;
-    int numTried = 0;
-    F0R(i, 10) {
-        if (match && i < digs[p]) continue;
-        if (sz(used) == K && used.count(i) == 0) {
-            continue;
-        }
-        if (numTried >= 2) continue;
-        numTried++;
-        pre *= 10; pre += i;
-        bool curIn = used.count(i);
-        if (!curIn) used.ins(i);
-        int res = go(rem-1, match&&i==digs[p]);
-        if (!curIn) used.erase(i);
-        pre /= 10;
-        if (res != -1) {
-            return res;
-        }
-    }
-
-    return -1;
-
+/* write core logic here */
+void solve(){
+    cout<<"Yes"<<endl;
 }
+/* logic ends */
 
-void solve() {
-    int N; cin >> N >> K;
-    digs.clear();
-    while (N) {
-        digs.pb(N%10); N /= 10;
-    }
-    reverse(all(digs));
-    used.clear(); pre = 0;
-    int res = go(sz(digs), true);
-    if (res == -1) {
-        cout << 1;
-        F0R(i, sz(digs)) cout << 0;
-        cout << nl;
-    } else cout << res << nl;
-
-}
- 
-int main() {
-    cin.tie(0)->sync_with_stdio(0); 
-    cin.exceptions(cin.failbit);
-
-    int T = 1;
-    // cin >> T;
-    while(T--) {
+signed main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    #ifndef ONLINE_JUDGE
+        freopen("Error.txt" , "w" , stderr);
+    #endif
+    int t;
+    //cin>>t;
+    t = 1;
+    while(t--){
         solve();
     }
-
-	return 0;
+return 0;
 }
+

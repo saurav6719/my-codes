@@ -69,131 +69,66 @@
 using namespace std;
 
 /* write core logic here */
-void solvee(){
-    int n,k;
-    cin>>n>>k;
-    cout<<n<<"-"<<k<<endl;
-    return;
-}
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    set<int> uniques;
-    string s = to_string(n);
-    for(auto i : s){
-        uniques.insert(i - '0');
-    }
-    if(uniques.size() <= k){
-        cout<<n<<endl;
+    int n,a,b;
+    cin>>n>>a>>b;
+
+    if(a==1){
+        if(n % b == 1){
+            cout<<"Yes"<<endl;
+        }
+        else cout<<"No"<<endl;
         return;
     }
-    set<char> taken;
-    string maked = "";
-    int i = 0;
-    bool bigger = false;
-    while(k>0 and i < s.size()){
-        if(taken.count(s[i])){
-            // isko le lo no problem
-            maked += s[i];
-            i++;
-            continue;
-        }
-        else{
-            if(k==1) break;
-            maked += s[i];
-            taken.insert(s[i]);
-            i++;
-            k--;
-            continue;
-        }
+
+    set<int> st;
+    int curr = 1;
+    set<int> mods;
+    while(curr <= n){
+        st.insert(curr);
+        mods.insert(curr % b);
+        curr *= a;
+    }
+    vector<int> visited(1e6, 0);
+    queue<int> q;
+    q.push(1);
+    while(!q.empty()){
+        int tp = q.front();
+        q.pop();
+        visited[tp] = 1;
+        
+        if(tp * a < 1e6 and visited[tp * a] == 0) q.push(tp*a);
+        if(tp + b < 1e6 and visited[tp + b] == 0) q.push(tp+b);
     }
 
-    string cc = maked;
-    print(cc);
-    int remainingsize = s.size() - maked.size();
-    int yahape = -1;
-    bool nayaliya = false;
+    vector<int> pahucha;
 
-    for(int i = 0; i<=9; i++){
-        set<char> temp = taken;
-        string tempcc = cc;
-        tempcc += (char)(i + '0');
-        temp.insert((char)(i + '0'));
-        debug(tempcc);
-        while(tempcc.size() < s.size()){
-            tempcc += (*temp.rbegin());
-            debug(*temp.rbegin());
+    for(int i = 1; i<1e6; i++){
+        if(visited[i] == 1) pahucha.push_back(i);
+    }
+
+    int cnt = 0;
+
+    for(auto x : pahucha){
+        bool poss = false;
+        for(auto ele : st){
+            int diff = x - ele;
+            if(diff % b == 0){
+                cnt++;
+                poss = true;
+                break;
+            }
         }
 
-        int tempn = stoi(tempcc);
-        debug(i);
-        debug(tempn);
-        if(tempn >= n){
-            yahape = i;
-            if(taken.count(i + '0') == 0){
-                nayaliya = true;
-            }
-            taken.insert((char)(i + '0'));
+        if(!poss){
+            cout<<x<<endl;
+            return;
             break;
         }
     }
-    debug(yahape);
-    debug(nayaliya);
-    if(nayaliya == false){
-        for(int i = 0; i<=9; i++){
-            if(taken.count(i) == 0){
-                taken.insert(i + '0');
-                break;
-            }
-        }
-    }
 
-    cc += yahape + '0';
-    print(cc);
-    bool bigtaken = false;
-    if(cc.back() > s[cc.size() - 1]){
-        bigtaken = true;
-    }
-    debug(bigtaken);
-    bool isback = false;
-
-    // while(cc.size() < s.size()){
-    //     if(bigtaken){
-    //         cc += (*taken.begin());
-    //     }
-    //     else{
-    //         if(s[cc.size()] == '9'){
-    //             isback =  true;
-    //             cc.pop_back();
-    //             break;
-    //         }
-    //         char ch = *lower_bound(taken.begin(), taken.end(), s[cc.size()]);
-    //         cc += ch;
-    //         if(ch > s[cc.size() - 1]){
-    //             bigtaken = true;
-    //         }
-    //     }
-    // }
-
-    while(cc.size() < s.size()){
-        // yaha pe konsa mincharacter loge 
-        for(int i = 0; i<=9; i++){
-            string cctemp = cc;
-            if(taken.count(i + '0') == 0) continue;
-            cctemp += (char)(i + '0');
-            while(cctemp.size() < s.size()){
-                cctemp += (*taken.rbegin());
-            }
-            if(stoi(cctemp) >= n){
-                cc += (char)(i + '0');
-                break;
-            }
-        } 
-    }
-
-    int finalans = stoi(cc);
-
-    cout<<finalans<<endl;
+    cout<<"Yes"<<endl;
+    
 }
 /* logic ends */
 
@@ -206,13 +141,8 @@ signed main(){
     int t;
     cin>>t;
     //t = 1;
-    for(int i = 1; i<=t; i++){
-        if(i == 1012){
-            solvee();
-        }
-        else{
-            solve();
-        }
+    while(t--){
+        solve();
     }
 return 0;
 }

@@ -20,10 +20,12 @@ int main(int argc, char* argv[]) {
 
     while (T--) {
         // Generate array
-        int n = getRand(1, 1000000000);
-        int k = getRand(1, 10);
+        int n = getRand(1, 999999);
+        int a = getRand(2, 10000);
+        int b = getRand(1, 10000);
         cout << n << "\n";
-        cout << k << "\n";
+        cout << a << "\n";
+        cout << b << "\n";
     }
 
     return 0;
