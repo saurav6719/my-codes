@@ -1,3 +1,10 @@
+/**
+ *    author: Saurav
+ *    created: 2025.05.01 05:23:43
+ *    We stop at Candidate Master in 2025
+ **/
+
+/* includes and all */
 
 #include<bits/stdc++.h>
 #ifndef ONLINE_JUDGE
@@ -62,84 +69,159 @@
 using namespace std;
 
 /* write core logic here */
-int inversioncnt(vector<int> &v2, vector<int> &v1){
-    map<int,int> mp;
-    for(int i = 0; i<v1.size(); i++){
-        mp[v1[i]] = i;
+class SegmentTree {
+private:
+    int n;
+    vector<vector<int>> tree;
+    vector<int> data;
+
+    // Function to build the segment tree
+    void build(int node, int start, int end) {
+        if (start == end) {
+            // Leaf node will have a single element
+            tree[node].push_back(data[start]);
+            return;
+        }
+
+        int mid = start + (end - start) / 2;
+        int left_child = 2 * node + 1;
+        int right_child = 2 * node + 2;
+
+        // Recursively build the left and right children
+        build(left_child, start, mid);
+        build(right_child, mid + 1, end);
+
+        // Merge the sorted vectors from left and right children
+        mergeVectors(tree[left_child], tree[right_child], tree[node]);
     }
-    int cnt = 0;
-    for(int i = 0; i<v2.size(); i++){
-        int now = i;
-        int then = mp[v2[i]];
-        if(now < then) cnt++;
-        else if(now > then) cnt--;
+
+    // Helper function to merge two sorted vectors
+    void mergeVectors(const vector<int> &left, const vector<int> &right, vector<int> &merged) {
+        merged.resize(left.size() + right.size());
+        int i = 0, j = 0, k = 0;
+
+        while (i < left.size() && j < right.size()) {
+            if (left[i] <= right[j]) {
+                merged[k++] = left[i++];
+            }
+            else {
+                merged[k++] = right[j++];
+            }
+        }
+
+        // Copy remaining elements
+        while (i < left.size()) {
+            merged[k++] = left[i++];
+        }
+        while (j < right.size()) {
+            merged[k++] = right[j++];
+        }
     }
-    return cnt;
-}
+
+    // Function to perform the query
+    int queryUtil(int node, int start, int end, int L, int R, int X) const {
+        if (R < start || end < L) {
+            // No overlap
+            return 0;
+        }
+
+        if (L <= start && end <= R) {
+            // Total overlap
+            // Use binary search to find the count of X in tree[node]
+            int left_idx = lower_bound(tree[node].begin(), tree[node].end(), X) - tree[node].begin();
+            return left_idx;
+        }
+
+        // Partial overlap
+        int mid = start + (end - start) / 2;
+        int left_child = 2 * node + 1;
+        int right_child = 2 * node + 2;
+
+        int count_left = queryUtil(left_child, start, mid, L, R, X);
+        int count_right = queryUtil(right_child, mid + 1, end, L, R, X);
+
+        return count_left + count_right;
+    }
+
+    int queryUtil2(int node, int start, int end, int L, int R, int X) const {
+        if (R < start || end < L) {
+            // No overlap
+            return 0;
+        }
+
+        if (L <= start && end <= R) {
+            // Total overlap
+            // Use binary search to find the count of X in tree[node]
+            int left_idx = upper_bound(tree[node].begin(), tree[node].end(), X) - tree[node].begin();
+            return tree[node].size() - left_idx;
+        }
+
+        // Partial overlap
+        int mid = start + (end - start) / 2;
+        int left_child = 2 * node + 1;
+        int right_child = 2 * node + 2;
+
+        int count_left = queryUtil2(left_child, start, mid, L, R, X);
+        int count_right = queryUtil2(right_child, mid + 1, end, L, R, X);
+
+        return count_left + count_right;
+    }
+
+public:
+    // Constructor to initialize and build the segment tree
+    SegmentTree(const vector<int> &input_data) {
+        data = input_data;
+        n = data.size();
+        // Allocate enough space for the segment tree
+        tree.resize(4 * n);
+        build(0, 0, n - 1);
+    }
+
+    // Function to query the frequency of X in range [L, R]
+    int queryLess(int L, int R, int X) const {
+        if (L < 0 || R >= n || L > R) {
+            throw invalid_argument("Invalid query range.");
+        }
+        return queryUtil(0, 0, n - 1, L, R, X);
+    }
+    int queryMore(int L, int R, int X) const {
+        if (L < 0 || R >= n || L > R) {
+            throw invalid_argument("Invalid query range.");
+        }
+        return queryUtil2(0, 0, n - 1, L, R, X);
+    }
+};
 void solve(){
     int n;
     cin>>n;
-    vector<int> v(n, 0);
-    for(int i = 0; i<n; i++){
-        cin>>v[i];
+    vector<int> input(n);
+    int k;
+    cin>>k;
+    for(auto &ele : input){
+        cin>>ele;
     }
-    vector<int> even;
-    vector<int> odd;
-    for(int i = 0; i<n; i++){
-        if(i%2 == 0) even.push_back(v[i]);
-        else odd.push_back(v[i]);
+
+    SegmentTree st(input);
+
+    int ans = 0;
+
+    for(int i = 1; i<k; i++){
+        ans += st.queryMore(0,i-1, input[i]);
     }
-    sort(even.begin(), even.end());
-    sort(odd.begin(), odd.end());
-    vector<int> ans;
-    int evencurr = 0;
-    int oddcurr = 0;
-    for(int i = 0; i<n; i++){
-        if(i%2 == 0){
-            ans.push_back(even[evencurr]);
-            evencurr++;
+
+    cout<<ans<<" ";
+
+    for(int i = k; i<n; i++){
+        {
+            ans -= st.queryLess(i-k+1, i-1, input[i-k]);
         }
-        else{
-            ans.push_back(odd[oddcurr]);
-            oddcurr++;
+        {
+            ans += st.queryMore(i-k+1, i-1, input[i]);
         }
+        cout<<ans<<" ";
     }
-
-    vector<int> v2;
-    for(int i = n-1; i>=0; i-=2){
-        v2.push_back(ans[i]);
-    }
-    vector<int> v1;
-    for(int i = n-1; i>=0; i-=2){
-        v1.push_back(v[i]);
-    }
-    print(v1);
-    print(v2);
-
-    vector<int> v3;
-    vector<int> v4;
-    for(int i = n-2; i>=0; i-=2){
-        v3.push_back(ans[i]);
-    }
-    for(int i = n-2; i>=0; i-=2){
-        v4.push_back(v[i]);
-    }
-    print(v3);
-    print(v4);
-    int d = inversioncnt(v3,v4);
-    int c = inversioncnt(v1,v2);
-    debug(c);
-    debug(d);
-    c = abs(c);
-    d = abs(d);
-
-    if(c % 2 != d%2 ){
-        swap(ans[ans.size() -3] , ans[ans.size() - 1]);
-    }
-    for(int i = 0; i<n; i++){
-        cout<<ans[i]<<" ";
-    }
-    cout<<endl;
+    
+    
 }
 /* logic ends */
 
@@ -150,8 +232,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
