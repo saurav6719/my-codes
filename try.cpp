@@ -72,33 +72,77 @@ using namespace std;
 void solve(){
   int n,k;
   cin>>n>>k;
-  vector<bool> v(n);
+  k = 2*n - k + 1;
+  int lo = max(1LL, k - n), 
+    hi = min(n, k- 1LL); 
+  int best = 1e10;
+  while (lo <= hi) {
+    int mid = (lo + hi) / 2;
+    cout << "F " << n + 1 - mid << "\n" << flush;
+    long long one;  cin >> one;
+    cout << "S " << (n + 1 - (k - mid)) << "\n" << flush;
+    long long two;  cin >> two;
 
-  for(int i = 0; i<n; i++){
-    if(k == 0) break;
-    int thiscan = n-1-i;
-    if(thiscan <= k) {
-      v[i] = true;
-      k -= thiscan;
+    best = min(best, max(one, two));
+
+    if (one > two) {
+        // too many from Finland → shrink mid
+        hi = mid - 1;
+    } else {
+        // too few from Finland → grow mid
+        lo = mid + 1;
     }
-  }
+}
 
-  set<int> st;
-  for(int i = 1; i<=n; i++){
-    st.insert(i);
-  }
+// first se 0 
 
-  for(int i = 0; i<n; i++){
-    if(v[i] == true){
-      cout<<*st.rbegin()<<" ";
-      st.erase(*st.rbegin());
+if(k <= n){
+    cout << "S " << (n + 1 - k) << "\n" << flush;
+    int x;
+    cin>>x;
+    if(x < best) best = x;
+}
+
+// first se saara 
+if(k>=n){
+    cout << "F " << 1 << "\n" << flush;
+    int x;
+    cin>>x;
+    int y;
+
+    if(k - n > 0){
+        cout << "S " << (n + 1 - (k - n)) << "\n" << flush;
+        cin>>y;
     }
-    else{
-      cout<<*st.begin()<<" ";
-      st.erase(st.begin());
-    }
-  }
+    else y = 0;
+    if(max(x, y) < best) best = max(x, y);
+}
 
+// second se 0 
+
+if(k <= n){
+    cout << "F " << (n + 1 - k) << "\n" << flush;
+    int x;
+    cin>>x;
+    if(x < best) best = x;
+}
+
+// second se saara 
+if(k >= n){
+    cout << "S " << 1 << "\n" << flush;
+    int x;
+    cin>>x;
+    int y;
+
+    if(k - n > 0){
+        cout << "S " << (n + 1 - (k - n)) << "\n" << flush;
+        cin>>y;
+    }
+    else y = 0;
+    if(max(x, y) < best) best = max(x, y);
+}
+
+  cout<<"! "<<best<<endl<<flush;
 }
 /* logic ends */
 
