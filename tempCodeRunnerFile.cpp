@@ -75,8 +75,6 @@ void solve(){
     vector<pp> v;
     v.push_back({1, n/2});
     v.push_back({n/2 + 1, n});
-    set<pp> st;
-    st.insert({n/2+1, n});
 
     vector<pp> pos(n);
     for(int i = 0; i<n; i++){
@@ -97,17 +95,18 @@ void solve(){
         
         string str;
         for(int i = 0; i<v.size(); i++){
-            pp ele = v[i];
-            if(st.count(ele)){
-                int len = ele.second - ele.first + 1;
-                for(int j = 0; j<len; j++){
-                    str += '1';
+            if(i % 2 == 0){
+                // odd index par 0 rakho
+                int length = v[i].second - v[i].first + 1;
+                for(int j = 0; j<length; j++){
+                    str += '0';
                 }
             }
             else{
-                int len = ele.second - ele.first + 1;
-                for(int j = 0; j<len; j++){
-                    str += '0';
+                // even index par 1 rakho
+                int length = v[i].second - v[i].first + 1;
+                for(int j = 0; j<length; j++){
+                    str += '1';
                 }
             }
         }
@@ -137,10 +136,8 @@ void solve(){
         }
 
         vector<pp> newv;
-        st.clear();
         for(auto ele : v){
             if(ele.first == ele.second){
-                st.insert(ele);
                 newv.push_back(ele);
             }
             else{
@@ -150,18 +147,17 @@ void solve(){
                 int mid = start + len/2 - 1;
                 newv.push_back({start, mid});
                 newv.push_back({mid + 1, end});
-                st.insert({mid + 1, end});
             }
         }
         v = newv;
-        printpp(pos);
-        printpp(v);
+        // printpp(pos);
+        // printpp(v);
         
     }
 
     cout<<"! ";
     for(int i = 0; i<n; i++){
-        cout<<pos[i].first<<" ";
+        cout<<pos[i].first;
     }
     cout<<endl;
     cout.flush();
