@@ -69,80 +69,117 @@
 using namespace std;
 
 /* write core logic here */
+class SumSegmentTree {
+private:
+    std::vector<int> tree;
+    int n;
+
+    // Build the segment tree from the initial array
+    void build(const std::vector<int> &arr, int node, int start, int end) {
+        if (start == end) {
+            // Leaf node
+            tree[node] = arr[start];
+        } else {
+            int mid = (start + end) / 2;
+            build(arr, 2 * node + 1, start, mid);        // Build left subtree
+            build(arr, 2 * node + 2, mid + 1, end);      // Build right subtree
+            tree[node] = tree[2 * node + 1] + tree[2 * node + 2];  // Sum of left and right
+        }
+    }
+
+    // Update an element in the segment tree
+    void update(int node, int start, int end, int idx, int value) {
+        if (start == end) {
+            // Leaf node
+            tree[node] += value;
+        } else {
+            int mid = (start + end) / 2;
+            if (idx <= mid) {
+                // Update left child
+                update(2 * node + 1, start, mid, idx, value);
+            } else {
+                // Update right child
+                update(2 * node + 2, mid + 1, end, idx, value);
+            }
+            tree[node] = tree[2 * node + 1] + tree[2 * node + 2];  // Recalculate sum
+        }
+    }
+
+    // Query the sum of a range
+    int query(int node, int start, int end, int L, int R) {
+        if (R < start || end < L) {
+            return 0;  // Out of range
+        }
+        if (L <= start && end <= R) {
+            return tree[node];  // Fully within range
+        }
+        int mid = (start + end) / 2;
+        int leftSum = query(2 * node + 1, start, mid, L, R);
+        int rightSum = query(2 * node + 2, mid + 1, end, L, R);
+        return leftSum + rightSum;
+    }
+
+public:
+    // Constructor to initialize the segment tree
+    SumSegmentTree(const std::vector<int> &arr) {
+        n = arr.size();
+        tree.resize(4 * n);
+        build(arr, 0, 0, n - 1);
+    }
+
+    // Update a specific index with a new value
+    void update(int idx, int value) {
+        update(0, 0, n - 1, idx, value);
+    }
+
+    // Query the sum in the range [L, R]
+    int query(int L, int R) {
+        return query(0, 0, n - 1, L, R);
+    }
+};
 void solve(){
-  int n,k;
-  cin>>n>>k;
-  k = 2*n - k + 1;
-  int lo = max(1LL, k - n), 
-    hi = min(n, k- 1LL); 
-  int best = 1e10;
-  while (lo <= hi) {
-    int mid = (lo + hi) / 2;
-    cout << "F " << n + 1 - mid << "\n" << flush;
-    long long one;  cin >> one;
-    cout << "S " << (n + 1 - (k - mid)) << "\n" << flush;
-    long long two;  cin >> two;
-
-    best = min(best, max(one, two));
-
-    if (one > two) {
-        // too many from Finland → shrink mid
-        hi = mid - 1;
-    } else {
-        // too few from Finland → grow mid
-        lo = mid + 1;
+    int n;
+    cin>>n;
+    vector<int> a(n);
+    for(int i=0;i<n;i++){
+        cin>>a[i];
     }
-}
-
-// first se 0 
-
-if(k <= n){
-    cout << "S " << (n + 1 - k) << "\n" << flush;
-    int x;
-    cin>>x;
-    if(x < best) best = x;
-}
-
-// first se saara 
-if(k>=n){
-    cout << "F " << 1 << "\n" << flush;
-    int x;
-    cin>>x;
-    int y;
-
-    if(k - n > 0){
-        cout << "S " << (n + 1 - (k - n)) << "\n" << flush;
-        cin>>y;
+    map<int,int> coordinatescompression;
+    set<int> st;
+    for(int i=0;i<n;i++){
+        st.insert(a[i]);
     }
-    else y = 0;
-    if(max(x, y) < best) best = max(x, y);
-}
-
-// second se 0 
-
-if(k <= n){
-    cout << "F " << (n + 1 - k) << "\n" << flush;
-    int x;
-    cin>>x;
-    if(x < best) best = x;
-}
-
-// second se saara 
-if(k >= n){
-    cout << "S " << 1 << "\n" << flush;
-    int x;
-    cin>>x;
-    int y;
-
-    if(k - n > 0){
-        cout << "S " << (n + 1 - (k - n)) << "\n" << flush;
-        cin>>y;
+    int index = 0;
+    for(auto it:st){
+        coordinatescompression[it] = index++;
     }
-    else y = 0;
-    if(max(x, y) < best) best = max(x, y);
-}
+    vector<int> b(n);
+    for(int i=0;i<n;i++){
+        b[i] = coordinatescompression[a[i]];
+    }
 
-  cout<<"! "<<best<<endl<<flush;
+    print(b);
+    vector<int> x(n, 0);
+
+    SumSegmentTree segTree(x);
+    vector<int> dp(n);
+
+    for(int i=n-1; i>=0; i--){
+        int aage = segTree.query(b[i]+1, n-1);
+        dp[i] = aage + 1;
+        dp[i] %= MOD;
+        segTree.update(b[i], dp[i]);
+    }
+
+    int ans = 0;
+
+    for(int i=0; i<n; i++){
+        ans += dp[i];
+        ans %= MOD;
+    }
+    cout<<ans<<endl;
+
+
 }
 /* logic ends */
 
