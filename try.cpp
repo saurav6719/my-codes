@@ -1,185 +1,115 @@
-/**
- *    author: Saurav
- *    created: 2025.05.01 05:23:43
- *    We stop at Candidate Master in 2025
- **/
-
-/* includes and all */
-
 #include<bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#pragma GCC optimize("no-stack-protector")
+#pragma GCC optimize("fast-math")
+#pragma GCC target("popcnt")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,avx,avx2,fma")
 
-#define printset(s) do { \
-    cout << "set-- starts" << endl; \
-    for (auto it = s.begin(); it != s.end(); ++it) { \
-        cout << *it << endl; \
-    } \
-    cout << "set-- ends" << endl; \
-} while(0)
-
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#endif
-#define endl "\n"
-#define MOD 1000000007
-#define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
-#define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
-#define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
-#define int long long int
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int>
 using namespace std;
 
-/* write core logic here */
-void solve(){
-    int n;
-    cin>>n;
-    vector<pp> v;
-    v.push_back({1, n/2});
-    v.push_back({n/2 + 1, n});
-    set<pp> st;
-    st.insert({n/2+1, n});
+const int N = 2e5 + 5;
 
-    vector<pp> pos(n);
-    for(int i = 0; i<n; i++){
-        pos[i] = {1,n};
+struct Node {
+    int l, r;
+    vector<int> sorted;
+    vector<int> llink, rlink;
+};
+
+vector<Node> seg(4 * N);
+vector<int> x;
+
+void build(int id, int l, int r) {
+    seg[id].l = l;
+    seg[id].r = r;
+    if (l == r) {
+        seg[id].sorted = {x[l]};
+        return;
     }
+    int mid = (l + r) / 2;
+    build(2 * id, l, mid);
+    build(2 * id + 1, mid + 1, r);
 
-    while(true){
-        int morethanone = false;
-        for(auto ele : pos){
-            if(ele.second != ele.first){
-                morethanone = true;
-                break;
-            }
-        }
-        if(!morethanone){
-            break;
-        }
-        
-        string str;
-        for(int i = 0; i<v.size(); i++){
-            pp ele = v[i];
-            if(st.count(ele)){
-                int len = ele.second - ele.first + 1;
-                for(int j = 0; j<len; j++){
-                    str += '1';
-                }
-            }
-            else{
-                int len = ele.second - ele.first + 1;
-                for(int j = 0; j<len; j++){
-                    str += '0';
-                }
-            }
-        }
+    const vector<int> &L = seg[2 * id].sorted;
+    const vector<int> &R = seg[2 * id + 1].sorted;
+    int n = L.size(), m = R.size();
+    vector<int> &S = seg[id].sorted;
+    vector<int> &ll = seg[id].llink, &rr = seg[id].rlink;
 
-        cout<<"? "<<str<<endl;
-        cout.flush();
-        string ans;
-        cin>>ans;
+    S.resize(n + m);
+    ll.resize(n + m);
+    rr.resize(n + m);
 
-        for(int i = 0; i<n; i++){
-            if(pos[i].second == pos[i].first){
-                continue;
-            }
-            char ch = ans[i];
-            if(ch == '0'){
-                int start = pos[i].first;
-                int end = pos[i].second;
-                int len = end - start + 1;
-                pos[i] = {start, start + len/2 - 1};
-            }
-            else{
-                int start = pos[i].first;
-                int end = pos[i].second;
-                int len = end - start + 1;
-                pos[i] = {start + len/2, end};
-            }
+    int i = 0, j = 0, idx = 0;
+    while (i < n && j < m) {
+        if (L[i] <= R[j]) {
+            S[idx] = L[i];
+            ll[idx] = i;
+            rr[idx] = j;
+            i++;
+        } else {
+            S[idx] = R[j];
+            ll[idx] = i;
+            rr[idx] = j;
+            j++;
         }
-
-        vector<pp> newv;
-        st.clear();
-        for(auto ele : v){
-            if(ele.first == ele.second){
-                st.insert(ele);
-                newv.push_back(ele);
-            }
-            else{
-                int start = ele.first;
-                int end = ele.second;
-                int len = end - start + 1;
-                int mid = start + len/2 - 1;
-                newv.push_back({start, mid});
-                newv.push_back({mid + 1, end});
-                st.insert({mid + 1, end});
-            }
-        }
-        v = newv;
-        printpp(pos);
-        printpp(v);
-        
+        idx++;
     }
-
-    cout<<"! ";
-    for(int i = 0; i<n; i++){
-        cout<<pos[i].first<<" ";
+    while (i < n) {
+        S[idx] = L[i];
+        ll[idx] = i;
+        rr[idx] = m;
+        i++; idx++;
     }
-    cout<<endl;
-    cout.flush();
-}
-/* logic ends */
-
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
-    int t;
-    //cin>>t;
-    t = 1;
-    while(t--){
-        solve();
+    while (j < m) {
+        S[idx] = R[j];
+        ll[idx] = n;
+        rr[idx] = j;
+        j++; idx++;
     }
-return 0;
 }
 
+int countInRange(int id, int a, int b, int c, int d, int lc = -1, int rc = -1) {
+    if (seg[id].r < a || seg[id].l > b) return 0;
+    if (a <= seg[id].l && seg[id].r <= b) {
+        auto lo = lower_bound(seg[id].sorted.begin(), seg[id].sorted.end(), c);
+        auto hi = upper_bound(seg[id].sorted.begin(), seg[id].sorted.end(), d);
+        return hi - lo;
+    }
+
+    if (lc == -1 || rc == -1) {
+        auto lo = lower_bound(seg[id].sorted.begin(), seg[id].sorted.end(), c) - seg[id].sorted.begin();
+        auto hi = upper_bound(seg[id].sorted.begin(), seg[id].sorted.end(), d) - seg[id].sorted.begin();
+        lc = lo;
+        rc = hi;
+    }
+
+    int left_id = 2 * id, right_id = 2 * id + 1;
+    int llo = (lc < seg[id].llink.size() ? seg[id].llink[lc] : seg[left_id].sorted.size());
+    int lhi = (rc < seg[id].llink.size() ? seg[id].llink[rc] : seg[left_id].sorted.size());
+    int rlo = (lc < seg[id].rlink.size() ? seg[id].rlink[lc] : seg[right_id].sorted.size());
+    int rhi = (rc < seg[id].rlink.size() ? seg[id].rlink[rc] : seg[right_id].sorted.size());
+
+    return countInRange(left_id, a, b, c, d, llo, lhi) +
+           countInRange(right_id, a, b, c, d, rlo, rhi);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int n, q;
+    cin >> n >> q;
+    x.resize(n + 1);
+    for (int i = 1; i <= n; ++i) cin >> x[i];
+
+    build(1, 1, n);
+
+    while (q--) {
+        int a, b, c, d;
+        cin >> a >> b >> c >> d;
+        cout << countInRange(1, a, b, c, d) << '\n';
+    }
+
+    return 0;
+}
