@@ -62,64 +62,80 @@
 #define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
 #define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
 #define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
-// #define int long long int
+#define int long long int
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
-#define pp pair<long long , int>
+#define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-vector<int> factors(int x){
-    vector<int> ans;
-    for(int i = 1; i*i <= x; i++){
-        if(x % i == 0){
-            ans.push_back(i);
-            if(i != x/i){
-                ans.push_back(x/i);
-            }
+void solve(){
+    int n;cin>>n;
+    set<int> present;
+    set<int> absent;
+    vector<int> input(n);
+    for(int i = 0; i<n; i++){
+        cin>>input[i];
+        present.insert(input[i]);
+    }
+
+    for(int i = 1; i<=2*n; i++){
+        if(present.count(i) == 0){
+            absent.insert(i);
         }
     }
-    sort(ans.begin(), ans.end());
-    if(ans[0] == 1){
-        ans.erase(ans.begin()); // remove 1 if present
-    }
-    return ans;
-}
-vector<int> dp;
-int f2(int mul, int k){
-    if(mul == 1) return 0;
-    if(dp[mul] != -1) return dp[mul];
-    int ans = 1e9;
-    vector<int> fac1 = factors(mul);
-    for(auto i : fac1){
-        if(i> k) break;
-        ans = min(ans, f2(mul/i, k) + 1);
-    }
-    return dp[mul] = ans;
-}
 
-void solve(){
-    int x,y,k;
-    cin>>x>>y>>k;
-    int gcd = __gcd(x, y);
-    x /= gcd;
-    y /= gcd;
+    vector<int> a(n, 0);
+    vector<int> b(n, 0);
+
+    {
+        set<int> abscopy = absent;
+        for(int i = n-1 ; i>=0; i--){
+            auto it = abscopy.upper_bound(input[i]);
+            if(it == abscopy.begin()) break;
+            it--;
+            if(*it < input[i]){
+                a[i] = 1;
+                abscopy.erase(*it);
+            }
+            else break;
+            debug(input[i]);
+            debug(*it);
+        }
+    }
+    {
+        set<int> abscopy = absent;
+        for(int i = 0; i<n; i++){
+            auto it = abscopy.upper_bound(input[i]);
+            if(it == abscopy.end()) break;
+            abscopy.erase(*it);
+            b[i] = 1;
+        }
+    }
+
+    print(a);
+    print(b);
+
     int ans = 0;
+    set<int> thosex;
 
-    dp.clear();
-    dp.resize(x+1, -1);
-    int ans1 = f2(x, k);
-    dp.clear();
-    dp.resize(y+1, -1);
-    int ans2 = f2(y, k);
-
-    if(ans1 + ans2 > 1e8){
-        cout<<-1<<endl;
-        return;
+    for(int i = 1; i<n; i++){
+        if(a[i] == 1 and b[i-1] == 1){
+            thosex.insert(i-1);
+        }
     }
 
-    cout<<ans1+ans2<<endl;
-    return;
+    if(a[0] == 1) thosex.insert(-1);
+
+    for(int i = 0; i<n-1; i++){
+        if(b[i] == 1 and a[i+1] == 1){
+            thosex.insert(i);
+        }
+    }
+
+    if(b[n-1] == 1) thosex.insert(n-1);
+    ans = thosex.size();
+    cout<<ans<<endl;
 }
 /* logic ends */
 
@@ -137,3 +153,4 @@ signed main(){
     }
 return 0;
 }
+
