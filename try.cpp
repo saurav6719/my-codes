@@ -7,6 +7,8 @@
 /* includes and all */
 
 #include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -55,6 +57,7 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
+#define printset(s)
 #define printpp(v)
 #endif
 #define endl "\n"
@@ -68,74 +71,89 @@
 #define pp pair<int,int>
 using namespace std;
 
+
+using namespace __gnu_pbds;
+
+// Ordered Set
+template <typename T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+/*
+Operations:
+- s.insert(x)       : Insert element x
+- s.erase(x)        : Remove element x
+- *s.find_by_order(k) : Get k-th smallest element (0-based index)
+- s.order_of_key(x) : Get count of elements strictly smaller than x
+*/
+
 /* write core logic here */
+int getsum(int l , int r , vector<int> &prfsum){
+    if(l>r) return 0;
+    return prfsum[r] - prfsum[l-1];
+}
 void solve(){
-    int n;cin>>n;
-    set<int> present;
-    set<int> absent;
-    vector<int> input(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
-        present.insert(input[i]);
+    int n,q;
+    cin>>n>>q;
+    vector<int> v(n);
+    for(int i=0;i<n;i++){
+        cin>>v[i];
+    }
+    vector<int> mp(n+1);
+
+    ordered_set<int> s;
+    for(int i = n-1; i>=0; i--){
+        int ele = v[i];
+        // right me chote 
+        int cnt = s.order_of_key(ele);
+        mp[ele] = cnt;
+
+        s.insert(ele);
     }
 
-    for(int i = 1; i<=2*n; i++){
-        if(present.count(i) == 0){
-            absent.insert(i);
-        }
-    }
+    print(mp);
 
-    vector<int> a(n, 0);
-    vector<int> b(n, 0);
+    vector<int> prfsum(n+1);
+    prfsum[0] = mp[0];
+    for(int i = 1; i<=n; i++){
+        prfsum[i] = prfsum[i-1] + mp[i];
+    }
+    int orans = getsum(1, n, prfsum);
+
+    vector<int> kitnemeaaraha(n+1, 0);
 
     {
-        set<int> abscopy = absent;
-        for(int i = n-1 ; i>=0; i--){
-            auto it = abscopy.upper_bound(input[i]);
-            if(it == abscopy.begin()) break;
-            it--;
-            if(*it < input[i]){
-                a[i] = 1;
-                abscopy.erase(*it);
-            }
-            else break;
-            debug(input[i]);
-            debug(*it);
-        }
-    }
-    {
-        set<int> abscopy = absent;
+        ordered_set<int> st1;
         for(int i = 0; i<n; i++){
-            auto it = abscopy.upper_bound(input[i]);
-            if(it == abscopy.end()) break;
-            abscopy.erase(*it);
-            b[i] = 1;
+            int ele = v[i];
+            // left me bade
+            int cnt = st1.order_of_key(ele);
+            int bade = st1.size() - cnt;
+            kitnemeaaraha[ele] = bade;
+            st1.insert(ele);
         }
+        print(kitnemeaaraha);
     }
 
-    print(a);
-    print(b);
-
-    int ans = 0;
-    set<int> thosex;
-
-    for(int i = 1; i<n; i++){
-        if(a[i] == 1 and b[i-1] == 1){
-            thosex.insert(i-1);
-        }
+    vector<int> prfsum2(n+1);
+    prfsum2[0] = kitnemeaaraha[0];
+    for(int i = 1; i<=n; i++){
+        prfsum2[i] = prfsum2[i-1] + kitnemeaaraha[i];
     }
 
-    if(a[0] == 1) thosex.insert(-1);
-
-    for(int i = 0; i<n-1; i++){
-        if(b[i] == 1 and a[i+1] == 1){
-            thosex.insert(i);
+    while(q--){
+        int l,r;
+        cin>>l>>r;
+        if(l == r){
+            cout<<0<<endl;
+            continue;
         }
+        int one = getsum(l+1, r, prfsum);
+        debug(one);
+        one += getsum(r+1, n, prfsum);
+        debug(one);
+        one -=  getsum(r, n, prfsum2);
+        cout<<one<<endl;
     }
-
-    if(b[n-1] == 1) thosex.insert(n-1);
-    ans = thosex.size();
-    cout<<ans<<endl;
 }
 /* logic ends */
 
