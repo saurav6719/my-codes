@@ -70,278 +70,58 @@
 using namespace std;
 
 /* write core logic here */
-string f(int swap, char ch){
-    if(swap == 1){
-        if(ch == 'L') return "R";
-        else if(ch == 'R') return "L";
-        else if(ch == 'U') return "D";
-        else if(ch == 'D') return "U";
-        else return string(1, ch);
-    }
-    else{
-        if(ch == 'L') return "L";
-        else if(ch == 'R') return "R";
-        else if(ch == 'U') return "U";
-        else if(ch == 'D') return "D";
-        else return string(1, ch);
-    }
-}
-
-string findPath(int n, int m, vector<vector<char>>& a, int startx, int starty, int goalx, int goaly) {
-    vector<vector<bool>> visited(n, vector<bool>(m, false));
-    queue<pair<int, int>> q;
-    q.push({startx, starty});
-    visited[startx][starty] = true;
-
-    vector<vector<char>> parent(n, vector<char>(m, ' '));
-    vector<pp> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // R, D, L, U
-    char dirChars[] = {'R', 'D', 'L', 'U'};
-
-    while (!q.empty()) {
-        auto [x, y] = q.front();
-        q.pop();
-
-        if (x == goalx && y == goaly) {
-            string path;
-            while (parent[x][y] != ' ') {
-                path += parent[x][y];
-                if (parent[x][y] == 'R') y--;
-                else if (parent[x][y] == 'D') x--;
-                else if (parent[x][y] == 'L') y++;
-                else if (parent[x][y] == 'U') x++;
-            }
-            reverse(path.begin(), path.end());
-            return path;
-        }
-
-        for (int i = 0; i < 4; i++) {
-            int newX = x + directions[i].first;
-            int newY = y + directions[i].second;
-
-            if (newX >= 0 && newX < n && newY >= 0 && newY < m && a[newX][newY] != '*' && !visited[newX][newY]) {
-                visited[newX][newY] = true;
-                parent[newX][newY] = dirChars[i];
-                q.push({newX, newY});
-            }
-        }
-    }
-    return ""; // No path found
+int query(int l, int r){
+    cout<<"? "<<l<<" "<<r<<endl<<flush;
+    int x;
+    cin>>x;
+    return x;
 }
 void solve(){
-    int n,m;
-    cin>>n>>m;
-    vector<vector<char>> a(n, vector<char>(m));
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            cin>>a[i][j];
-        }
+    int n;
+    cin>>n;
+    vector<int> dp;
+    for(int i = 1; i<=n; i++){
+        dp.push_back(i);
     }
 
-    int goalx = -1, goaly = -1;
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            if(a[i][j] == 'F'){
-                goalx = i;
-                goaly = j;
-                break;
+    for(int i = 1; i<n; i++){
+        print(dp);
+        map<int,int> mp;
+        for(int j = 0; j<dp.size() - 1; j++){
+            int curr = dp[j];
+            int next = dp[j + 1];
+            if(next - curr == i){
+                if(i==1){
+                    int x = query(curr, next);
+                    if(x > 0){
+                        // curr is bigger than next 
+                        mp[curr]++;
+                    }
+                    else mp[next]++;
+                }
+                else{
+                    // need to do two searches
+                    int x1 = query(curr,  next - 1);
+                    int x2 = query(curr, next);
+                    if(x1 == x2){
+                        // next is bigger 
+                        mp[next]++;
+                    }
+                    else mp[curr]++;
+                }
             }
         }
+
+        vector<int> newdp;
+        for(auto ele : dp){
+            if(mp[ele] > 0) newdp.push_back(ele);
+        }
+
+        dp = newdp;
+        
     }
 
-    int currx = 0;
-    int curry = 0;
-
-    int swapLR = -1;
-    int swapUD = -1;
-
-    if(n==1){
-        // i just need to check if LR is swapped or not
-        cout<<"R"<<endl<<flush;
-        int x,y;
-        cin>>x>>y;
-        x--;
-        y--;
-        if(x == 0 and y == 0){
-            swapLR = 1;
-        }
-        else{
-            swapLR = 0;
-        }
-
-        currx = x;
-        curry = y;
-
-        while(currx != goalx and curry != goaly){
-            // i need to move right
-            cout<<f(swapLR, 'R')<<endl<<flush;
-            cin>>x>>y;
-            x--;
-            y--;
-            if(x == goalx and y == goaly){
-                break;
-            }
-            currx = x;
-            curry = y;
-        }
-        return;
-    }
-
-    if(m==1){
-        // i just need to check if UD is swapped or not
-        cout<<"D"<<endl<<flush;
-        int x,y;
-        cin>>x>>y;
-        x--;
-        y--;
-        if(x == 0 and y == 0){
-            swapUD = 1;
-        }
-        else{
-            swapUD = 0;
-        }
-
-        currx = x;
-        curry = y;
-
-        while(currx != goalx and curry != goaly){
-            // i need to move down
-            cout<<f(swapUD, 'D')<<endl<<flush;
-            cin>>x>>y;
-            x--;
-            y--;
-            if(x == goalx and y == goaly){
-                break;
-            }
-            currx = x;
-            curry = y;
-        }
-        return;
-    }
-
-    {
-        if(a[0][1] == '.'){
-            // swapLR can be found out here 
-            cout<<"R"<<endl<<flush;
-            int x,y;
-            cin>>x>>y;
-            x--;
-            y--;
-            if(x == 0 and y == 0){
-                swapLR = 1;
-            }
-            else{
-                swapLR = 0;
-            }
-            if(swapLR == 0){
-                // i am at 0 1 i need to move left
-                cout<<"L"<<endl<<flush;
-                cin>>x>>y;
-                x--;
-                y--;
-            }
-        }
-    }
-    {
-        if(a[1][0] == '.'){
-            // swapUD can be found out here 
-            cout<<"D"<<endl<<flush;
-            int x,y;
-            cin>>x>>y;
-            x--;
-            y--;
-            if(x == 0 and y == 0){
-                swapUD = 1;
-            }
-            else{
-                swapUD = 0;
-            }
-            if(swapUD == 0){
-                // i am at 1 0 i need to move up
-                cout<<"U"<<endl<<flush;
-                cin>>x>>y;
-                x--;
-                y--;
-            }
-        }
-    }
-
-    while(swapLR == -1){
-        // go down until you find a . cell in the right 
-        if(a[currx][curry + 1] != '*'){
-            cout<<"R"<<endl<<flush;
-            int x,y;
-            cin>>x>>y;
-            x--;
-            y--;
-            if(x == currx and y == curry){
-                swapLR = 1;
-            }
-            else{
-                swapLR = 0;
-            }
-            currx = x;
-            curry = y;
-            break;
-        }
-        if(a[currx][curry] == 'F') return;
-
-        cout<<f(swapUD, 'D')<<endl<<flush;
-        int x,y;
-        cin>>x>>y;
-        x--;
-        y--;        
-        currx = x;
-        curry = y;
-    }
-
-    while(swapUD == -1){
-        // go right until you find a . cell in the down
-        if(a[currx + 1][curry] != '*'){
-            cout<<"D"<<endl<<flush;
-            int x,y;
-            cin>>x>>y;
-            x--;
-            y--;
-            if(x == currx and y == curry){
-                swapUD = 1;
-            }
-            else{
-                swapUD = 0;
-            }
-            currx = x;
-            curry = y;
-            break;
-        }
-        if(a[currx][curry] == 'F') return;
-
-        cout<<f(swapLR, 'R')<<endl<<flush;
-        int x,y;
-        cin>>x>>y;
-        x--;
-        y--;        
-        currx = x;
-        curry = y;
-    }
-
-
-    // ab dono swaps mil gaye hain
-    // ab BFS se path nikaal lo
-    string path = findPath(n, m, a, currx, curry, goalx, goaly);
-    // ab path ko print kar do
-    for(char ch : path){
-        cout<<f(swapLR, ch)<<endl<<flush;
-        int x,y;
-        cin>>x>>y;
-        x--;
-        y--;
-        if(x == goalx and y == goaly){
-            break;
-        }
-        currx = x;
-        curry = y;
-    }
-    // ab last cell tak pahunch gaye hain
-    return;
+    cout<<"! "<<dp[0]<<endl<<flush;
 }
 /* logic ends */
 
@@ -352,8 +132,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
