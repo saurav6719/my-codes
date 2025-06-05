@@ -1,1 +1,0 @@
-{"name":"Local: J","url":"/Users/saurav/Desktop/programming/contest/atcoder DP/J.cpp","tests":[{"id":1721826310728,"input":"10\n1 3 2 3 3 2 3 2 1 3\n","output":""},{"id":1721826544240,"input":"3\n1 1 1","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/contest/atcoder DP/J.cpp","group":"local","local":true}
