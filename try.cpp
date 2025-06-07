@@ -55,11 +55,11 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printset(s)
 #define printpp(v)
+#define printset(s)
 #endif
 #define endl "\n"
-#define MOD 998244353
+#define MOD 1000000007
 #define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
 #define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
 #define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
@@ -70,35 +70,99 @@
 using namespace std;
 
 /* write core logic here */
-int cntdivisors(int n){
+vector<vector<int>> dp;
+int f(vector<int> &v,int i, int mask, int n, vector<int> &digit_mask){
+    if(i == n) return 0;
+    if(dp[i][mask] != -1) return dp[i][mask];
+
     int ans = 0;
-    for(int i = 1 ; i<=n; i++){
-        if(n%i == 0) ans++;
+    // skip 
+    ans = f(v, i + 1, mask, n, digit_mask);
+    // take it 
+    if(digit_mask[i] != -1 and (mask & digit_mask[i]) == 0){
+        ans = max(ans, v[i] + f(v, i + 1, mask | digit_mask[i], n, digit_mask));
     }
+    return dp[i][mask] = ans;
+}
+vector<vector<int> > subtreeatthisnode;
+
+vector<int> findsubtree(vector<vector<int> > &tree, int node, int par){
+    vector<int> ans;
+    ans.push_back(node);
+    for(auto child : tree[node]){
+        if(child != par){
+            vector<int> temp = findsubtree(tree, child, node);
+            ans.insert(ans.end(), temp.begin(), temp.end());
+        }
+    }
+
+    subtreeatthisnode[node] = ans;
     return ans;
+}
+int goodSubtreeSum(vector<int>& vals, vector<int>& par) {
+    int n = vals.size();
+    vector<vector<int> > tree(n);
+
+    for(int i = 0; i < n; i++){
+        if(par[i] != -1){
+            tree[par[i]].push_back(i);
+            tree[i].push_back(par[i]);
+        }
+    }
+
+    subtreeatthisnode.resize(n);
+
+    findsubtree(tree, 0, -1);
+    int res = 0;
+
+    for(int i = 0; i<n; i++){
+        dp.clear();
+        vector<int> v;
+        for(auto ele : subtreeatthisnode[i]){
+            v.push_back(vals[ele]);
+        }
+        int m = v.size();
+        vector<int> digit_mask(m);
+
+        for(int j = 0; j < m; j++){
+            int num = v[j];
+            int mask = 0;
+            while(num > 0){
+                int d = num % 10;
+                if(mask & (1 << d)){
+                    mask = -1; 
+                    break;
+                }
+                mask |= (1 << d);
+                num /= 10;
+            }
+            digit_mask[j] = mask;
+        }
+        dp.resize(m + 1, vector<int>(1024, -1)); 
+        int ans = f(v, 0, 0, m, digit_mask);
+        res += ans;
+        debug(i);
+        debug(ans);
+        print(v);
+        print(digit_mask);
+        res %= 1000000007;
+    }
+    return res;
 }
 void solve(){
     int n;
-    cin>>n;
-    vector<int> dp(n+1, 0);
-    
-    int sum = 0;
-
-    for(int i =1; i<=n; i++){
-        {
-            int curr = i;
-            while(curr <= n){
-                dp[curr]++;
-                curr += i;
-            }
-        }
-        dp[i] += sum;
-        dp[i] %= MOD;
-        sum += dp[i];
-        sum %= MOD;
+    cin >> n;
+    vector<int> vals(n);
+    for(int i = 0; i < n; i++){
+        cin >> vals[i]; 
+    }
+    vector<int> par(n);
+    for(int i = 0; i < n; i++){
+        cin >> par[i];
     }
 
-    cout<<dp[n];
+    int x = goodSubtreeSum(vals, par);
+    cout<<x<<endl;
 }
 /* logic ends */
 
@@ -109,7 +173,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
+    //cin>>t;
     t = 1;
     while(t--){
         solve();
