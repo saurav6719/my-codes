@@ -70,172 +70,19 @@
 using namespace std;
 
 /* write core logic here */
-
-void dfs(int node, int par, vector<int> &parent, vector<vector<int> > &tree) {
-    parent[node] = par;
-    for (int child : tree[node]) {
-        if (child != par) {
-            dfs(child, node, parent, tree);
-        }
-    }
-}
 void solve(){
-    int n,q;
-    cin>>n>>q;
-    vector<int> colors(n+1, 2);
-    for(int i = 1; i<=n; i++){
-        cin>>colors[i];
-    }
-
-    vector<vector<int> > tree(n+1);
-    for(int i  =0; i<n-1; i++){
-        int u,v;
-        cin>>u>>v;
-        tree[u].push_back(v);
-        tree[v].push_back(u);
-    }
-
-    vector<int> parent(n+1, -1);
-
-    dfs(1, 0, parent, tree);
-
-    map<int,set<int> > isparentkeyehchildrenblackhai;
-    set<int> yehblackbutparentnotblack;
-    set<pp> parentcountofblackchildren;
-
-    for(int i = 1; i<=n; i++){
-        if(colors[i] == 1){
-            // this node is black
-            int par = parent[i];
-            isparentkeyehchildrenblackhai[par].insert(i);
-            if(colors[par] != 1){
-                yehblackbutparentnotblack.insert(i);
-            }
+    int n;
+    cin>>n;
+    string a,b;
+    cin>>a>>b;
+    int cnt =0;
+    for(int i = 0; i<a.size(); i++){
+        if(a[i] != b[i]){
+            cnt++;
         }
     }
 
-    for(auto ele : isparentkeyehchildrenblackhai){
-        int par = ele.first;
-        int count = ele.second.size();
-        if(count > 0){
-            parentcountofblackchildren.insert({count, par});
-        }
-    }
-
-    printset(yehblackbutparentnotblack);
-
-    // for(auto ele : parentcountofblackchildren){
-    //     debug(ele.first);
-    //     debug(ele.second);
-    // }
-
-    int cnt = yehblackbutparentnotblack.size();
-    debug(cnt);
-
-    while(q--){
-        int node;
-        cin>>node;
-
-        //toggle this node 
-        if(colors[node] == 1){
-            // this node was black 
-            int par = parent[node];
-            int prevcount = isparentkeyehchildrenblackhai[par].size();
-            if(parentcountofblackchildren.count({prevcount, par}))parentcountofblackchildren.erase({prevcount, par});
-            int newcount = prevcount - 1;
-            if(newcount > 0){
-                parentcountofblackchildren.insert({newcount, par});
-            }
-            isparentkeyehchildrenblackhai[par].erase(node);
-            if(isparentkeyehchildrenblackhai[par].size() == 0){
-                isparentkeyehchildrenblackhai.erase(par);
-            }
-            // if(yehblackbutparentnotblack.count(node))yehblackbutparentnotblack.erase(node);
-
-            // for(auto ele : isparentkeyehchildrenblackhai[node]){
-            //     yehblackbutparentnotblack.insert(ele);
-            // }
-            if(colors[par] != 1){
-                cnt --;
-            }
-
-            cnt += isparentkeyehchildrenblackhai[node].size();
-
-            colors[node] = 0; // now this node is white
-        }
-        else{
-            // this node was white
-            int par = parent[node];
-            int prevcount = isparentkeyehchildrenblackhai[par].size();
-            isparentkeyehchildrenblackhai[par].insert(node);
-            if(parentcountofblackchildren.count({prevcount, par}))parentcountofblackchildren.erase({prevcount, par});
-            int newcount = prevcount + 1;
-            parentcountofblackchildren.insert({newcount, par});
-            if(colors[par] != 1){
-                cnt++;
-            }
-            
-
-            // for(auto ele : isparentkeyehchildrenblackhai[node]){
-            //     yehblackbutparentnotblack.erase(ele);
-            // 
-            cnt -= isparentkeyehchildrenblackhai[node].size();
-            colors[node] = 1; // now this node is black
-        }
-
-        debug(cnt);
-
-
-        if(cnt > 1){
-            cout<<"No"<<endl;
-            continue;
-        }
-
-        if(cnt == 0){
-            cout<<"No"<<endl;
-            continue;
-        }
-        
-
-        
-        if(parentcountofblackchildren.size() == 1){
-            cout<<"Yes"<<endl;
-            continue;
-        }
-
-        if(parentcountofblackchildren.size() > 1){
-            auto [count, par] = *parentcountofblackchildren.rbegin();
-            debug(count);
-            debug(par);
-            if(count == 1){
-                cout<<"Yes"<<endl;
-                continue;
-            }
-            if(count > 2){
-                cout<<"No"<<endl;
-                continue;
-            }
-            if(count == 2){
-                if(colors[parent[par]]!=1){
-                    // this is root 
-                    // checking second best 
-                    auto it = parentcountofblackchildren.rbegin();
-                    it++;
-                    auto [secondcount, secondpar] = *it;
-                    if(secondcount == 2){
-                        cout<<"No"<<endl;
-                        continue;
-                    }
-                    cout<<"Yes"<<endl;
-                    continue;
-                }
-                else{
-                    cout<<"No"<<endl;
-                    continue;
-                }
-            }
-        }
-    }
+    cout<<min(cnt, n-cnt)<<endl;
 }
 /* logic ends */
 
