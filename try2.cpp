@@ -55,8 +55,8 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printset(s)
 #define printpp(v)
+#define printset(s)
 #endif
 #define endl "\n"
 #define MOD 1000000007
@@ -71,31 +71,11 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,x;
-    cin>>n>>x;
-    vector<int> a(n);
-    for(int i=0;i<n;i++){
-        cin>>a[i];
+    cout<<5000<<" "<<2501<<endl;
+    for(int i=0; i<5000; i++){  
+        cout<<1;
+        if(i<4999) cout<<" ";
     }
-    int idx = -1;
-    for(int i = 0; i<n; i++){
-        if(a[i] == 1){
-            idx = i;
-            break;
-        }
-    }
-    if(idx == -1){
-        cout<<"YES"<<endl;
-        return;
-    }
-    idx += x;
-    for(int i = idx; i<n; i++){
-        if(a[i] == 1){
-            cout<<"NO"<<endl;
-            return;
-        }
-    }
-    cout<<"YES"<<endl;
 }
 /* logic ends */
 
@@ -106,10 +86,12 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
+    freopen("testcase.txt", "w", stdout);
     while(t--){
         solve();
     }
 return 0;
 }
+
