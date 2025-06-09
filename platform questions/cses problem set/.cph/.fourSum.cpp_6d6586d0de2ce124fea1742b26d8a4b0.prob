@@ -1,1 +1,0 @@
-{"name":"Local: fourSum","url":"/Users/saurav/Desktop/programming/platform questions/cses problem set/fourSum.cpp","tests":[{"id":1709630258610,"input":"8 15\n3 2 5 8 1 3 2 3","output":"5 1 6 4"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/platform questions/cses problem set/fourSum.cpp","group":"local","local":true}
