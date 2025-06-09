@@ -70,27 +70,32 @@
 using namespace std;
 
 /* write core logic here */
-int countInversions(const vector<int>& arr, int l, int r) {
-    l--;
-    r--;
-    int inv = 0;
-    for (int i = l; i <= r; ++i) {
-        for (int j = i + 1; j <= r; ++j) {
-            if (arr[i] > arr[j])
-                inv++;
+void solve(){
+    int n,x;
+    cin>>n>>x;
+    vector<int> a(n);
+    for(int i=0;i<n;i++){
+        cin>>a[i];
+    }
+    int idx = -1;
+    for(int i = 0; i<n; i++){
+        if(a[i] == 1){
+            idx = i;
+            break;
         }
     }
-    return inv;
-}
-void solve(){
-    int n;
-    cin>>n;
-    vector<int> v(n);
-    for(int i = 0; i<n; i++){
-        cin>>v[i];
+    if(idx == -1){
+        cout<<"YES"<<endl;
+        return;
     }
-
-    cout<<countInversions(v, 7, 8);
+    idx += x;
+    for(int i = idx; i<n; i++){
+        if(a[i] == 1){
+            cout<<"NO"<<endl;
+            return;
+        }
+    }
+    cout<<"YES"<<endl;
 }
 /* logic ends */
 
@@ -101,11 +106,10 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
 return 0;
 }
-

@@ -55,6 +55,7 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
+#define printset(s)
 #define printpp(v)
 #endif
 #define endl "\n"
@@ -69,41 +70,30 @@
 using namespace std;
 
 /* write core logic here */
-int getrand(int x){
-    // random number between 1 and x 
-    return rand() % x + 1;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+int random_in_range(int l, int r) {
+    uniform_int_distribution<int> distrib(l, r);
+    return distrib(rng);
 }
 void solve(){
-    // unordered_map<int,int> mp;
-    // for(int i = 0; i<200000; i++){
-    //     mp[i * 351061ll] = -1;
-    // }
-    // cout << "Number of buckets: " << mp.bucket_count() << endl;
-    
-    // for (size_t i = 0; i < mp.bucket_count(); ++i) {
-    //     // if (mp.bucket_size(i) > 0) {
-    //     //     cout << "Bucket " << i << " has " << mp.bucket_size(i) << " elements\n";
-    //     // }
-    // }
-
-
-    ofstream fout("testcase.txt");
-
-    fout << 200000 << " ";
-    fout << 1 << endl;
-    for (int i = 0; i < 200000; i++) {
-        int num = i * 351061ll;
-        if (num > 1e9) {
-            num = 351061ll * getrand(100);
-        }
-        fout << num << " ";
+    int n = 5;
+    cout<<n<<endl;
+    vector<int> a(n), b(n);
+    for(int i = 0; i < n; i++){
+        a[i] = random_in_range(1, 10);
+        b[i] = random_in_range(1, 10);
     }
-    fout << endl;
-    fout << 2 << " " << 2 << " " << 9 << endl;
 
-    fout.close();
+    for(int i = 0; i < n; i++){
+        cout<<a[i]<<" ";
+    }
+    cout<<endl; 
+    for(int i = 0; i < n; i++){
+        cout<<b[i]<<" ";
+    }
+    cout<<endl;
 }
-
 /* logic ends */
 
 signed main(){
@@ -113,7 +103,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();

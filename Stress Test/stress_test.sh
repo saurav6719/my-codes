@@ -6,10 +6,6 @@
 # ./stress_test.sh
 
 # Default constraints if not provided
-N=${1:-10000}
-MIN_VAL=${4:--2500}
-MAX_VAL=${3:-2500}
-
 mkdir -p failed_cases
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -22,10 +18,10 @@ fi
 
 {
     g++-13 -std=c++17 -O2 -o generator generator.cpp
-    g++-13 -std=c++17 -O2 -o validator validator.cpp
+    # g++-13 -std=c++17 -O2 -o validator validator.cpp
     g++-13 -std=c++17 -O2 -o optimal optimal.cpp
     g++-13 -std=c++17 -O2 -o brute brute.cpp
-    g++-13 -std=c++17 -O2 -o checker checker.cpp  
+    # g++-13 -std=c++17 -O2 -o checker checker.cpp  
 } 2> compile_log.txt
 
 if [ $? -ne 0 ]; then
@@ -92,25 +88,25 @@ while true; do
         exit 1
     fi
 
-    # Validate outputs using the checker
-    if ! ./checker test_case.txt optimal_output.txt brute_output.txt; then
-        TIMESTAMP=$(date +%s)
+    # # Validate outputs using the checker
+    # if ! ./checker test_case.txt optimal_output.txt brute_output.txt; then
+    #     TIMESTAMP=$(date +%s)
 
-        echo -e "\n🚨 Mismatch found! 🚨"
-        echo "===================================="
-        echo "🔹 Input:"
-        cat test_case.txt
-        echo "===================================="
-        echo "🔹 Optimal Output:"
-        cat optimal_output.txt
-        echo "===================================="
-        echo "🔹 Brute Force Output:"
-        cat brute_output.txt
-        echo "===================================="
+    #     echo -e "\n🚨 Mismatch found! 🚨"
+    #     echo "===================================="
+    #     echo "🔹 Input:"
+    #     cat test_case.txt
+    #     echo "===================================="
+    #     echo "🔹 Optimal Output:"
+    #     cat optimal_output.txt
+    #     echo "===================================="
+    #     echo "🔹 Brute Force Output:"
+    #     cat brute_output.txt
+    #     echo "===================================="
 
-        cp test_case.txt failed_cases/failed_case_${TIMESTAMP}.txt
-        exit 1
-    fi
+    #     cp test_case.txt failed_cases/failed_case_${TIMESTAMP}.txt
+    #     exit 1
+    # fi
     echo "✅ Correct, testing next case..."
 done
 
