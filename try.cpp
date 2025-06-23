@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.05.01 05:23:43
+ *    created: 2025.06.23 21:44:49
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,11 +70,60 @@
 using namespace std;
 
 /* write core logic here */
+vector<int> prime_factors(long long n) {
+    vector<int> fac;
+
+    // 2 के लिये अलग से—fast even-stripping
+    while (n % 2 == 0) {
+        fac.push_back(2);
+        n /= 2;
+    }
+
+    // odd candidates 3,5,7,…√n तक
+    for (long long i = 3; i * i <= n; i += 2) {
+        while (n % i == 0) {
+            fac.push_back((int)i);
+            n /= i;
+        }
+    }
+
+    // बचे-खुचे n में अगर कोई बड़ा prime रह गया
+    if (n > 1) fac.push_back((int)n);
+
+    return fac;
+}
+vector<int> v;
+void precompute(){
+    v.resize(500005);
+    v[1] = 1;
+    for(int i = 2; i<=500000; i++){
+        if(i % 2 == 0){
+            v[i] = 0;
+            continue;
+        }
+        else{
+            vector<int> factors = prime_factors(i);
+            if(factors.size() == 1){
+                v[i] = v[i-2] + 1;
+                continue;
+            }
+            int ans = 0;
+            for(auto ele : factors){
+                ans += v[ele] - 1;
+            }
+            v[i] = ans + 1;
+        }
+    }
+}
 void solve(){
-    int n;
-    cin>>n;
-    debug(n);
-    cout<<n<<endl;
+    int m;
+    cin>>m;
+    if(m % 2 == 0){
+        cout<<-1<<endl;
+        return;
+    }
+    cout<<v[m]<<endl;
+    return;
 }
 /* logic ends */
 
@@ -86,6 +135,7 @@ signed main(){
     #endif
     int t;
     cin>>t;
+    precompute();
     //t = 1;
     while(t--){
         solve();
