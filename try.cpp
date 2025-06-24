@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.06.23 21:44:49
+ *    created: 2025.06.24 20:18:17
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,60 +70,85 @@
 using namespace std;
 
 /* write core logic here */
-vector<int> prime_factors(long long n) {
-    vector<int> fac;
+int n;
+vector<vector<int>> adj;
+vector<int> coins;
+vector<int> dp;
+vector<bool> has_coin;
+int minCost = INT_MAX;
 
-    // 2 के लिये अलग से—fast even-stripping
-    while (n % 2 == 0) {
-        fac.push_back(2);
-        n /= 2;
-    }
-
-    // odd candidates 3,5,7,…√n तक
-    for (long long i = 3; i * i <= n; i += 2) {
-        while (n % i == 0) {
-            fac.push_back((int)i);
-            n /= i;
+bool dfs(int u, int par) {
+    bool coin_here = (coins[u] == 1);
+    int cost = 0;
+    for (int v : adj[u]) {
+        if (v == par) continue;
+        if (dfs(v, u)) {
+            coin_here = true;
+            cost += dp[v] + 2;
         }
     }
-
-    // बचे-खुचे n में अगर कोई बड़ा prime रह गया
-    if (n > 1) fac.push_back((int)n);
-
-    return fac;
+    has_coin[u] = coin_here;
+    dp[u] = cost;
+    return coin_here;
 }
-vector<int> v;
-void precompute(){
-    v.resize(500005);
-    v[1] = 1;
-    for(int i = 2; i<=500000; i++){
-        if(i % 2 == 0){
-            v[i] = 0;
-            continue;
-        }
-        else{
-            vector<int> factors = prime_factors(i);
-            if(factors.size() == 1){
-                v[i] = v[i-2] + 1;
-                continue;
-            }
-            int ans = 0;
-            for(auto ele : factors){
-                ans += v[ele] - 1;
-            }
-            v[i] = ans + 1;
-        }
+
+void reroot(int u, int par) {
+    minCost = min(minCost, dp[u]);
+
+    for (int v : adj[u]) {
+        if (v == par) continue;
+
+        int up = dp[u], down = dp[v];
+        bool had_coin_u = has_coin[u], had_coin_v = has_coin[v];
+
+        // Remove v's contribution from u
+        if (has_coin[v]) dp[u] -= dp[v] + 2;
+        has_coin[u] = has_coin[u] && !has_coin[v];
+
+        // Add u's (remaining) contribution to v
+        if (has_coin[u]) dp[v] += dp[u] + 2;
+        has_coin[v] = has_coin[v] || has_coin[u];
+
+        reroot(v, u);
+
+        // Restore
+        dp[v] = down; dp[u] = up;
+        has_coin[v] = had_coin_v;
+        has_coin[u] = had_coin_u;
     }
+}
+
+
+int getMinPath(vector<int> &coin, vector<int> &from, vector<int> &to) {
+    n = coin.size();
+    adj.assign(n, {});
+    coins = coin;
+    dp.assign(n, 0);
+    has_coin.assign(n, false);
+    
+    for (int i = 0; i < from.size(); i++) {
+        adj[from[i]].push_back(to[i]);
+        adj[to[i]].push_back(from[i]);
+    }
+
+    dfs(0, -1);         // step 1
+    reroot(0, -1);      // step 2
+    return minCost;
 }
 void solve(){
-    int m;
-    cin>>m;
-    if(m % 2 == 0){
-        cout<<-1<<endl;
-        return;
+    cin>>n;
+    vector<int> coin(n);
+    for(int i=0; i<n; i++){
+        cin>>coin[i];
     }
-    cout<<v[m]<<endl;
-    return;
+    vector<int> from(n-1), to(n-1);
+    for(int i=0; i<n-1; i++){
+        cin>>from[i]>>to[i];
+    }
+
+    int result = getMinPath(coin, from, to);
+    cout << result << endl;
+
 }
 /* logic ends */
 
@@ -134,9 +159,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    precompute();
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
