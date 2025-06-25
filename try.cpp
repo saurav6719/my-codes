@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.06.24 20:18:17
+ *    created: 2025.06.25 20:54:03
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,85 +70,110 @@
 using namespace std;
 
 /* write core logic here */
-int n;
-vector<vector<int>> adj;
-vector<int> coins;
-vector<int> dp;
-vector<bool> has_coin;
-int minCost = INT_MAX;
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> a(n);
+    map<int,int> mp;
+    for(int i=0; i<n; i++){
+        cin>>a[i];
+        if(a[i] > 0) mp[a[i]] = i;
+    }
+    set<int> s;
+    for(auto x : a){
+        if(x > 0) s.insert(x);
+    }
+    vector<vector<int> > tree(n);
+    for(int i = 0; i<n-1; i++){
+        int u,v;
+        cin>>u>>v;
+        u--; v--;
+        tree[u].push_back(v);
+        tree[v].push_back(u);
+    }
+    deque<pp> v;
+    map<int,int> mp2;
+    map<int,int> mp3;
+    // mp2[i] = maximum of all the neighbours of i
+    for(int i = 0; i<n; i++){
+        int maxi = 0;
+        int khali = 0;
+        for(auto neigh : tree[i]){
+            if(a[neigh] > 0){
+                maxi = max(maxi, a[neigh]);
+            } else {
+                khali++;
+            }
+        }
+        if(i==2){
+            debug(maxi);
+            debug(khali);
+        }
 
-bool dfs(int u, int par) {
-    bool coin_here = (coins[u] == 1);
-    int cost = 0;
-    for (int v : adj[u]) {
-        if (v == par) continue;
-        if (dfs(v, u)) {
-            coin_here = true;
-            cost += dp[v] + 2;
+        if(a[i] == 0) v.push_back({maxi, khali});
+        mp2[i] = maxi;
+        mp3[i] = khali;
+    }
+
+    sort(v.begin(), v.end(), [](pp a, pp b) {
+        if(a.first == b.first) return a.second < b.second;
+        return a.first < b.first;
+    });
+
+    for(auto ele : v){
+        debug(ele.first);
+        debug(ele.second);
+    }
+
+    priority_queue<int, vector<int>, greater<int>> pq;
+    int pichekhali = 0;
+
+    for(int i = 1; i<=n; i++){
+
+        // jitne bhi nodes ka maximum i hai uske khali ko pq me add kro 
+        while(!v.empty() && v.front().first < i){
+            pq.push(v.front().second);
+            v.pop_front();
+        }
+        // can i be the answer
+        if(s.count(i)){
+            // set me i hai 
+            // is node ka max nikalo 
+            int node = mp[i];
+            if(i == 3){
+                debug(node);
+            }
+            int currmaxi = mp2[node];
+            if(i == 3){
+                debug(currmaxi);
+            }
+            if(currmaxi < i){
+                int currkhali = mp3[node];
+                if(currkhali <= pichekhali){
+                    cout<<i<<endl;
+                    return;
+                }
+            }
+        }
+        else{
+            // set me i nhi hai 
+            // koi aisha node dhundho jiska maxi < i ho and khali <= pichekhali ho 
+            if(!pq.empty()){
+                int smallestkhali = pq.top();
+                if(smallestkhali <= pichekhali){
+                    cout<<i<<endl;
+                    return; 
+                }
+            }
+        }
+
+        // pichekhali update kro
+        if(s.count(i) == 0){
+            pichekhali++;
         }
     }
-    has_coin[u] = coin_here;
-    dp[u] = cost;
-    return coin_here;
-}
 
-void reroot(int u, int par) {
-    minCost = min(minCost, dp[u]);
-
-    for (int v : adj[u]) {
-        if (v == par) continue;
-
-        int up = dp[u], down = dp[v];
-        bool had_coin_u = has_coin[u], had_coin_v = has_coin[v];
-
-        // Remove v's contribution from u
-        if (has_coin[v]) dp[u] -= dp[v] + 2;
-        has_coin[u] = has_coin[u] && !has_coin[v];
-
-        // Add u's (remaining) contribution to v
-        if (has_coin[u]) dp[v] += dp[u] + 2;
-        has_coin[v] = has_coin[v] || has_coin[u];
-
-        reroot(v, u);
-
-        // Restore
-        dp[v] = down; dp[u] = up;
-        has_coin[v] = had_coin_v;
-        has_coin[u] = had_coin_u;
-    }
-}
-
-
-int getMinPath(vector<int> &coin, vector<int> &from, vector<int> &to) {
-    n = coin.size();
-    adj.assign(n, {});
-    coins = coin;
-    dp.assign(n, 0);
-    has_coin.assign(n, false);
-    
-    for (int i = 0; i < from.size(); i++) {
-        adj[from[i]].push_back(to[i]);
-        adj[to[i]].push_back(from[i]);
-    }
-
-    dfs(0, -1);         // step 1
-    reroot(0, -1);      // step 2
-    return minCost;
-}
-void solve(){
-    cin>>n;
-    vector<int> coin(n);
-    for(int i=0; i<n; i++){
-        cin>>coin[i];
-    }
-    vector<int> from(n-1), to(n-1);
-    for(int i=0; i<n-1; i++){
-        cin>>from[i]>>to[i];
-    }
-
-    int result = getMinPath(coin, from, to);
-    cout << result << endl;
-
+    cout<<n+1<<endl; // if all nodes are present then answer is n+1
 }
 /* logic ends */
 
@@ -159,8 +184,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
