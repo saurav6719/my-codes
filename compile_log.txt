@@ -1,6 +1,0 @@
-cc1plus: fatal error: generator.cpp: No such file or directory
-compilation terminated.
-cc1plus: fatal error: optimal.cpp: No such file or directory
-compilation terminated.
-cc1plus: fatal error: brute.cpp: No such file or directory
-compilation terminated.
