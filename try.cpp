@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.07.01 19:59:01
+ *    created: 2025.07.02 21:25:14
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,8 +70,237 @@
 using namespace std;
 
 /* write core logic here */
+bool cmp(pp & a, pp & b){
+    if(a.first > b.first){
+        return true;
+    }
+    if(a.first == b.first){
+        if(a.second < b.second){
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
 void solve(){
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    vector<int> v(n);
+    for(int i =0 ; i<n; i++){
+        cin>>v[i];
+    }
+    string str;
+    cin>>str;
+
+    if(str.back() == '1'){
+        string newstr = "";
+        for(auto ele : str){
+            if(ele == '0') newstr += '1';
+            else newstr += '0';
+        }
+        reverse(v.begin(), v.end());
+        str = newstr;
+    }
+    int last = 1;
+    for(int i = k-2; i>=0; i--){
+        if(str[i] == str[i+1]){
+            last++;
+        }
+        else break;
+    }
+    debug(last);
+    // if(last == k and str.back() == '1'){
+    //     int start = n - k - 1;
+    //     multiset<int> ms;
+    //     int currsum = 0;
+    //     for(int i = start+1; i<n; i++){
+    //         ms.insert(v[i]);
+    //         currsum += v[i];
+    //         currsum %= MOD;
+    //     }
+    //     int ans = 0 ;
+    //     for(int i = start; i>=0; i--){
+    //         // leaving this i 
+    //         ans = max(ans, currsum);
+    //         int smallest = *ms.begin();
+    //         if(smallest < v[i]){
+    //             ms.erase(ms.find(smallest));
+    //             currsum -= smallest;
+    //             currsum += v[i];
+    //             while(currsum < 0){
+    //                 currsum += MOD;
+    //             }
+    //             if(currsum >= MOD){
+    //                 currsum %= MOD;
+    //             }
+                
+    //             ms.insert(v[i]);
+    //         }
+    //     }
+
+    //     cout<<ans<<endl;
+    //     return;
+    // }
+
+    if(last == k){
+        int start = last;
+        multiset<int> ms;
+        int currsum = 0;
+        for(int i = 0; i<start; i++){
+            ms.insert(v[i]);
+            currsum += v[i];
+        }
+        int ans = 0 ;
+        for(int i = start; i<n; i++){
+            // leaving this i 
+            ans = max(ans, currsum);
+            int smallest = *ms.begin();
+            if(smallest < v[i]){
+                ms.erase(ms.find(smallest));
+                currsum -= smallest;
+                currsum += v[i];
+                ms.insert(v[i]);
+            }
+        }
+
+        cout<<ans%MOD<<endl;
+        return;
+    }
+
     
+
+        vector<pp> v2(n);
+        for(int i = 0; i<n; i++){
+            v2[i] = {v[i], i};
+        }
+
+        sort(v2.begin(), v2.end(), cmp);
+        printpp(v2);
+        vector<int> indexes;
+        for(int i = 0; i<k; i++){
+            indexes.push_back(v2[i].second);
+        }
+        sort(indexes.begin(), indexes.end());
+        print(indexes);
+        set<int> indexesset;
+        for(auto ele : indexes){
+            indexesset.insert(ele);
+        }
+        int start = n-1-k-last;
+        debug(start);
+        for(int i = start; i<n; i++){
+            if(indexesset.count(i) == 0){
+                int ans = 0;
+                for(auto ele : indexesset){
+                    ans += v[ele];
+                }
+                cout<<ans%MOD<<endl;
+                return; 
+            }
+        }
+
+        // ab indexes se koi ek hatana pdega 
+        int ans = 0;
+        for(auto ele : indexes){
+            ans += v[ele];
+        }
+        int maxnottaken = 0;
+        int i = 0;
+        int sum = ans;
+        ans = 0;
+        for(auto ele : indexes){
+            while(i < ele){
+                if(indexesset.count(i) == 0){
+                    maxnottaken = max(maxnottaken, v[i]);  
+                }
+                i++;
+            }
+            if(ele < last) continue;
+            debug(ele);
+            debug(maxnottaken);
+            int currans = sum;
+            currans += maxnottaken;
+            currans -= v[ele];
+            ans = max(ans, currans);
+        }
+
+        cout<<ans%MOD<<endl;
+    
+    // else{
+    //     vector<pp> v2(n);
+    //     for(int i = 0; i<n; i++){
+    //         v2[i] = {v[i], i};
+    //     }
+
+    //     sort(v2.begin(), v2.end(), cmp);
+    //     printpp(v2);
+    //     vector<int> indexes;
+    //     for(int i = 0; i<k; i++){
+    //         indexes.push_back(v2[i].second);
+    //     }
+    //     sort(indexes.begin(), indexes.end());
+    //     print(indexes);
+    //     set<int> indexesset;
+    //     for(auto ele : indexes){
+    //         indexesset.insert(ele);
+    //     }
+    //     int start = indexes[n-last-1];
+    //     debug(start);
+    //     for(int i = start; i>=0; i--){
+    //         if(indexesset.count(i) == 0){
+    //             int ans = 0;
+    //             for(auto ele : indexesset){
+    //                 ans += v[ele];
+    //                 ans %= MOD;
+    //             }
+    //             cout<<ans<<endl;
+    //             return;
+    //         }
+    //     }
+
+    //     // ab indexes se koi ek hatana pdega 
+    //     int ans = 0;
+    //     for(auto ele : indexes){
+    //         ans += v[ele];
+    //     }
+    //     int maxnottaken = 0;
+    //     int i = n-1;
+    //     int sum = ans;
+    //     ans = 0;
+
+    //     debug(ans);
+    //     reverse(indexes.begin(), indexes.end());
+
+    //     for(auto ele : indexes){
+    //         while(i > ele){
+    //             if(indexesset.count(i) == 0){
+    //                 maxnottaken = max(maxnottaken, v[i]);  
+    //             }
+    //             i--;
+    //         }
+    //         int atleast = n - last - 1;
+    //         if(ele > atleast) continue;
+    //         int currans = sum;
+    //         currans += maxnottaken;
+    //         currans -= v[ele];
+    //         if(currans > MOD){
+    //             currans %= MOD;
+    //         }
+    //         if(currans < 0){
+    //             currans += MOD;
+    //             currans %= MOD;
+    //         }
+    //         debug(ele);
+    //         debug(currans);
+    //         ans = max(ans, currans);
+    //     }
+
+    //     cout<<ans<<endl;
+    // }
+
+
 }
 /* logic ends */
 
