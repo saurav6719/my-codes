@@ -1,5 +1,9 @@
 #include<iostream>
 #include<vector>
+#include<algorithm> 
+#include<numeric>
+#include<math.h>
+#include<bits/stdc++.h>
 using namespace std;
 class maxHeap{
     void upheapify(int child){

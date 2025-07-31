@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.07.02 21:25:14
+ *    created: 2025.07.13 09:11:26
  *    We stop at Candidate Master in 2025
  **/
 
@@ -55,8 +55,8 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printset(s)
 #define printpp(v)
+#define printset(s)
 #endif
 #define endl "\n"
 #define MOD 1000000007
@@ -70,138 +70,68 @@
 using namespace std;
 
 /* write core logic here */
-bool cmp(pp & a, pp & b){
-    if(a.first > b.first){
-        return true;
-    }
-    if(a.first == b.first){
-        if(a.second < b.second){
-            return true;
+char processStr(string s, long long k) {
+        int n = s.size();
+        int sz = 0;
+        vector<int> v;
+        for(auto ele : s){
+            if(ele == '#') sz*=2;
+            else if (ele == '*') {
+                if(sz > 0) sz--;
+            }
+            else if(ele == '%') {
+
+            }
+            else sz++;
+
+            v.push_back(sz);
         }
-        return false;
-    }
-    return false;
+        v.push_back(k);
+        print(v);
+
+        if(sz < k) return '.';
+        int curr = k;
+        for(int i = n-1; i>=0; i--){
+            if(v[i] == 0 or i == 0) {
+                debug(curr);
+                int cnt =0 ;
+                for(int j = i; j<n; j++){
+                    if(s[j] >='a' and s[j] <= 'z'){
+                        cnt++;
+                        if(cnt == curr){
+                            return s[j];
+                        }
+                    }
+                }
+            }
+            int pichlahai = v[i-1];
+            int aagechahiye = curr;
+            if(s[i] == '#'){
+                if(curr == pichlahai){
+                    curr = pichlahai;
+                }
+                else curr = curr % pichlahai;
+            }
+            else if(s[i] == '*'){
+
+            }
+            else if(s[i] == '%'){
+                curr = pichlahai - aagechahiye + 1;
+            }
+            debug(pichlahai);
+            debug(aagechahiye); 
+            debug(curr);
+        }
+        return '.';
 }
 void solve(){
-    int n;
-    cin>>n;
+    string s;
+    cin>>s;
     int k;
     cin>>k;
-    vector<int> v(n);
-    for(int i =0 ; i<n; i++){
-        cin>>v[i];
-    }
-    string str;
-    cin>>str;
-
-    if(str.back() == '1'){
-        string newstr = "";
-        for(auto ele : str){
-            if(ele == '0') newstr += '1';
-            else newstr += '0';
-        }
-        reverse(v.begin(), v.end());
-        str = newstr;
-    }
-    int last = 1;
-    for(int i = k-2; i>=0; i--){
-        if(str[i] == str[i+1]){
-            last++;
-        }
-        else break;
-    }
-    if(last == k){
-        int start = last;
-        multiset<int> ms;
-        int currsum = 0;
-        for(int i = 0; i<start; i++){
-            ms.insert(v[i]);
-            currsum += v[i];
-            currsum %= MOD;
-        }
-        int ans = 0 ;
-        for(int i = start; i<n; i++){
-            // leaving this i 
-            ans = max(ans, currsum);
-            int smallest = *ms.begin();
-            if(smallest < v[i]){
-                ms.erase(ms.find(smallest));
-                currsum -= smallest;
-                currsum += v[i];
-                while(currsum < 0){
-                    currsum += MOD;
-                }
-                if(currsum >= MOD){
-                    currsum %= MOD;
-                }
-                ms.insert(v[i]);
-            }
-        }
-
-        cout<<ans<<endl;
-        return;
-    }
-
-    
-
-    vector<pp> v2(n);
-    for(int i = 0; i<n; i++){
-        v2[i] = {v[i], i};
-    }
-
-    sort(v2.begin(), v2.end(), cmp);
-    vector<int> indexes;
-    for(int i = 0; i<k; i++){
-        indexes.push_back(v2[i].second);
-    }
-    sort(indexes.begin(), indexes.end());
-    set<int> indexesset;
-    for(auto ele : indexes){
-        indexesset.insert(ele);
-    }
-    int start = indexes[last-1]+1;
-    for(int i = start; i<n; i++){
-        if(indexesset.count(i) == 0){
-            int ans = 0;
-            for(auto ele : indexesset){
-                ans += v[ele];
-                ans %= MOD;
-            }
-            cout<<ans<<endl;
-            return;
-        }
-    }
-
-    // ab indexes se koi ek hatana pdega 
-    int ans = 0;
-    for(auto ele : indexes){
-        ans += v[ele];
-        ans %= MOD;
-    }
-    int maxnottaken = 0;
-    int i = 0;
-    int sum = ans;
-    ans = 0;
-    for(auto ele : indexes){
-        while(i < ele){
-            if(indexesset.count(i) == 0){
-                maxnottaken = max(maxnottaken, v[i]);  
-            }
-            i++;
-        }
-        if(ele < last) continue;
-        int currans = sum;
-        currans += maxnottaken;
-        currans -= v[ele];
-        while(currans < 0){
-            currans += MOD;
-        }
-        if(currans >= MOD){
-            currans %= MOD;
-        }
-        ans = max(ans, currans);
-    }
+    char ans = processStr(s, k);
     cout<<ans<<endl;
+
 }
 /* logic ends */
 
@@ -212,7 +142,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
+    //cin>>t;
     t = 1;
     while(t--){
         solve();

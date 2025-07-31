@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.07.03 23:28:34
+ *    created: 2025.07.31 20:03:02
  *    We stop at Candidate Master in 2025
  **/
 
@@ -55,8 +55,8 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printpp(v)
 #define printset(s)
+#define printpp(v)
 #endif
 #define endl "\n"
 #define MOD 1000000007
@@ -71,144 +71,7 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    int n,q;
-    cin>>n>>q;
-    vector<int> v;
-    v.push_back(0);
-    for(int i=0;i<n;i++){
-        int x;
-        cin>>x;
-        v.push_back(x);
-    }
-    v.push_back(1e9+1);
-    set<int> curr;
-    for(auto ele : v){
-        curr.insert(ele);
-    }
-    sort(v.begin(), v.end());
-    map<int,int> mp;
-    for(int i = 1; i<v.size()-1; i++){
-        int x = v[i];
-        int next = upper_bound(v.begin(), v.end(), x) - v.begin();
-        if(v[next] == 1e9+1){
-            mp[x] = 1e9+1;
-        }
-        else{
-            mp[x] = x + (1e9+1 - v[next]);
-        }
-    }
-    printmap(mp);
-    multiset<int> ms;
-    for(auto ele : mp){
-        ms.insert(ele.second);
-    }
-    {
-        auto mini = curr.begin();
-        mini++;
-        int mini_val = *mini;
-        auto maxi = curr.rbegin();
-        maxi++;
-        int maxi_val = *maxi;
-        debug(mini_val);
-        debug(maxi_val);
-        int tosub = 1e9+1 - maxi_val + mini_val;
-        debug(tosub);
-        debug(mini_val);
-        int minimumvalue = *ms.begin();
-        cout<<minimumvalue - tosub<<endl;
-    }
-    while(q--){
-        int type;
-        cin>>type;
-        if(type == 0){
-            // hatana hai 
-            int x;
-            cin>>x;
-            auto piche = curr.lower_bound(x);
-            piche--;
-            int piche_val = *piche;
-            auto aage = curr.upper_bound(x);
-            int aage_val = *aage;
-            ms.erase(ms.find(mp[x]));
-            mp.erase(x);
-            curr.erase(x);
-
-            // piche ko update kro 
-
-            if(piche_val != 0){
-                if(aage_val == 1e9+1){
-                    int old = mp[piche_val];
-                    int now =1e9+1;
-                    ms.erase(ms.find(old));
-                    ms.insert(now);
-
-                    mp[piche_val] = now;
-
-                }
-                else{
-                    int old = mp[piche_val];
-                    int now = piche_val + (1e9+1 - aage_val);
-                    ms.erase(ms.find(old));
-                    ms.insert(now);
-                    mp[piche_val] = now;
-                }
-            }   
-        }
-        else{
-            // add krna hai 
-            int x;
-            cin>>x;
-            auto piche = curr.lower_bound(x);
-            piche--;
-            int piche_val = *piche;
-            auto aage = curr.upper_bound(x);
-            int aage_val = *aage;
-            curr.insert(x);
-            if(piche_val != 0){
-                // update piche wala 
-                int old = mp[piche_val];
-                ms.erase(ms.find(old));
-                int now = piche_val + (1e9+1 - x);
-                ms.insert(now);
-                mp[piche_val] = now;
-
-            }
-            {
-                // update this 
-                if(aage_val == 1e9+1){
-                    mp[x] = 1e9+1;
-                    ms.insert(1e9+1);
-                }
-                else{
-                    int now = x + (1e9+1 - aage_val);
-                    mp[x] = now;
-                    ms.insert(now);
-                }
-            }
-            
-        }
-        {
-            // output ans
-            if(curr.size() <= 4){
-                cout<<0<<endl;
-            }
-            else{
-                auto mini = curr.begin();
-                mini++;
-                int mini_val = *mini;
-                auto maxi = curr.rbegin();
-                maxi++;
-                int maxi_val = *maxi;
-                debug(mini_val);
-                debug(maxi_val);
-                int tosub = 1e9+1 - maxi_val + mini_val;
-                debug(tosub);
-                debug(mini_val);
-                int minimumvalue = *ms.begin();
-                cout<<minimumvalue - tosub<<endl;
-            }
-        }
-    }
+    
 }
 /* logic ends */
 
@@ -219,8 +82,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
