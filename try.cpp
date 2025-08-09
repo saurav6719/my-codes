@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.07.31 20:03:02
+ *    created: 2025.08.08 12:18:19
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,8 +70,48 @@
 using namespace std;
 
 /* write core logic here */
+int dp[15][2];
+int f(int i, int n, int smaller, string &str){
+
+    if(i == n) return 0;
+    if(dp[i][smaller] != -1) return dp[i][smaller];
+    int loop;
+    int ans = 0;
+    if(smaller){
+        loop = 9;
+    }
+    else{
+        loop = str[i] - '0';
+    }
+
+    for(int a = 0; a<=loop; a++){
+        int newsmaller = smaller;
+        if(smaller == false and a < str[i] - '0') newsmaller = true;
+        int aagekevalid;
+        if(newsmaller){
+            aagekevalid = pow(10, (n-(i+1)));
+        }
+        else{
+            if(i == n -1){
+                aagekevalid = 1;
+            }
+            else aagekevalid = stoi(str.substr(i+1))+1;
+        }
+        ans += f(i+1, n, newsmaller, str);
+
+        if(a == 1){
+            ans += aagekevalid;
+        }
+    }
+
+    return dp[i][smaller] = ans;
+}
 void solve(){
-    
+    int n;
+    cin>>n;
+    string str = to_string(n);
+    memset(dp, -1 , sizeof dp);
+    cout<<f(0, str.size(), 0, str);
 }
 /* logic ends */
 
@@ -82,8 +122,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    // cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
