@@ -9,32 +9,15 @@ using namespace std;
 
 #define int long long int
 
-void generateTestCase(int n) {
-    string s1, s2;
-    srand(time(0));
-
-    // Generate s1 and s2
-    for(int i = 0; i < n; i++) {
-        char c = (rand() % 2 == 0) ? 'N' : 'D';
-        s1.push_back(c);
-    }
-    for(int i = 0; i < n; i++) {
-        char c = (rand() % 2 == 0) ? 'N' : 'D';
-        s2.push_back(c);
-    }
-
-    // Generate l and r
-    int l = rand() % (n - 1) + 1; // 1 to n-1
-    int r = rand() % (n - l) + (l + 1); // l+1 to n
-
-    // Output
-    cout << s1 << endl;
-    cout << s2 << endl;
-    cout << l << " " << r << endl;
+void generateTestCase() {
+    int n,x;
+    n = rand() % 1000000000 + 1; // Random n between 1 and 10^9
+    x = rand() % (n-1) + 1; // Random x between 1 and n-1
+    cout << n << " " << x << endl;
 }
 
 signed main() {
-    int n = 100000; // Example length, change as needed
-    generateTestCase(n);
+    srand(time(0)); // Seed for random number generation
+    generateTestCase();
     return 0;
 }

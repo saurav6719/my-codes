@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.07.11 17:03:07
+ *    created: 2025.09.20 17:35:00
  *    We stop at Candidate Master in 2025
  **/
 
@@ -55,8 +55,8 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printpp(v)
 #define printset(s)
+#define printpp(v)
 #endif
 #define endl "\n"
 #define MOD 1000000007
@@ -70,75 +70,61 @@
 using namespace std;
 
 /* write core logic here */
+void divisors(int n, vector<int> &v){
+    for(int i = 1; i*i <= n; i++){
+        if(n%i == 0){
+            v.push_back(i);
+            if(i != n/i) v.push_back(n/i);
+        }
+    }
+}
 void solve(){
-    string s1;
-    string s2;
-    cin>>s1;
-    cin>>s2;
-    int n = s1.size();
-    vector<pp> v(n, {-1, n+1});
+    int n,x;
+    cin>>n>>x;
+    int d1 = n - x;
+    int d2 = n + x - 2;
+    vector<int> v1, v2;
+    divisors(d1, v1);
+    divisors(d2, v2);
 
-    for(int i = 0; i<n; i++){
-        if(s1[i] == 'N'){
-            v[i] = {i, i};
+    set<int> ans;
+    for(auto it : v1){
+        // 2k-2 = x
+        int k = (it + 2) / 2;
+        if((it + 2) % 2 != 0) continue;
+        // is k pe n pe kya answer hoga
+        int rem = n % ((2*k)- 2);
+
+        if(rem == 0 and x == 2){
+            ans.insert(k);
         }
-        else {
-            int l = -1;
-            int r = n+1;
-            if(i-1 < 0) continue;
-            if(i + 1>= n) continue;
-
-            if(s2[i-1] == 'N') l = i-1;
-            if(s2[i+1] == 'N') r = i+1;
-            if(l == -1){
-                if(i-2>=0 and s1[i-2] == 'D') l = i-2;
-            }
-            if(r == n+1){
-                if(i+2 < n and s1[i+2] == 'D') r = i+2;
-            }
-            v[i] = {l, r};
+        else if(rem <= k and x == rem){
+            ans.insert(k);
         }
-    }
-    int q = 1;
-
-    vector<int> prf(n, 0);
-    for(int i = 0; i<n; i++){
-        if(v[i].first == -1 || v[i].second == n+1) continue;
-        prf[i] = 1;
-    }
-    vector<int> prf2 = prf;
-
-    for(int i = 1; i<n; i++){
-        prf[i] += prf[i-1];
-    }
-
-    while(q--){
-        int l,r;
-        cin>>l>>r;
-        l--; r--;
-        int ans = 0;
-
-        if(r-l+1 <= 10){
-            for(int i = l; i<=r; i++){
-                if(v[i].first >= l and v[i].second <= r) ans++;
-            }
-            cout<<ans<<endl;
-        }
-        else{
-            int ans = 0;
-            for(int i = l; i<l+5; i++){
-                if(v[i].first >= l and v[i].second <= r) ans++;
-            }
-            for(int i = r-4; i<=r; i++){
-                if(v[i].first >= l and v[i].second <= r) ans++;
-            }
-            int l1 = l+5;
-            int r1 = r-5;
-            ans += prf[r1] - (l1 == 0 ? 0 : prf[l1-1]);
-            cout<<ans<<endl;
+        else if(rem > k){
+            int honachahiye = k - (rem - k);
+            if(honachahiye == x) ans.insert(k);
         }
     }
-    
+    for(auto it : v2){
+        // 2k - 2 = x
+        int k = (it + 2)/2;
+        if((it + 2) % 2 != 0) continue;
+        // is k pe n pe kya answer hoga
+        int rem = n % ((2*k) - 2);
+        if(rem == 0 and x == 2){
+            ans.insert(k);
+        }
+        else if(rem <= k and x == rem){
+            ans.insert(k);
+        }
+        else if(rem > k){
+            int honachahiye = k - (rem - k);
+            if(honachahiye == x) ans.insert(k);
+        }
+    }
+
+    cout<<ans.size()<<endl;
 }
 /* logic ends */
 
@@ -149,7 +135,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();

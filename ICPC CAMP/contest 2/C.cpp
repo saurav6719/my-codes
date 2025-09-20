@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.09.20 17:35:00
+ *    created: 2025.09.07 18:26:47
  *    We stop at Candidate Master in 2025
  **/
 
@@ -55,8 +55,8 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printset(s)
 #define printpp(v)
+#define printset(s)
 #endif
 #define endl "\n"
 #define MOD 1000000007
@@ -70,63 +70,43 @@
 using namespace std;
 
 /* write core logic here */
-void divisors(int n, vector<int> &v){
-    for(int i = 1; i*i <= n; i++){
-        if(n%i == 0){
-            v.push_back(i);
-            if(i != n/i) v.push_back(n/i);
-        }
-    }
+double x(double a, double phle, double baad){
+    double b = baad - phle;
+    double h = 1000;
+    double ans = (b/h)*a + phle;
+    return ans;
 }
 void solve(){
-    int n,x;
-    cin>>n>>x;
-    int d1 = n - x;
-    int d2 = n + x - 2;
-    vector<int> v1, v2;
-    divisors(d1, v1);
-    divisors(d2, v2);
-
-    set<int> ans;
-    for(auto it : v1){
-        // 2k-2 = x
-        int k = (it + 2) / 2;
-        if((it + 2) % 2 != 0) continue;
-        // is k pe n pe kya answer hoga
-        int rem = n % ((2*k)- 2);
-
-        if(rem == 0 and x == 2){
-            ans.insert(k);
-
-        }
-        else if(rem <= k and x == rem){
-            ans.insert(k);
-
-        }
-        else if(rem > k){
-            int honachahiye = k - (rem - k);
-            if(honachahiye == x) ans.insert(k);
-        }
+    double n;
+    cin>>n;
+    double q;
+    cin>>q;
+    n++;
+    vector<double> verticleheight(n); // in metres 
+    for(int i = 0; i<n; i++){
+        cin>>verticleheight[i];
     }
-    for(auto it : v2){
-        // 2k - 2 = x
-        int k = (it + 2)/2;
-        if((it + 2) % 2 != 0) continue;
-        // is k pe n pe kya answer hoga
-        int rem = n % ((2*k) - 2);
-        if(rem == 0 and x == 2){
-            ans.insert(k);
-        }
-        else if(rem <= k and x == rem){
-            ans.insert(k);
-        }
-        else if(rem > k){
-            int honachahiye = k - (rem - k);
-            if(honachahiye == x) ans.insert(k);
-        }
-    }
+    vector<double> horizontal((n*1000) + 5);
 
-    cout<<ans.size()<<endl;
+    for(double i = 0; i<(n-1)*1000; i++){
+        double phle = i/1000;
+        double baad = phle + 1;
+        double ans = x(i, verticleheight[phle], verticleheight[baad]);
+        // horizontal[i] = ans * 1000;
+        // debug(ans);
+    }
+    horizontal[(n-1)*1000] = verticleheight[n-1];
+
+    for(double i = 0; i<q; i++){
+        double g;
+        cin>>g;
+        vector<double> newv((n*1000) + 5);
+        for(double j = 0; j<=(n-1)*1000; j++){
+            newv[j] = horizontal[j] - (g * j);
+            debug(newv[j]);
+        }
+
+    }
 }
 /* logic ends */
 
@@ -137,8 +117,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
