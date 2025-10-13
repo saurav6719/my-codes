@@ -63,7 +63,7 @@
 #define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
 #define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
 #define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
-#define int long long int
+// #define int long long int
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>

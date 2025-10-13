@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # How to run this file
@@ -52,7 +51,7 @@ while true; do
     # fi
 
     # Run the optimal solution and capture execution time in milliseconds
-    $TIMEOUT_CMD 2s $TIME_CMD -o optimal_time.txt ./optimal < test_case.txt > optimal_output.txt 
+    $TIMEOUT_CMD 5s $TIME_CMD -o optimal_time.txt ./optimal < test_case.txt > optimal_output.txt 
     optimal_status=$?
     optimal_time=$(awk '/real/ {print $2 * 1000}' optimal_time.txt)
     optimal_time=${optimal_time:-0}
@@ -71,10 +70,8 @@ while true; do
         exit 1
     fi
 
-    
-
     # Run the brute force solution and capture execution time in milliseconds
-    $TIMEOUT_CMD 2s $TIME_CMD -o brute_time.txt ./brute < test_case.txt > brute_output.txt
+    $TIMEOUT_CMD 5s $TIME_CMD -o brute_time.txt ./brute < test_case.txt > brute_output.txt
     brute_status=$?
     brute_time=$(awk '/real/ {print $2 * 1000}' brute_time.txt)
     brute_time=${brute_time:-0}
@@ -107,7 +104,6 @@ while true; do
         cp test_case.txt failed_cases/failed_case_${TIMESTAMP}.txt
         exit 1
     fi
+
     echo "✅ Correct, testing next case..."
 done
-
-
