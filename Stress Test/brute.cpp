@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.09.20 17:35:00
+ *    created: 2025.10.14 02:27:16
  *    We stop at Candidate Master in 2025
  **/
 
@@ -55,8 +55,8 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printset(s)
 #define printpp(v)
+#define printset(s)
 #endif
 #define endl "\n"
 #define MOD 1000000007
@@ -70,61 +70,46 @@
 using namespace std;
 
 /* write core logic here */
-void divisors(int n, vector<int> &v){
-    for(int i = 1; i*i <= n; i++){
-        if(n%i == 0){
-            v.push_back(i);
-            if(i != n/i) v.push_back(n/i);
-        }
-    }
-}
 void solve(){
-    int n,x;
-    cin>>n>>x;
-    int d1 = n - x;
-    int d2 = n + x - 2;
-    vector<int> v1, v2;
-    divisors(d1, v1);
-    divisors(d2, v2);
-
-    set<int> ans;
-    for(auto it : v1){
-        // 2k-2 = x
-        int k = (it + 2) / 2;
-        if((it + 2) % 2 != 0) continue;
-        // is k pe n pe kya answer hoga
-        int rem = n % ((2*k)- 2);
-
-        if(rem == 0 and x == 2){
-            ans.insert(k);
-        }
-        else if(rem <= k and x == rem){
-            ans.insert(k);
-        }
-        else if(rem > k){
-            int honachahiye = k - (rem - k);
-            if(honachahiye == x) ans.insert(k);
-        }
+    int n;
+    cin>>n;
+    vector<int> v(n);
+    for(int i = 0; i<n; i++){
+        cin>>v[i];
     }
-    for(auto it : v2){
-        // 2k - 2 = x
-        int k = (it + 2)/2;
-        if((it + 2) % 2 != 0) continue;
-        // is k pe n pe kya answer hoga
-        int rem = n % ((2*k) - 2);
-        if(rem == 0 and x == 2){
-            ans.insert(k);
+    int q;
+    cin>>q;
+    while(q--){
+        int l,r;
+        cin>>l>>r;
+        l--;
+        r--;
+        set<int> st;
+        for(int i = l; i<=r; i++){
+            st.insert(v[i]);
         }
-        else if(rem <= k and x == rem){
-            ans.insert(k);
+        int distinct = st.size();
+        for(auto ele : st){
+            vector<int> occ;
+            for(int i = l; i<=r; i++){
+                if(v[i] == ele){
+                    occ.push_back(i);
+                }
+            }
+            set<int> diff;
+            for(int i = 1; i<occ.size(); i++){
+                diff.insert(occ[i] - occ[i-1]);
+            }
+            if(diff.size() > 1){
+                
+            }
+            else{
+                distinct--;
+                break;
+            }
         }
-        else if(rem > k){
-            int honachahiye = k - (rem - k);
-            if(honachahiye == x) ans.insert(k);
-        }
+        cout<<distinct + 1<<endl;
     }
-
-    cout<<ans.size()<<endl;
 }
 /* logic ends */
 
@@ -135,7 +120,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    // cin>>t;
+    //cin>>t;
     t = 1;
     while(t--){
         solve();

@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.09.07 18:26:47
+ *    created: 2025.10.14 02:27:16
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,42 +70,45 @@
 using namespace std;
 
 /* write core logic here */
-double x(double a, double phle, double baad){
-    double b = baad - phle;
-    double h = 1000;
-    double ans = (b/h)*a + phle;
-    return ans;
-}
 void solve(){
-    double n;
+    int n;
     cin>>n;
-    double q;
-    cin>>q;
-    n++;
-    vector<double> verticleheight(n); // in metres 
+    vector<int> v(n);
     for(int i = 0; i<n; i++){
-        cin>>verticleheight[i];
+        cin>>v[i];
     }
-    vector<double> horizontal((n*1000) + 5);
-
-    for(double i = 0; i<(n-1)*1000; i++){
-        double phle = i/1000;
-        double baad = phle + 1;
-        double ans = x(i, verticleheight[phle], verticleheight[baad]);
-        // horizontal[i] = ans * 1000;
-        // debug(ans);
-    }
-    horizontal[(n-1)*1000] = verticleheight[n-1];
-
-    for(double i = 0; i<q; i++){
-        double g;
-        cin>>g;
-        vector<double> newv((n*1000) + 5);
-        for(double j = 0; j<=(n-1)*1000; j++){
-            newv[j] = horizontal[j] - (g * j);
-            debug(newv[j]);
+    int q;
+    cin>>q;
+    while(q--){
+        int l,r;
+        cin>>l>>r;
+        l--;
+        r--;
+        set<int> st;
+        for(int i = l; i<=r; i++){
+            st.insert(v[i]);
         }
-
+        int distinct = st.size();
+        for(auto ele : st){
+            vector<int> occ;
+            for(int i = l; i<=r; i++){
+                if(v[i] == ele){
+                    occ.push_back(i);
+                }
+            }
+            set<int> diff;
+            for(int i = 1; i<occ.size(); i++){
+                diff.insert(occ[i] - occ[i-1]);
+            }
+            if(diff.size() > 1){
+                
+            }
+            else{
+                distinct--;
+                break;
+            }
+        }
+        cout<<distinct + 1<<endl;
     }
 }
 /* logic ends */

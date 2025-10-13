@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.09.20 17:35:00
+ *    created: 2025.10.13 22:03:24
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,63 +70,48 @@
 using namespace std;
 
 /* write core logic here */
-void divisors(int n, vector<int> &v){
-    for(int i = 1; i*i <= n; i++){
-        if(n%i == 0){
-            v.push_back(i);
-            if(i != n/i) v.push_back(n/i);
-        }
-    }
-}
 void solve(){
-    int n,x;
-    cin>>n>>x;
-    int d1 = n - x;
-    int d2 = n + x - 2;
-    vector<int> v1, v2;
-    divisors(d1, v1);
-    divisors(d2, v2);
-
-    set<int> ans;
-    for(auto it : v1){
-        // 2k-2 = x
-        int k = (it + 2) / 2;
-        if((it + 2) % 2 != 0) continue;
-        // is k pe n pe kya answer hoga
-        int rem = n % ((2*k)- 2);
-
-        if(rem == 0 and x == 2){
-            ans.insert(k);
-
-        }
-        else if(rem <= k and x == rem){
-            ans.insert(k);
-
-        }
-        else if(rem > k){
-            int honachahiye = k - (rem - k);
-            if(honachahiye == x) ans.insert(k);
-        }
-    }
-    for(auto it : v2){
-        // 2k - 2 = x
-        int k = (it + 2)/2;
-        if((it + 2) % 2 != 0) continue;
-        // is k pe n pe kya answer hoga
-        int rem = n % ((2*k) - 2);
-        if(rem == 0 and x == 2){
-            ans.insert(k);
-        }
-        else if(rem <= k and x == rem){
-            ans.insert(k);
-        }
-        else if(rem > k){
-            int honachahiye = k - (rem - k);
-            if(honachahiye == x) ans.insert(k);
-        }
+    int n;
+    cin>>n;
+    int k;
+    cin>>k;
+    vector<int> v(n);
+    int sum = 0;
+    for(int i =0 ; i<n; i++){
+        cin>>v[i];
+        sum += v[i];
     }
 
-    cout<<ans.size()<<endl;
+    if(k < sum){
+        for(auto ele : v){
+            cout<<ele<<" ";
+        }
+        cout<<endl;
+        return;
+    }
+    if(k - sum == 1) {
+        int zc = 0;
+        int oc = 0;
+        int tc = 0;
+        for(auto ele : v){
+            if(ele == 0) zc++;
+            else if(ele == 1) oc++;
+            else tc++;
+        }
+
+        for(int i = 0; i<zc; i++){
+            cout<<0<<" ";
+        }
+        for(int i =0 ; i<tc; i++){
+            cout<<2<<" ";
+        }
+        for(int i = 0; i<oc; i++){
+            cout<<1<<" ";
+        }
+        cout<<endl;
+        return;
+    }
+    cout<<-1<<endl;
 }
 /* logic ends */
 
