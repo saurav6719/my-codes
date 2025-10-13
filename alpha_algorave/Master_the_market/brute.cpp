@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.10.14 04:49:36
+ *    created: 2025.10.14 04:56:09
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,48 +70,15 @@
 using namespace std;
 
 /* write core logic here */
-struct node{
-    int min;
-    int max;
-    int ans;
-};
-
-vector<node> segment_tree;
-
-void build(int i, int lo, int hi, vector<int> &v, int n){
-    if(lo == hi){
-        segment_tree[i].min = v[lo];
-        segment_tree[i].max = v[lo];
-        segment_tree[i].ans = -1e15;
-        return;
+int f(vector<int> &v){
+    int n = v.size();
+    int ans = -1e15;
+    for(int i = 0; i<n; i++){
+        for(int j = i+1; j<n; j++){
+            ans = max(ans, v[j] - v[i]);
+        }
     }
-    int mid = lo + (hi - lo)/2;
-    build(2*i+1, lo, mid, v, n);
-    build(2*i+2, mid+1, hi, v, n);
-    segment_tree[i].min = min(segment_tree[2*i+1].min, segment_tree[2*i+2].min);
-    segment_tree[i].max = max(segment_tree[2*i+1].max, segment_tree[2*i+2].max);
-    segment_tree[i].ans = max({segment_tree[2*i+1].ans, segment_tree[2*i+2].ans});
-    segment_tree[i].ans = max(segment_tree[i].ans, segment_tree[2*i+2].max - segment_tree[2*i+1].min);
-}
-
-void update(int i, int lo, int hi, int idx, int value){
-    if(lo == hi){
-        segment_tree[i].min = value;
-        segment_tree[i].max = value;
-        segment_tree[i].ans = -1e15;
-        return;
-    }
-    int mid = lo + (hi - lo)/2;
-    if(idx <= mid){
-        update(2*i+1, lo, mid, idx, value);
-    }
-    else{
-        update(2*i+2, mid+1, hi, idx, value);
-    }
-    segment_tree[i].min = min(segment_tree[2*i+1].min, segment_tree[2*i+2].min);
-    segment_tree[i].max = max(segment_tree[2*i+1].max, segment_tree[2*i+2].max);
-    segment_tree[i].ans = max({segment_tree[2*i+1].ans, segment_tree[2*i+2].ans});
-    segment_tree[i].ans = max(segment_tree[i].ans, segment_tree[2*i+2].max - segment_tree[2*i+1].min);
+    return ans;
 }
 void solve(){
     int n,q;
@@ -121,22 +88,14 @@ void solve(){
         cin>>v[i];
     }
 
-    vector<int> arr(n);
-    segment_tree.resize(4*n);
-
-    for(int i = 0; i<n; i++){
-        arr[i] = v[i];
-    }
-
-    build(0, 0, n-1, arr, n);
-    cout<<segment_tree[0].ans<<" ";
+    cout<<f(v)<<" ";
 
     while(q--){
         int idx, value;
         cin>>idx>>value;
         idx--;
-        update(0, 0, n-1, idx, value);
-        cout<<segment_tree[0].ans<<" ";
+        v[idx] = value;
+        cout<<f(v)<<" ";
     }
 }
 /* logic ends */

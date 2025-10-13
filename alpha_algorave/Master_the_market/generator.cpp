@@ -7,8 +7,8 @@ int main() {
 
     srand(time(0));
 
-    int n = rand() % 200000 + 1; // 1 ≤ n ≤ 100
-    int q = rand() % 200000 + 1; // 1 ≤ q ≤ 100
+    int n = rand() % 100 + 1; // 1 ≤ n ≤ 100
+    int q = rand() % 100 + 1; // 1 ≤ q ≤ 100
     cout << n << " " << q << "\n";
 
     // Initial stock prices

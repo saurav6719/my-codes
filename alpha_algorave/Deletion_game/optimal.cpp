@@ -191,6 +191,20 @@ void solve(){
             mp[v[i]] = i;
         }
     }
+
+    vector<int> prev_equal_index(n, -1);
+    map<int,int> mp2;
+    for(int i = 0; i<n; i++){
+        if(mp2.find(v[i]) == mp2.end()){
+            mp2[v[i]] = i;
+        }
+        else{
+            prev_equal_index[i] = mp2[v[i]];
+            mp2[v[i]] = i;
+        }
+    }
+
+
     vector<int> aplast(n);
     for(int i = n-1; i>=0; i--){
         if(next_equal_index[i] == -1){
@@ -212,19 +226,6 @@ void solve(){
             aplast[i] = next_to_next;
         }
     }
-    // print(aplast);
-
-    vector<int> prev_equal_index(n, -1);
-    map<int,int> mp2;
-    for(int i = 0; i<n; i++){
-        if(mp2.find(v[i]) == mp2.end()){
-            mp2[v[i]] = i;
-        }
-        else{
-            prev_equal_index[i] = mp2[v[i]];
-            mp2[v[i]] = i;
-        }
-    }
 
     vector<pp> ranges;
     for(int i = 0; i<n; i++){
@@ -238,7 +239,6 @@ void solve(){
         return a.first < b.first;
     });
 
-    // printpp(ranges);
     int m = ranges.size();
     vector<int> max_r_till_now(m);
     for(int i = 0; i<m; i++){
