@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.10.14 04:49:36
+ *    created: 2025.10.14 00:52:49
  *    We stop at Candidate Master in 2025
  **/
 
@@ -55,88 +55,222 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printpp(v)
 #define printset(s)
+#define printpp(v)
 #endif
 #define endl "\n"
 #define MOD 1000000007
 #define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
 #define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
 #define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
-#define int long long int
+// #define int long long int
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-struct node{
-    int min;
-    int max;
-    int ans;
-};
+vector<int> distinct_in_range(vector<int> &v, int n, vector<pp> &queries){
+    class SumSegmentTree {
+    private:
+        std::vector<int> tree;
+        int n;
+    
+        // Build the segment tree from the initial array
+        void build(const std::vector<int> &arr, int node, int start, int end) {
+            if (start == end) {
+                // Leaf node
+                tree[node] = arr[start];
+            } else {
+                int mid = (start + end) / 2;
+                build(arr, 2 * node + 1, start, mid);        // Build left subtree
+                build(arr, 2 * node + 2, mid + 1, end);      // Build right subtree
+                tree[node] = tree[2 * node + 1] + tree[2 * node + 2];  // Sum of left and right
+            }
+        }
+    
+        // Update an element in the segment tree
+        void update(int node, int start, int end, int idx, int value) {
+            if (start == end) {
+                // Leaf node
+                tree[node] = value;
+            } else {
+                int mid = (start + end) / 2;
+                if (idx <= mid) {
+                    // Update left child
+                    update(2 * node + 1, start, mid, idx, value);
+                } else {
+                    // Update right child
+                    update(2 * node + 2, mid + 1, end, idx, value);
+                }
+                tree[node] = tree[2 * node + 1] + tree[2 * node + 2];  // Recalculate sum
+            }
+        }
+    
+        // Query the sum of a range
+        int query(int node, int start, int end, int L, int R) {
+            if (R < start || end < L) {
+                return 0;  // Out of range
+            }
+            if (L <= start && end <= R) {
+                return tree[node];  // Fully within range
+            }
+            int mid = (start + end) / 2;
+            int leftSum = query(2 * node + 1, start, mid, L, R);
+            int rightSum = query(2 * node + 2, mid + 1, end, L, R);
+            return leftSum + rightSum;
+        }
+    
+    public:
+        // Constructor to initialize the segment tree
+        SumSegmentTree(const std::vector<int> &arr) {
+            n = arr.size();
+            tree.resize(4 * n);
+            build(arr, 0, 0, n - 1);
+        }
+    
+        // Update a specific index with a new value
+        void update(int idx, int value) {
+            update(0, 0, n - 1, idx, value);
+        }
+    
+        // Query the sum in the range [L, R]
+        int query(int L, int R) {
+            return query(0, 0, n - 1, L, R);
+        }
+    };
+    int q = queries.size();
+    map<int,int> last_index;
+    vector<int> arr(n,0);
+    SumSegmentTree seg(arr);
+    vector<int> res(q);
+    map<int,vector<int> > indices; // map representing queries ending at r
+    for(int i = 0; i<q; i++){
+        indices[queries[i].second].push_back(i);
+    }
 
-vector<node> segment_tree;
+    for(int i = 0; i<n; i++){
+        if(last_index.find(v[i]) == last_index.end()){
+            seg.update(i, 1);
+            last_index[v[i]] = i;
+        }
+        else{
+            int last_idx = last_index[v[i]];
+            seg.update(last_idx, 0);
+            seg.update(i, 1);
+            last_index[v[i]] = i;
+        }
 
-void build(int i, int lo, int hi, vector<int> &v, int n){
-    if(lo == hi){
-        segment_tree[i].min = v[lo];
-        segment_tree[i].max = v[lo];
-        segment_tree[i].ans = -1e15;
-        return;
+        // check for any query ending at this i 
+        if(indices.find(i) != indices.end()){
+            for(auto idx : indices[i]){
+                int l = queries[idx].first;
+                int r = i;
+                // answer is prefix sum between l and r
+                res[idx] = seg.query(l, r);
+            }
+        }
     }
-    int mid = lo + (hi - lo)/2;
-    build(2*i+1, lo, mid, v, n);
-    build(2*i+2, mid+1, hi, v, n);
-    segment_tree[i].min = min(segment_tree[2*i+1].min, segment_tree[2*i+2].min);
-    segment_tree[i].max = max(segment_tree[2*i+1].max, segment_tree[2*i+2].max);
-    segment_tree[i].ans = max({segment_tree[2*i+1].ans, segment_tree[2*i+2].ans});
-    segment_tree[i].ans = max(segment_tree[i].ans, segment_tree[2*i+2].max - segment_tree[2*i+1].min);
-}
-
-void update(int i, int lo, int hi, int idx, int value){
-    if(lo == hi){
-        segment_tree[i].min = value;
-        segment_tree[i].max = value;
-        segment_tree[i].ans = -1e15;
-        return;
-    }
-    int mid = lo + (hi - lo)/2;
-    if(idx <= mid){
-        update(2*i+1, lo, mid, idx, value);
-    }
-    else{
-        update(2*i+2, mid+1, hi, idx, value);
-    }
-    segment_tree[i].min = min(segment_tree[2*i+1].min, segment_tree[2*i+2].min);
-    segment_tree[i].max = max(segment_tree[2*i+1].max, segment_tree[2*i+2].max);
-    segment_tree[i].ans = max({segment_tree[2*i+1].ans, segment_tree[2*i+2].ans});
-    segment_tree[i].ans = max(segment_tree[i].ans, segment_tree[2*i+2].max - segment_tree[2*i+1].min);
+    return res;
 }
 void solve(){
-    int n,q;
-    cin>>n>>q;
+    int n;
+    cin>>n;
     vector<int> v(n);
     for(int i = 0; i<n; i++){
         cin>>v[i];
     }
-
-    vector<int> arr(n);
-    segment_tree.resize(4*n);
-
-    for(int i = 0; i<n; i++){
-        arr[i] = v[i];
+    map<int,int> mp;
+    vector<int> next_equal_index(n, -1);
+    for(int i = n-1;i>=0; i--){
+        if(mp.find(v[i]) == mp.end()){
+            mp[v[i]] = i;
+        }
+        else{
+            next_equal_index[i] = mp[v[i]];
+            mp[v[i]] = i;
+        }
     }
 
-    build(0, 0, n-1, arr, n);
-    cout<<segment_tree[0].ans<<" ";
+    vector<int> prev_equal_index(n, -1);
+    map<int,int> mp2;
+    for(int i = 0; i<n; i++){
+        if(mp2.find(v[i]) == mp2.end()){
+            mp2[v[i]] = i;
+        }
+        else{
+            prev_equal_index[i] = mp2[v[i]];
+            mp2[v[i]] = i;
+        }
+    }
 
-    while(q--){
-        int idx, value;
-        cin>>idx>>value;
-        idx--;
-        update(0, 0, n-1, idx, value);
-        cout<<segment_tree[0].ans<<" ";
+
+    vector<int> aplast(n);
+    for(int i = n-1; i>=0; i--){
+        if(next_equal_index[i] == -1){
+            aplast[i] = n;
+            continue;
+        }
+        int idx = next_equal_index[i];
+        int next_to_next = next_equal_index[idx];
+        if(next_to_next == -1){
+            aplast[i] = n;
+            continue;
+        }
+        int diff1 = idx - i;
+        int diff2 = next_to_next - idx;
+        if(diff1 == diff2){
+            aplast[i] = aplast[idx];
+        }
+        else{
+            aplast[i] = next_to_next;
+        }
+    }
+
+    vector<pp> ranges;
+    for(int i = 0; i<n; i++){
+        int prev = prev_equal_index[i];
+        int lastap = aplast[i];
+        ranges.push_back({prev+1, lastap-1});
+    }
+
+    sort(ranges.begin(), ranges.end(), [](const pp &a, const pp &b){
+        if(a.first == b.first) return a.second < b.second;
+        return a.first < b.first;
+    });
+
+    int m = ranges.size();
+    vector<int> max_r_till_now(m);
+    for(int i = 0; i<m; i++){
+        if(i == 0){
+            max_r_till_now[i] = ranges[i].second;
+        }
+        else{
+            max_r_till_now[i] = max(max_r_till_now[i-1], ranges[i].second);
+        }
+    }
+
+    int q;
+    cin>>q;
+    vector<pp> queries(q);
+    for(int i = 0; i<q; i++){
+        cin>>queries[i].first>>queries[i].second;
+        queries[i].first--;
+        queries[i].second--;
+    }
+
+    vector<int> dist = distinct_in_range(v, n, queries);
+    for(int i = 0; i<q; i++){
+        int l = queries[i].first;
+        int r = queries[i].second;
+        int distinct = dist[i];
+        int x = upper_bound(ranges.begin(), ranges.end(), make_pair(l, INT32_MAX)) - ranges.begin();
+        x--;
+        int bestr = max_r_till_now[x];
+        if(bestr >= r){
+            cout<<distinct<<endl;
+        }
+        else cout<<distinct + 1<<endl;
     }
 }
 /* logic ends */
@@ -148,7 +282,7 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
+    // cin>>t;
     t = 1;
     while(t--){
         solve();

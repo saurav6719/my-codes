@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.10.14 01:30:01
+ *    created: 2025.10.16 19:36:16
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,133 +70,137 @@
 using namespace std;
 
 /* write core logic here */
-
-vector<int> ans(vector<int> &v, int n, vector<pp> &queries){
-    class SumSegmentTree {
-    private:
-        std::vector<int> tree;
-        int n;
-    
-        // Build the segment tree from the initial array
-        void build(const std::vector<int> &arr, int node, int start, int end) {
-            if (start == end) {
-                // Leaf node
-                tree[node] = arr[start];
-            } else {
-                int mid = (start + end) / 2;
-                build(arr, 2 * node + 1, start, mid);        // Build left subtree
-                build(arr, 2 * node + 2, mid + 1, end);      // Build right subtree
-                tree[node] = tree[2 * node + 1] + tree[2 * node + 2];  // Sum of left and right
+class segtree {
+public:
+    int size;
+    vector<int>maxi;
+    void init(int n)
+    {
+        size = 1;
+        while ( size < n )
+            size *= 2;
+        maxi.assign(2*size, 0);
+    }
+    void build (vector<int>&a, int x, int lx, int rx)
+    {
+        if ( rx - lx == 1 ) //reached leaf node
+        {
+            if ( lx < (int)a.size()) //check if even valid element
+            {
+                maxi[x] = a[lx];
             }
+            return;
         }
-    
-        // Update an element in the segment tree
-        void update(int node, int start, int end, int idx, int value) {
-            if (start == end) {
-                // Leaf node
-                tree[node] = value;
-            } else {
-                int mid = (start + end) / 2;
-                if (idx <= mid) {
-                    // Update left child
-                    update(2 * node + 1, start, mid, idx, value);
-                } else {
-                    // Update right child
-                    update(2 * node + 2, mid + 1, end, idx, value);
-                }
-                tree[node] = tree[2 * node + 1] + tree[2 * node + 2];  // Recalculate sum
-            }
-        }
-    
-        // Query the sum of a range
-        int query(int node, int start, int end, int L, int R) {
-            if (R < start || end < L) {
-                return 0;  // Out of range
-            }
-            if (L <= start && end <= R) {
-                return tree[node];  // Fully within range
-            }
-            int mid = (start + end) / 2;
-            int leftSum = query(2 * node + 1, start, mid, L, R);
-            int rightSum = query(2 * node + 2, mid + 1, end, L, R);
-            return leftSum + rightSum;
-        }
-    
-    public:
-        // Constructor to initialize the segment tree
-        SumSegmentTree(const std::vector<int> &arr) {
-            n = arr.size();
-            tree.resize(4 * n);
-            build(arr, 0, 0, n - 1);
-        }
-    
-        // Update a specific index with a new value
-        void update(int idx, int value) {
-            update(0, 0, n - 1, idx, value);
-        }
-    
-        // Query the sum in the range [L, R]
-        int query(int L, int R) {
-            return query(0, 0, n - 1, L, R);
-        }
-    };
-    int q = queries.size();
-    map<int,int> last_index;
-    vector<int> arr(n,0);
-    SumSegmentTree seg(arr);
-    vector<int> res(q);
-    map<int,vector<int> > indices; // map representing queries ending at r
-    for(int i = 0; i<q; i++){
-        indices[queries[i].second].push_back(i);
+        int m = (lx + rx)/2;
+        build(a, 2*x+1, lx, m);
+        build(a, 2*x+2, m, rx);
+        maxi[x] = max(maxi[2*x+1] , maxi[2*x+2]);
     }
+    void build (vector<int>&a)
+    {
+        build(a, 0, 0, size);
+    }
+    void add (int i, int v, int x, int lx, int rx)
+    {
+        if ( rx - lx == 1 )
+        {
+            maxi[x] += v;
+            return;
+        }
+        int m = (lx + rx)/2;
+        if ( i < m )
+        {
+            add(i, v, 2*x+1, lx, m); //checking the left subtree as i < m 
+        }
+        else
+        {
+            add(i, v, 2*x+2, m, rx); //checking the right subtree as i >= m
+        }
+        maxi[x] = max(maxi[2*x+1] , maxi[2*x+2]);
+    }
+    void add (int i, int v)
+    {
+        add(i, v, 0, 0, size);
+    }
+    int getMax ( int l, int r, int x, int lx, int rx)
+    {
+        if ( lx >= l && rx <= r )
+            return maxi[x];
+        if ( r <= lx || l >= rx )
+            return -1e18;
+        int m = (lx + rx)/2;
+        return max(getMax(l, r, 2*x+1, lx, m), getMax(l, r, 2*x+2, m, rx));
+    }
+    int getMax ( int l, int r)
+    {
+        return getMax (l, r, 0, 0, size);
+    }
+};
+void solve()
+{
+    int n, x;
+    cin>>n>>x;
+    vector<int>chests(n);
+    for (int i = 0; i<n; i++)
+        cin>>chests[i];
+    vector<int>pref(n), pref2(n);
+    pref[0] = chests[0];
+    for (int i = 1; i<n; i++){
+        pref[i] = pref[i-1] + chests[i];
+        pref2[i] = pref[i-1];
+    }
+    /*
+    dp[i][j] = maximum coins i can collect from index i till n-1 with exactly j explosions
 
-    for(int i = 0; i<n; i++){
-        if(last_index.find(v[i]) == last_index.end()){
-            seg.update(i, 1);
-            last_index[v[i]] = i;
-        }
-        else{
-            int last_idx = last_index[v[i]];
-            seg.update(last_idx, 0);
-            seg.update(i, 1);
-            last_index[v[i]] = i;
-        }
+    say i am at index i
+    I iterate j from 0 to x
+    dp[i][j] = maxValue of (dp[k][j-1] where k ranges from i+1 till i + v[i] -> find out using segtree + sum from index i + 1 till index k-1 ) -> this is when I am certain to do an explosion in the range
+    when i am not doing any explosion i can just have the sum from index i + 1 till index i + x
+    once this is done, add dp[i][j] to the segtree
 
-        // check for any query ending at this i 
-        if(indices.find(i) != indices.end()){
-            for(auto idx : indices[i]){
-                int l = queries[idx].first;
-                int r = i;
-                // answer is prefix sum between l and r
-                res[idx] = seg.query(l, r);
-            }
+    */
+    //REXPLODED
+    // This is the brute force solution
+    // for (int i = 0; i<n; i++){
+    //     for (int j = i+1; j<=min(n-1, i+v[i]); j++){
+    //         dp[i] = max(dp[i], pref[j] - pref[i]); //-> pref and no dp[j]
+    //         dp[i] = max(dp[i], dp[j] + pref[j-1] - pref[i]); //-> pref2
+    //     }
+    // }
+    vector<segtree>st(x + 1);
+    vector<segtree>st2(x + 1);
+    for (int i = 0; i<=x; i++){
+        st[i].init(n);
+        st[i].build(pref);
+        st2[i].init(n);
+        st2[i].build(pref2);
+    }
+    vector<vector<int>>dp(n, vector<int>(x + 1, 0));
+    dp[n-1][0] = chests[n-1];
+    st2[0].add(n-1, dp[n-1][0]);
+    // see(dp);
+    // see(chests[n-1]);
+    for (int i = n-2; i>=0; i--){
+        //no explosion done here
+        int temp = chests[i];
+        dp[i][0] = temp;
+        //explosion done
+        for (int j = 1; j<=x; j++){
+            int uprange = min(i + chests[i], n-1);
+            int type1 = st[j-1].getMax(i+1, uprange+1);
+            int type2 = st2[j-1].getMax(i+1, uprange+1);
+            temp = max(type1 - pref[i], type2 - pref[i]);
+            temp = max(0ll, temp);
+            dp[i][j] = temp;
+            st2[j].add(i, dp[i][j]);
         }
     }
-    return res;
-}
-void solve(){
-    int n;
-    cin>>n;
-    vector<int> v(n);
-    for(int i = 0; i<n; i++){
-        cin>>v[i];
+    int ans = 0;
+    for (int i = 0; i<=x; i++){
+        ans = max(ans, dp[0][i]);
     }
-    int q;
-    cin>>q;
-    vector<pp> queries(q);
-    for(int i = 0; i<q; i++){
-        cin>>queries[i].first>>queries[i].second;
-    }
-
-    for(int i = 0; i<q; i++){
-        queries[i].first--;
-        queries[i].second--;
-    }
-    vector<int> res = ans(v, n, queries);
-    for(auto ele : res){
-        cout<<ele<<endl;
-    }
-
+    cout<<ans<<endl;
+    // see(dp);
 }
 /* logic ends */
 

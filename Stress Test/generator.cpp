@@ -1,3 +1,9 @@
+/**
+ *    author: Saurav
+ *    created: 2025.10.14
+ *    Random input generator
+**/
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -7,21 +13,28 @@ int main() {
 
     srand(time(0));
 
-    int n = rand() % 200000 + 1; // 1 ≤ n ≤ 100
-    int q = rand() % 200000 + 1; // 1 ≤ q ≤ 100
-    cout << n << " " << q << "\n";
+    int T = 1; // number of test cases (you can make this random if needed)
+    // cout << T << "\n";
 
-    // Initial stock prices
-    for (int i = 1; i <= n; i++) {
-        cout << (rand() % 1000000000 + 1) << (i == n ? '\n' : ' ');
+    while (T--) {
+        int n = rand() % 100000 + 1; // 1 <= n <= 100000
+        int q = rand() % 100000 + 1; // 1 <= q <= 100000
+        cout << n << "\n";
+
+        // Generate array
+        for (int i = 0; i < n; i++) {
+            int val = rand() % 1000000000 + 1; // 1 <= a[i] <= 1000000000
+            cout << val << (i + 1 == n ? '\n' : ' ');
+        }
+
+        cout << q << "\n";
+
+        // Generate queries
+        for (int i = 0; i < q; i++) {
+            int l = rand() % n + 1;
+            int r = rand() % n + 1;
+            if (l > r) swap(l, r);
+            cout << l << " " << r << "\n";
+        }
     }
-
-    // q updates (i, x)
-    for (int j = 0; j < q; j++) {
-        int i = rand() % n + 1; // 1 ≤ i ≤ n
-        int x = rand() % 1000000000 + 1; // 1 ≤ x ≤ 1e9
-        cout << i << " " << x << "\n";
-    }
-
-    return 0;
 }

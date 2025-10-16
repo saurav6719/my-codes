@@ -1,158 +1,126 @@
-/**
- *    author: Saurav
- *    created: 2025.10.14 04:49:36
- *    We stop at Candidate Master in 2025
- **/
+/*
+Author : MadhavCoding
+*/
 
-/* includes and all */
+#define _Alignof alignof
 
-#include<bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 
-#define printset(s) do { \
-    cout << "set-- starts" << endl; \
-    for (auto it = s.begin(); it != s.end(); ++it) { \
-        cout << *it << endl; \
-    } \
-    cout << "set-- ends" << endl; \
-} while(0)
-
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#define printset(s)
-#endif
+#define ll long long
+#define ld long double
+#define pi pair<int, int>
+#define pll pair<ll, ll>
 #define endl "\n"
-#define MOD 1000000007
-#define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
-#define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
-#define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
-#define int long long int
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int>
+
+const ll MOD = 1e9 + 7;
+const ll N = 1e5;
+
 using namespace std;
+using namespace __gnu_pbds;
+typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
+typedef tree<ll, ll, less<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_map;
 
-/* write core logic here */
-struct node{
-    int min;
-    int max;
-    int ans;
-};
-
-vector<node> segment_tree;
-
-void build(int i, int lo, int hi, vector<int> &v, int n){
-    if(lo == hi){
-        segment_tree[i].min = v[lo];
-        segment_tree[i].max = v[lo];
-        segment_tree[i].ans = -1e15;
-        return;
-    }
-    int mid = lo + (hi - lo)/2;
-    build(2*i+1, lo, mid, v, n);
-    build(2*i+2, mid+1, hi, v, n);
-    segment_tree[i].min = min(segment_tree[2*i+1].min, segment_tree[2*i+2].min);
-    segment_tree[i].max = max(segment_tree[2*i+1].max, segment_tree[2*i+2].max);
-    segment_tree[i].ans = max({segment_tree[2*i+1].ans, segment_tree[2*i+2].ans});
-    segment_tree[i].ans = max(segment_tree[i].ans, segment_tree[2*i+2].max - segment_tree[2*i+1].min);
-}
-
-void update(int i, int lo, int hi, int idx, int value){
-    if(lo == hi){
-        segment_tree[i].min = value;
-        segment_tree[i].max = value;
-        segment_tree[i].ans = -1e15;
-        return;
-    }
-    int mid = lo + (hi - lo)/2;
-    if(idx <= mid){
-        update(2*i+1, lo, mid, idx, value);
-    }
-    else{
-        update(2*i+2, mid+1, hi, idx, value);
-    }
-    segment_tree[i].min = min(segment_tree[2*i+1].min, segment_tree[2*i+2].min);
-    segment_tree[i].max = max(segment_tree[2*i+1].max, segment_tree[2*i+2].max);
-    segment_tree[i].ans = max({segment_tree[2*i+1].ans, segment_tree[2*i+2].ans});
-    segment_tree[i].ans = max(segment_tree[i].ans, segment_tree[2*i+2].max - segment_tree[2*i+1].min);
-}
-void solve(){
-    int n,q;
-    cin>>n>>q;
-    vector<int> v(n);
-    for(int i = 0; i<n; i++){
+void solve()
+{
+    ll n; cin>>n;
+    vector<ll> v(n);
+    for(int i = 0; i < n; i++)
+    {
         cin>>v[i];
     }
+    // for(auto i : v) cout<<i<<" ";
+    // cout<<endl;
 
-    vector<int> arr(n);
-    segment_tree.resize(4*n);
+    ll q; cin>>q;
+    vector<pair<pll, ll>> query(q);
+    for (int i = 0; i < q; i++)
+    {
+        ll l, r;
+        cin>>l>>r;
+        l--; r--;
+        query[i] = {{l, r}, i};
+    }
+    
+    sort(query.begin(), query.end(), [](pair<pll, ll> a, pair<pll, ll> b){
+        return a.first.second < b.first.second;
+    });
 
-    for(int i = 0; i<n; i++){
-        arr[i] = v[i];
+    vector<ll> res(q);
+
+    map<ll, ll> last, diff, endpt;
+    ordered_set last_index, end_point;
+
+    int j = 0;
+    for(auto p : query)
+    {
+        ll l = p.first.first, r = p.first.second, ind = p.second;
+
+        // cout<<"l r ind : "<<l<<" "<<r<<" "<<ind<<endl;
+
+        while(j <= r)
+        {
+            if(last.find(v[j]) == last.end())
+            {
+                last[v[j]] = j;
+                last_index.insert(last[v[j]]);
+            }
+            else if(diff.find(v[j]) == diff.end())
+            {
+                diff[v[j]] = j - last[v[j]];
+
+                last_index.erase(last[v[j]]);
+                last[v[j]] = j;
+                last_index.insert(last[v[j]]);
+            }
+            else
+            {
+                ll cur_diff = j - last[v[j]];
+                if(diff[v[j]] != cur_diff)
+                {
+                    end_point.erase(endpt[v[j]]);
+                    endpt[v[j]] = j;
+                    end_point.insert(endpt[v[j]]);
+                }
+                diff[v[j]] = cur_diff;
+                
+                last_index.erase(last[v[j]]);
+                last[v[j]] = j;
+                last_index.insert(last[v[j]]);
+            }
+            j++;
+        }
+
+        ll siz = last_index.size();
+        ll temp = last_index.order_of_key(l);
+        ll distinct = siz - temp;
+        // cout<<"distinct : "<<distinct<<endl;
+
+        siz = end_point.size();
+        temp = end_point.order_of_key(l);
+        ll curr_end = siz - temp;
+        // cout<<"curr_end : "<<curr_end<<endl;
+
+        ll curr_ans = distinct + 1;
+        if(curr_end < distinct) curr_ans--;
+
+        res[ind] = curr_ans;
     }
 
-    build(0, 0, n-1, arr, n);
-    cout<<segment_tree[0].ans<<" ";
-
-    while(q--){
-        int idx, value;
-        cin>>idx>>value;
-        idx--;
-        update(0, 0, n-1, idx, value);
-        cout<<segment_tree[0].ans<<" ";
-    }
+    for(auto i : res) cout<<i<<endl;
 }
-/* logic ends */
 
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
-    int t;
-    //cin>>t;
-    t = 1;
-    while(t--){
+int main(int argc, char const *argv[])
+{
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr); std::cout.tie(nullptr);
+
+    int t = 1;
+    // cin>>t;
+    while(t--)
+    {
         solve();
     }
-return 0;
+    return 0;
 }
-
