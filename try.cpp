@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.10.16 19:36:16
+ *    created: 2025.10.17 05:05:18
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,137 +70,70 @@
 using namespace std;
 
 /* write core logic here */
-class segtree {
-public:
-    int size;
-    vector<int>maxi;
-    void init(int n)
-    {
-        size = 1;
-        while ( size < n )
-            size *= 2;
-        maxi.assign(2*size, 0);
+void f(vector<vector<int> > &dp, int n, int chahi, vector<int> &ans, int i){
+    if(i == 0) return ;
+    // dekho yaha pe kya liya hoga
+    for(int j = 1;j<=n; j++){
+        if(i - j < 0) continue;
+        // yaha pe j liya hai
+        int yahawala = j * (j + 1) / 2;
+        int lastidx = i - j;
+        int lastk = chahi - yahawala;
+        if(lastk < 0) continue;
+        if(dp[lastidx][lastk] == 1) {
+            ans.push_back(j);
+            f(dp, n, lastk, ans, lastidx);
+            return ;
+        }
     }
-    void build (vector<int>&a, int x, int lx, int rx)
-    {
-        if ( rx - lx == 1 ) //reached leaf node
-        {
-            if ( lx < (int)a.size()) //check if even valid element
-            {
-                maxi[x] = a[lx];
+}
+void solve(){
+    int n,k;
+    cin>>n>>k;
+    int total = n * (n+1)/2;
+    vector<vector<int> > dp(n+1, vector<int> (total+1, 0));
+    dp[0][0] = 1;
+    for(int i = 1; i<=n; i++){
+        for(int l = 0; l<=total ;l++){
+            for(int j = 1; j<=n; j++){
+                if(i - j < 0) continue;
+                // yaha pe j liya hai
+                int yahawala = j * (j + 1) / 2;
+                int lastidx = i - j;
+                int lastk = l - yahawala;
+                if(lastk < 0) continue;
+                if(dp[lastidx][lastk] == 1) {
+                    dp[i][l] = 1;
+                }
             }
-            return;
         }
-        int m = (lx + rx)/2;
-        build(a, 2*x+1, lx, m);
-        build(a, 2*x+2, m, rx);
-        maxi[x] = max(maxi[2*x+1] , maxi[2*x+2]);
     }
-    void build (vector<int>&a)
-    {
-        build(a, 0, 0, size);
-    }
-    void add (int i, int v, int x, int lx, int rx)
-    {
-        if ( rx - lx == 1 )
-        {
-            maxi[x] += v;
-            return;
-        }
-        int m = (lx + rx)/2;
-        if ( i < m )
-        {
-            add(i, v, 2*x+1, lx, m); //checking the left subtree as i < m 
-        }
-        else
-        {
-            add(i, v, 2*x+2, m, rx); //checking the right subtree as i >= m
-        }
-        maxi[x] = max(maxi[2*x+1] , maxi[2*x+2]);
-    }
-    void add (int i, int v)
-    {
-        add(i, v, 0, 0, size);
-    }
-    int getMax ( int l, int r, int x, int lx, int rx)
-    {
-        if ( lx >= l && rx <= r )
-            return maxi[x];
-        if ( r <= lx || l >= rx )
-            return -1e18;
-        int m = (lx + rx)/2;
-        return max(getMax(l, r, 2*x+1, lx, m), getMax(l, r, 2*x+2, m, rx));
-    }
-    int getMax ( int l, int r)
-    {
-        return getMax (l, r, 0, 0, size);
-    }
-};
-void solve()
-{
-    int n, x;
-    cin>>n>>x;
-    vector<int>chests(n);
-    for (int i = 0; i<n; i++)
-        cin>>chests[i];
-    vector<int>pref(n), pref2(n);
-    pref[0] = chests[0];
-    for (int i = 1; i<n; i++){
-        pref[i] = pref[i-1] + chests[i];
-        pref2[i] = pref[i-1];
-    }
-    /*
-    dp[i][j] = maximum coins i can collect from index i till n-1 with exactly j explosions
+    print2d(dp);
+    int chahi = total - k;
 
-    say i am at index i
-    I iterate j from 0 to x
-    dp[i][j] = maxValue of (dp[k][j-1] where k ranges from i+1 till i + v[i] -> find out using segtree + sum from index i + 1 till index k-1 ) -> this is when I am certain to do an explosion in the range
-    when i am not doing any explosion i can just have the sum from index i + 1 till index i + x
-    once this is done, add dp[i][j] to the segtree
-
-    */
-    //REXPLODED
-    // This is the brute force solution
-    // for (int i = 0; i<n; i++){
-    //     for (int j = i+1; j<=min(n-1, i+v[i]); j++){
-    //         dp[i] = max(dp[i], pref[j] - pref[i]); //-> pref and no dp[j]
-    //         dp[i] = max(dp[i], dp[j] + pref[j-1] - pref[i]); //-> pref2
-    //     }
-    // }
-    vector<segtree>st(x + 1);
-    vector<segtree>st2(x + 1);
-    for (int i = 0; i<=x; i++){
-        st[i].init(n);
-        st[i].build(pref);
-        st2[i].init(n);
-        st2[i].build(pref2);
-    }
-    vector<vector<int>>dp(n, vector<int>(x + 1, 0));
-    dp[n-1][0] = chests[n-1];
-    st2[0].add(n-1, dp[n-1][0]);
-    // see(dp);
-    // see(chests[n-1]);
-    for (int i = n-2; i>=0; i--){
-        //no explosion done here
-        int temp = chests[i];
-        dp[i][0] = temp;
-        //explosion done
-        for (int j = 1; j<=x; j++){
-            int uprange = min(i + chests[i], n-1);
-            int type1 = st[j-1].getMax(i+1, uprange+1);
-            int type2 = st2[j-1].getMax(i+1, uprange+1);
-            temp = max(type1 - pref[i], type2 - pref[i]);
-            temp = max(0ll, temp);
-            dp[i][j] = temp;
-            st2[j].add(i, dp[i][j]);
+    if(dp[n][chahi] == 1){
+        vector<int> ans;
+        f(dp, n, chahi, ans, n);
+        reverse(ans.begin(), ans.end());
+        // for(auto x: ans) cout<<x<<" ";
+        // cout<<endl;
+        set<int> st;
+        for(int i = 1; i<=n; i++) st.insert(i);
+        for(auto x : ans){
+            set<int> curr;
+            int cnt = 0;
+            while(cnt < x){
+                curr.insert(*st.rbegin());
+                st.erase(--st.end());
+                cnt++;
+            }
+            for(auto y: curr) cout<<y<<" ";
         }
+        cout<<endl;
     }
-    int ans = 0;
-    for (int i = 0; i<=x; i++){
-        ans = max(ans, dp[0][i]);
+    else{
+        cout<<0<<endl;
     }
-    cout<<ans<<endl;
-    // see(dp);
 }
 /* logic ends */
 
@@ -211,8 +144,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    // t = 1;
     while(t--){
         solve();
     }
