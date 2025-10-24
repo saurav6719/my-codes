@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.10.16 18:16:48
+ *    created: 2025.10.19 21:12:00
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,47 +70,24 @@
 using namespace std;
 
 /* write core logic here */
-int n;
-int x;
-vector<int> input;
-vector<int> pref;
-int f(int l, int r){
-    if(l > r) return 0;
-    if(l == 0) return pref[r];
-    return pref[r] - pref[l-1];
-}
-
-int dp[1001][101];
-int f2(int i, int x){
-    // i se n-1 kaa answer if i pe explode krunga and av x explosion bache hai 
-    if(i >= n) return 0;
-    if(x == 0) return input[i];
-    if(dp[i][x] != -1) return dp[i][x];
-
-    int ans = input[i];
-    for(int j = i+1; j<=min(n, i+input[i]) ; j++){
-        ans = max(ans, f(i+1, j-1) + f2(j, x-1));
+long findMinimum(vector<int> &power){
+    int n = power.size();
+    long ans = 0;
+    for(int i = 1; i<n; i++){
+        if(power[i] < power[i-1]){
+            ans += power[i-1] - power[i];
+        }
     }
-    return dp[i][x] = ans;
+    return ans;
 }
 void solve(){
-    cin>>n;
-    cin>>x;
-    input.resize(n);
-    for(int i = 0; i<n; i++){
-        cin>>input[i];
+    int n;
+    cin >> n;
+    vector<int> power(n);
+    for(int i = 0; i < n; i++){
+        cin >> power[i];
     }
-    pref.resize(n);
-    pref[0] = input[0];
-    for(int i = 1; i<n; i++){
-        pref[i] = pref[i-1] + input[i];
-    }
-
-    memset(dp, -1, sizeof(dp));
-    int ans = f2(0, x);
-    cout << ans << endl;
-    
-
+    cout << findMinimum(power) << endl;
 }
 /* logic ends */
 

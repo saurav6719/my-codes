@@ -1,1 +1,1 @@
-{"name":"Local: try2","url":"/Users/saurav/Desktop/programming/try2.cpp","tests":[{"id":1759682102403,"input":"7 0\n7 7 7 7 7 7 7","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/try2.cpp","group":"local","local":true}
+{"name":"Local: try2","url":"/Users/saurav/Desktop/programming/try2.cpp","tests":[{"id":1759682102403,"input":"4\n3 5 2 3","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/try2.cpp","group":"local","local":true}

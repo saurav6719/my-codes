@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.10.17 05:05:18
+ *    created: 2025.10.24 06:32:17
  *    We stop at Candidate Master in 2025
  **/
 
@@ -63,77 +63,49 @@
 #define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
 #define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
 #define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
-#define int long long int
+#define int long double
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
-void f(vector<vector<int> > &dp, int n, int chahi, vector<int> &ans, int i){
-    if(i == 0) return ;
-    // dekho yaha pe kya liya hoga
-    for(int j = 1;j<=n; j++){
-        if(i - j < 0) continue;
-        // yaha pe j liya hai
-        int yahawala = j * (j + 1) / 2;
-        int lastidx = i - j;
-        int lastk = chahi - yahawala;
-        if(lastk < 0) continue;
-        if(dp[lastidx][lastk] == 1) {
-            ans.push_back(j);
-            f(dp, n, lastk, ans, lastidx);
-            return ;
-        }
-    }
-}
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    int total = n * (n+1)/2;
-    vector<vector<int> > dp(n+1, vector<int> (total+1, 0));
-    dp[0][0] = 1;
-    for(int i = 1; i<=n; i++){
-        for(int l = 0; l<=total ;l++){
-            for(int j = 1; j<=n; j++){
-                if(i - j < 0) continue;
-                // yaha pe j liya hai
-                int yahawala = j * (j + 1) / 2;
-                int lastidx = i - j;
-                int lastk = l - yahawala;
-                if(lastk < 0) continue;
-                if(dp[lastidx][lastk] == 1) {
-                    dp[i][l] = 1;
-                }
-            }
-        }
+    int n;
+    cin>>n;
+    vector<int> pos(n);
+    vector<int> speed(n);
+    for(int i = 0; i<n; i++){
+        cin>>pos[i]>>speed[i];
     }
-    print2d(dp);
-    int chahi = total - k;
 
-    if(dp[n][chahi] == 1){
-        vector<int> ans;
-        f(dp, n, chahi, ans, n);
-        reverse(ans.begin(), ans.end());
-        // for(auto x: ans) cout<<x<<" ";
-        // cout<<endl;
-        set<int> st;
-        for(int i = 1; i<=n; i++) st.insert(i);
-        for(auto x : ans){
-            set<int> curr;
-            int cnt = 0;
-            while(cnt < x){
-                curr.insert(*st.rbegin());
-                st.erase(--st.end());
-                cnt++;
-            }
-            for(auto y: curr) cout<<y<<" ";
+    int lo = 0;
+    int hi = 2e9+1;
+
+    int ans = -1;
+    while(hi - lo > 1e-9){
+        int mid = lo + (hi - lo) / 2.0;
+        int left = -1e12;
+        int right = 1e12;
+
+        for(int i = 0; i<n; i++){
+            int x = pos[i];
+            int v = speed[i];
+            int leftend = x - v*mid;
+            int rightend = x + v*mid;
+            left = max(left, leftend);
+            right = min(right, rightend);
         }
-        cout<<endl;
+
+        if(left <= right){
+            ans = mid;
+            hi = mid;
+        }
+        else{
+            lo = mid;
+        }
     }
-    else{
-        cout<<0<<endl;
-    }
+    cout<<fixed<<setprecision(10)<<ans<<endl;
 }
 /* logic ends */
 
@@ -144,8 +116,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    cin>>t;
-    // t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
