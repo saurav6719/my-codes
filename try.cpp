@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.10.24 06:32:17
+ *    created: 2025.10.25 20:20:17
  *    We stop at Candidate Master in 2025
  **/
 
@@ -63,49 +63,49 @@
 #define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
 #define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
 #define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
-#define int long double
+#define int long long int
 #define mn(a,b,c) min(a,min(b,c))
 #define mx(a,b,c) max(a,max(b,c))
 #define pp pair<int,int>
 using namespace std;
 
 /* write core logic here */
+long long dp[151][151];
+long long f(int i, int currgcd, vector<vector<int> > &mat){
+    int n = mat.size();
+    int m = mat[0].size();
+    if(dp[i][currgcd] != -1) return dp[i][currgcd];
+    if(i == n){
+        if(currgcd == 1) return 1;
+        return 0;
+    }
+    long long ans = 0;
+    for(auto ele : mat[i]){
+        int nextgcd = gcd(currgcd , ele);
+        ans += f(i + 1, nextgcd, mat);
+        ans %= MOD;
+    }
+    return dp[i][currgcd] = ans;
+}
+int countCoprime(vector<vector<int>>& mat) {
+    int n = mat.size();
+    int m = mat[0].size();
+    memset(dp, -1, sizeof(dp));
+    return f(0, 0, mat);
+}
 void solve(){
     int n;
     cin>>n;
-    vector<int> pos(n);
-    vector<int> speed(n);
-    for(int i = 0; i<n; i++){
-        cin>>pos[i]>>speed[i];
-    }
-
-    int lo = 0;
-    int hi = 2e9+1;
-
-    int ans = -1;
-    while(hi - lo > 1e-9){
-        int mid = lo + (hi - lo) / 2.0;
-        int left = -1e12;
-        int right = 1e12;
-
-        for(int i = 0; i<n; i++){
-            int x = pos[i];
-            int v = speed[i];
-            int leftend = x - v*mid;
-            int rightend = x + v*mid;
-            left = max(left, leftend);
-            right = min(right, rightend);
-        }
-
-        if(left <= right){
-            ans = mid;
-            hi = mid;
-        }
-        else{
-            lo = mid;
+    int m;
+    cin>>m;
+    vector<vector<int> > mat(n, vector<int>(m,0));
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < m; j++){
+            cin>>mat[i][j];
         }
     }
-    cout<<fixed<<setprecision(10)<<ans<<endl;
+    int ans = countCoprime(mat);
+    cout<<ans<<endl;
 }
 /* logic ends */
 

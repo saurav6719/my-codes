@@ -17,13 +17,13 @@ int main() {
     // cout << T << "\n";
 
     while (T--) {
-        int n = rand() % 100000 + 1; // 1 <= n <= 100000
-        int q = rand() % 100000 + 1; // 1 <= q <= 100000
+        int n = 100000; // 1 <= n <= 100000
+        int q = 100000; // 1 <= q <= 100000
         cout << n << "\n";
 
         // Generate array
         for (int i = 0; i < n; i++) {
-            int val = rand() % 1000000000 + 1; // 1 <= a[i] <= 1000000000
+            int val = 1000000000; // 1 <= a[i] <= 1000000000
             cout << val << (i + 1 == n ? '\n' : ' ');
         }
 

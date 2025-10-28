@@ -173,90 +173,6 @@ vector<int> distinct_in_range(vector<int> &v, int n, vector<pp> &queries){
     }
     return res;
 }
-
-class SegmentTree {
-private:
-    int n;                       // Size of the original array
-    vector<int> tree;            // Segment‑tree array
-    vector<int> data;            // Original array
-
-    // Build the tree
-    void buildTree(int pos, int left, int right) {
-        if (left == right) {             // Leaf
-            tree[pos] = data[left];
-            return;
-        }
-        int mid = left + (right - left) / 2;
-        buildTree(2 * pos + 1, left, mid);
-        buildTree(2 * pos + 2, mid + 1, right);
-        tree[pos] = min(tree[2 * pos + 1], tree[2 * pos + 2]);
-    }
-
-    // Range minimum query helper
-    int rangeMinQuery(int pos, int left, int right,
-                      int ql, int qr) const {
-        if (qr < left || ql > right)          // No overlap
-            return INT32_MAX;
-        if (ql <= left && right <= qr)        // Total overlap
-            return tree[pos];
-
-        int mid = left + (right - left) / 2;
-        int leftMin  = rangeMinQuery(2 * pos + 1, left, mid, ql, qr);
-        int rightMin = rangeMinQuery(2 * pos + 2, mid + 1, right, ql, qr);
-        return min(leftMin, rightMin);
-    }
-
-    // Point update helper
-    void pointUpdate(int pos, int left, int right,
-                     int idx, int value) {
-        if (left == right) {                  // Leaf
-            tree[pos] = value;
-            data[idx] = value;
-            return;
-        }
-        int mid = left + (right - left) / 2;
-        if (idx <= mid)
-            pointUpdate(2 * pos + 1, left, mid, idx, value);
-        else
-            pointUpdate(2 * pos + 2, mid + 1, right, idx, value);
-
-        tree[pos] = min(tree[2 * pos + 1], tree[2 * pos + 2]);
-    }
-
-public:
-    // Constructor
-    SegmentTree(const vector<int>& input) : data(input) {
-        n = data.size();
-        int size = 1;
-        while (size < n) size <<= 1;
-        size = 2 * size - 1;
-        tree.assign(size, INT32_MAX);
-        buildTree(0, 0, n - 1);
-    }
-
-    // Range minimum query
-    int rangeMin(int l, int r) const {
-        if (l < 0 || r >= n || l > r)
-            throw invalid_argument("Invalid query range");
-        return rangeMinQuery(0, 0, n - 1, l, r);
-    }
-
-    // Point update
-    void update(int idx, int value) {
-        if (idx < 0 || idx >= n)
-            throw invalid_argument("Index out of bounds");
-        pointUpdate(0, 0, n - 1, idx, value);
-    }
-
-    // Debug: print tree
-    void printTree() const {
-        for (int v : tree) cout << v << ' ';
-        cout << '\n';
-    }
-};
-struct querynode{
-    int l, r, idx;
-};
 void solve(){
     int n;
     cin>>n;
@@ -311,22 +227,17 @@ void solve(){
         }
     }
 
-    vector<int> v5(n);
-
-
-    priority_queue<pp, vector<pp>, greater<pp>> pq;
-
-
     vector<pp> ranges;
     for(int i = 0; i<n; i++){
         int prev = prev_equal_index[i];
         int lastap = aplast[i];
         ranges.push_back({prev+1, lastap-1});
-        v5[i] = prev+1;
-        pq.push({lastap-1, i});
     }
 
-    SegmentTree st(v5);
+    sort(ranges.begin(), ranges.end(), [](const pp &a, const pp &b){
+        if(a.first == b.first) return a.second < b.second;
+        return a.first < b.first;
+    });
 
     int m = ranges.size();
     vector<int> max_r_till_now(m);
@@ -341,49 +252,25 @@ void solve(){
 
     int q;
     cin>>q;
-    vector<querynode> queries(q);
-    vector<pp> query2(q);
+    vector<pp> queries(q);
     for(int i = 0; i<q; i++){
-        cin>>queries[i].l>>queries[i].r;
-        queries[i].l--;
-        queries[i].r--;
-        queries[i].idx = i;
-        query2[i] = {queries[i].l, queries[i].r};
+        cin>>queries[i].first>>queries[i].second;
+        queries[i].first--;
+        queries[i].second--;
     }
 
-    // sort queries by r
-    sort(queries.begin(), queries.end(), [](querynode &a, querynode &b){
-        if(a.r != b.r)return a.r < b.r;
-        if(a.l != b.l)return a.l < b.l;
-        return a.idx < b.idx;
-    });
-
-    vector<int> ans(q);
-
-    vector<int> dist = distinct_in_range(v, n, query2);
+    vector<int> dist = distinct_in_range(v, n, queries);
     for(int i = 0; i<q; i++){
-        int l = queries[i].l;
-        int r = queries[i].r;
-        int idx = queries[i].idx;
-        int distinct = dist[idx];
-
-        while(!pq.empty() and pq.top().first < r){
-            pp top = pq.top();
-            pq.pop();
-            int range_idx = top.second;
-            st.update(range_idx, INT32_MAX);
+        int l = queries[i].first;
+        int r = queries[i].second;
+        int distinct = dist[i];
+        int x = upper_bound(ranges.begin(), ranges.end(), make_pair(l, INT32_MAX)) - ranges.begin();
+        x--;
+        int bestr = max_r_till_now[x];
+        if(bestr >= r){
+            cout<<distinct<<endl;
         }
-
-        int min_in_range = st.rangeMin(l,r);
-        if(min_in_range <= l){
-            // there is one AP 
-            ans[idx] = distinct;
-        }
-        else ans[idx] = distinct + 1;
-    }
-
-    for(int i = 0; i<q; i++){
-        cout<<ans[i]<<endl;
+        else cout<<distinct + 1<<endl;
     }
 }
 /* logic ends */

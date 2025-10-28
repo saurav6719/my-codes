@@ -89,6 +89,7 @@ void solve(){
             st.insert(v[i]);
         }
         int distinct = st.size();
+        debug(distinct);
         for(auto ele : st){
             vector<int> occ;
             for(int i = l; i<=r; i++){
@@ -100,10 +101,12 @@ void solve(){
             for(int i = 1; i<occ.size(); i++){
                 diff.insert(occ[i] - occ[i-1]);
             }
+            debug(diff.size());
             if(diff.size() > 1){
                 
             }
             else{
+                debug(ele);
                 distinct--;
                 break;
             }

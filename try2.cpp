@@ -1,108 +1,38 @@
-/**
- *    author: Saurav
- *    created: 2025.10.19 21:12:00
- *    We stop at Candidate Master in 2025
- **/
-
-/* includes and all */
-
+// LUOGU_RID: 149964285
 #include<bits/stdc++.h>
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
-
-#define printset(s) do { \
-    cout << "set-- starts" << endl; \
-    for (auto it = s.begin(); it != s.end(); ++it) { \
-        cout << *it << endl; \
-    } \
-    cout << "set-- ends" << endl; \
-} while(0)
-
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#define printset(s)
-#endif
-#define endl "\n"
-#define MOD 1000000007
-#define mod_add(a, b) (((a) % MOD + (b) % MOD) % MOD)
-#define mod_sub(a, b) ((((a) % MOD - (b) % MOD) + MOD) % MOD)
-#define mod_mul(a, b) (((1LL * (a) % MOD) * (b) % MOD) % MOD)
-#define int long long int
-#define mn(a,b,c) min(a,min(b,c))
-#define mx(a,b,c) max(a,max(b,c))
-#define pp pair<int,int>
+#define ri register int
+#define F first
+#define S second
 using namespace std;
-
-/* write core logic here */
-long findMinimum(vector<int> &power){
-    int n = power.size();
-    long ans = 0;
-    for(int i = 1; i<n; i++){
-        if(power[i] < power[i-1]){
-            ans += power[i-1] - power[i];
-        }
-    }
-    return ans;
+inline int rd(){
+	int x=0,y=1;char c=getchar();
+	for(;c<'0'||c>'9';c=getchar())if(c=='-')y=-1;
+	for(;c>='0'&&c<='9';c=getchar())x=(x<<1)+(x<<3)+(c^48);
+	return x*y;
 }
-void solve(){
-    int n;
-    cin >> n;
-    vector<int> power(n);
-    for(int i = 0; i < n; i++){
-        cin >> power[i];
-    }
-    cout << findMinimum(power) << endl;
+const int N=500005;
+int n,m,a[N],ls[N],la[N],li[N],an[N];vector<pair<int,int> >vc[N];
+struct nd{
+	int t[N];
+	void cl(){memset(t,0,sizeof(t));}
+	void add(int x,int y){for(;x<=n;x+=x&-x)t[x]+=y;}
+	int qr(int x){ri y=0;for(;x;x-=x&-x)y+=t[x];return y;}
+}t1,t2;
+int main(){
+	n=rd();
+	for(ri i=1;i<=n;++i){
+		a[i]=rd();la[i]=ls[a[i]];ls[a[i]]=i;
+		li[i]=i-la[i]==la[i]-la[la[i]]?li[la[i]]:la[la[i]];
+	}
+	m=rd();
+	for(ri i=1,x,y;i<=m;++i)x=rd(),y=rd(),vc[y].push_back({x,i});
+	for(ri i=1;i<=n;++i){
+		if(la[i])t1.add(la[i],-1);
+		if(li[la[i]])t2.add(li[la[i]],-1);t1.add(i,1);if(li[i])t2.add(li[i],1);
+		for(auto j:vc[i]){
+			ri u=t2.qr(i)-t2.qr(j.F-1),v=t1.qr(i)-t1.qr(j.F-1);
+			an[j.S]=v+(u==v);
+		}
+	}
+	for(ri i=1;i<=m;++i)printf("%d\n",an[i]);return 0;
 }
-/* logic ends */
-
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    #ifndef ONLINE_JUDGE
-        freopen("Error.txt" , "w" , stderr);
-    #endif
-    int t;
-    //cin>>t;
-    t = 1;
-    while(t--){
-        solve();
-    }
-return 0;
-}
-

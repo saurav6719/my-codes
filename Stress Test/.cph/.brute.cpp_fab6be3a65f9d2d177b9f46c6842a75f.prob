@@ -1,1 +1,1 @@
-{"name":"Local: brute","url":"/Users/saurav/Desktop/programming/Stress Test/brute.cpp","tests":[],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/Stress Test/brute.cpp","group":"local","local":true}
+{"name":"Local: brute","url":"/Users/saurav/Desktop/programming/Stress Test/brute.cpp","tests":[{"id":1761432451373,"input":"7\n1 1 3 1 3 3 8 \n1\n1 6","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/saurav/Desktop/programming/Stress Test/brute.cpp","group":"local","local":true}
