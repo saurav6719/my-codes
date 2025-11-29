@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.10.25 20:20:17
+ *    created: 2025.11.25 06:59:33
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,42 +70,17 @@
 using namespace std;
 
 /* write core logic here */
-long long dp[151][151];
-long long f(int i, int currgcd, vector<vector<int> > &mat){
-    int n = mat.size();
-    int m = mat[0].size();
-    if(dp[i][currgcd] != -1) return dp[i][currgcd];
-    if(i == n){
-        if(currgcd == 1) return 1;
-        return 0;
-    }
-    long long ans = 0;
-    for(auto ele : mat[i]){
-        int nextgcd = gcd(currgcd , ele);
-        ans += f(i + 1, nextgcd, mat);
-        ans %= MOD;
-    }
-    return dp[i][currgcd] = ans;
-}
-int countCoprime(vector<vector<int>>& mat) {
-    int n = mat.size();
-    int m = mat[0].size();
-    memset(dp, -1, sizeof(dp));
-    return f(0, 0, mat);
-}
 void solve(){
-    int n;
-    cin>>n;
-    int m;
-    cin>>m;
-    vector<vector<int> > mat(n, vector<int>(m,0));
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < m; j++){
-            cin>>mat[i][j];
-        }
+    int a,b,c;
+    cin>>a>>b>>c;
+    vector<int>v = {a,b,c};
+    sort(v.begin(),v.end());
+    if(v[2] - v[0] >= 10){
+        cout<<"check again"<<endl;
     }
-    int ans = countCoprime(mat);
-    cout<<ans<<endl;
+    else{
+        cout<<"final "<<v[1]<<endl;
+    }
 }
 /* logic ends */
 
