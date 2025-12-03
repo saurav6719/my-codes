@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.12.02 16:13:10
+ *    created: 2025.12.03 18:10:53
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,90 +70,43 @@
 using namespace std;
 
 /* write core logic here */
-int f(vector<int> &v, int l, int r){
-    if(l > r) return 0;
-    if(l == 0){
-        return v[r];
+int dp[105][15];
+int f(string &s, int i, int j){
+    int n = s.size();
+    if(i == n) return 0;
+    if(j == 0) return 0;
+    if(dp[i][j] != -1) return dp[i][j];
+    int ans = 0;
+    // choose
+    {
+        int remain = j - 1;
+        int x = 1;
+        while(remain--){
+            x = x * 10;
+        }
+        int val = s[i] - '0';
+        ans = max(ans, val * x + f(s, i + 1, j - 1));
     }
-    return v[r] - v[l-1];
+    // not choose
+    {
+        int remaining = j;
+        int remainingidx = n - 1 - i;
+        if(remainingidx >= remaining){
+            ans = max(ans, f(s, i + 1, j));
+        }
+    }
+    return dp[i][j] = ans;
 }
 void solve(){
     string s;
-    cin>>s;
-    vector<int> left;
-    vector<int> right;
-    int curr = 0;
-    for(auto ele : s){
-        if(ele == '-'){
-            left.push_back(curr);
-            curr = 0;
-            continue;
-        }
-        else if(ele == ','){
-            right.push_back(curr);
-            curr = 0;
-            continue;
-        }
-        curr *= 10;
-        curr += ele - '0';
+    int ans = 0;
+
+    while(cin>>s){
+        memset(dp, -1, sizeof(dp));
+        ans += f(s, 0, 2);
     }
 
-    right.push_back(curr);
-    // print(left);
-    // print(right);
-    int maxi = 0;
-    for(auto ele : left){
-        maxi = max(ele, maxi);
-    }
-    for(auto ele : right){
-        maxi = max(ele, maxi);
-    }
-
-    debug(left.size());
-    debug(right.size());
-    set<int> st;
-
-    vector<int> v;
-    vector<int> v2;
-
-    for(int i = 1; i<=1000000; i++){
-        string temp = to_string(i);
-        temp += to_string(i);
-        while(true){
-            long long num = stoll(temp);
-            if(num <= maxi) st.insert(num);
-            else break;
-            temp = temp + to_string(i);
-        }
-    }
-
-    for(auto ele : st){
-        v2.push_back(ele);
-    }
-
-    // print(v2);
-    sort(v2.begin(), v2.end());
-    print(v2);
-    v.push_back(v2[0]);
-    for(int i = 1; i<v2.size(); i++){
-        v.push_back(v[i-1] + v2[i]);
-    }
-
-    int sum = 0;
-
-    for(int i = 0; i<left.size(); i++){
-        int one = left[i];
-        int two = right[i];
-
-        int l = lower_bound(v2.begin(), v2.end(), one) - v2.begin();
-        int r = upper_bound(v2.begin(), v2.end(), two) - v2.begin();
-        r--;
-
-        sum += f(v, l, r);
-    }
-
-    cout<<sum<<endl;
-
+    cout<<ans<<endl;
 }
 /* logic ends */
 
