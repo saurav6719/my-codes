@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.12.11 18:50:46
+ *    created: 2025.12.05 19:23:37
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,53 +70,67 @@
 using namespace std;
 
 /* write core logic here */
-int maximiseWealth(int M, int initialMoney, int N, vector<int> ventureprofit, vector<int> venturecost){
-    multiset<pair<int,int> > venturereturn;
-    for(int i =0 ; i<N; i++){
-        
-        venturereturn.insert({venturecost[i], ventureprofit[i]});
-        
-    }
-    int curr = 0;
-    int ans = 0;
-    int currmoney = initialMoney;
-    multiset<int> maxreturns;
-    while(curr < M){
-        for(auto it = venturereturn.begin(); it != venturereturn.end(); ){
-            if(it->first <= currmoney){
-                maxreturns.insert(it->second);
-                it = venturereturn.erase(it);
-            }
-            else{
-                break;
-            }
-        }
-        if(maxreturns.empty()){
+void solve(){
+    string s;
+    vector<pp> intervals;
+    int cnt = 192;
+    while(cnt--){
+        cin>>s;
+        if(s.empty()){
             break;
         }
-        auto it = maxreturns.end();
-        it--;
-        currmoney += *it;
-        maxreturns.erase(it);
-        curr++;
+        print(s);
+        string one = "";
+        string two = "";
+        int i = 0;
+        while(i < s.size() && s[i] != '-'){
+            one += s[i];
+            i++;
+        }
+        i++; // skip '-'
+        while(i < s.size()){
+            two += s[i];
+            i++;
+        }
+        intervals.push_back({stoll(one), stoll(two)});
     }
-    return currmoney;
-}
-void solve(){
-    int M;
-    int initialMoney;
-    int N;
-    cin >> M >> initialMoney >> N;
-    vector<int> ventureprofit(N);
-    vector<int> venturecost(N);
-    for(int i = 0; i < N; i++){
-        cin >> ventureprofit[i];
+    vector<int> queries;
+    cin.ignore();
+    int x;
+    while(cin>>x){
+        queries.push_back(x);
     }
-    for(int i = 0; i < N; i++){
-        cin >> venturecost[i];
+
+    sort(intervals.begin(), intervals.end());
+    int l = intervals[0].first;
+    int r = intervals[0].second;
+
+    vector<pp> merged;
+
+    for(int i = 1; i<intervals.size(); i++){
+        if(intervals[i].first <= r){
+            r = max(r, intervals[i].second);
+        } else {
+            merged.push_back({l,r});
+            l = intervals[i].first;
+            r = intervals[i].second;
+        }
     }
-    int result = maximiseWealth(M, initialMoney, N, ventureprofit, venturecost);
-    cout << result << endl;
+    merged.push_back({l,r});
+
+    int ans = 0;
+    for(auto q : queries){
+        auto ub = upper_bound(merged.begin(), merged.end(), make_pair(q, LLONG_MAX));
+        if(ub == merged.begin()){
+            continue;
+        }
+        ub--;
+        if(ub->first <= q && q <= ub->second){
+            ans++;
+        }
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 

@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.11.25 06:59:33
+ *    created: 2025.12.11 17:46:47
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,17 +70,78 @@
 using namespace std;
 
 /* write core logic here */
+
+int dominantSubarray(int N, int K, vector<int> arr){
+    map<int,int> freq;
+    set<pair<int,int>> freqSet;
+    int i = 0;
+    int j = 0;
+    int ans = 0;
+    while(i < N){
+        bool f = false;
+        while(j < N){
+            f = true;
+
+            if(!freq.empty()){
+                auto it = freqSet.rbegin();
+                int maxFreq = it->first;
+                if(maxFreq >= K){
+                    ans += (N - j + 1);
+                    break;
+                }
+            }
+            if(freqSet.empty()){
+                freq[arr[j]]++;
+                freqSet.insert({1, arr[j]});
+            }
+            else{
+                int oldfreq = freq[arr[j]];
+                if(oldfreq > 0){
+                    freqSet.erase({oldfreq, arr[j]});
+                }
+                freq[arr[j]]++;
+                freqSet.insert({oldfreq + 1, arr[j]});
+            }
+            auto it = freqSet.rbegin();
+            int maxFreq = it->first;
+            if(maxFreq >= K){
+                // yaha se saare subarray dominant 
+                ans += (N - j);
+                j++;
+                break;
+            }
+            j++;
+        }
+        debug(i);
+        debug(j);
+        if(!f){
+            auto it = freqSet.rbegin();
+            int maxFreq = it->first;
+            if(maxFreq >= K){
+                ans++;
+            }
+        }
+        // remove ith element from window
+        int oldfreq = freq[arr[i]];
+        freqSet.erase({oldfreq, arr[i]});
+        freq[arr[i]]--;
+        if(freq[arr[i]] > 0){
+            freqSet.insert({oldfreq - 1, arr[i]});
+        }
+        i++;
+    }
+    return ans;
+}
 void solve(){
-    int a,b,c;
-    cin>>a>>b>>c;
-    vector<int>v = {a,b,c};
-    sort(v.begin(),v.end());
-    if(v[2] - v[0] >= 10){
-        cout<<"check again"<<endl;
+    int n;
+    int k;
+    cin >> n >> k;
+    vector<int> arr(n);
+    for(int i = 0; i < n; i++){
+        cin >> arr[i];
     }
-    else{
-        cout<<"final "<<v[1]<<endl;
-    }
+    int result = dominantSubarray(n, k, arr);
+    cout << result << endl;
 }
 /* logic ends */
 

@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.12.11 18:50:46
+ *    created: 2025.12.07 18:40:43
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,53 +70,53 @@
 using namespace std;
 
 /* write core logic here */
-int maximiseWealth(int M, int initialMoney, int N, vector<int> ventureprofit, vector<int> venturecost){
-    multiset<pair<int,int> > venturereturn;
-    for(int i =0 ; i<N; i++){
-        
-        venturereturn.insert({venturecost[i], ventureprofit[i]});
-        
-    }
-    int curr = 0;
+vector<vector<int> > dp;
+int f(int i, int j, vector<string> &grid, int n, int m){
+    if(i == n) return 1;
+    if(dp[i][j] != -1) return dp[i][j];
+    
     int ans = 0;
-    int currmoney = initialMoney;
-    multiset<int> maxreturns;
-    while(curr < M){
-        for(auto it = venturereturn.begin(); it != venturereturn.end(); ){
-            if(it->first <= currmoney){
-                maxreturns.insert(it->second);
-                it = venturereturn.erase(it);
-            }
-            else{
-                break;
-            }
+
+    if(grid[i][j] == '^'){
+        if(j-1 >= 0){
+            ans += f(i, j-1, grid, n, m);
         }
-        if(maxreturns.empty()){
-            break;
+        if(j+1 < m){
+            ans += f(i, j+1, grid, n, m);
         }
-        auto it = maxreturns.end();
-        it--;
-        currmoney += *it;
-        maxreturns.erase(it);
-        curr++;
     }
-    return currmoney;
+    else{
+        ans += f(i+1, j, grid, n, m);
+    }
+
+    return dp[i][j] = ans;
+    
+
 }
 void solve(){
-    int M;
-    int initialMoney;
-    int N;
-    cin >> M >> initialMoney >> N;
-    vector<int> ventureprofit(N);
-    vector<int> venturecost(N);
-    for(int i = 0; i < N; i++){
-        cin >> ventureprofit[i];
+    vector<string> grid;
+    string s;
+    while(getline(cin,s)){
+        grid.push_back(s);
     }
-    for(int i = 0; i < N; i++){
-        cin >> venturecost[i];
+    int n = grid.size();
+    int m = grid[0].size();
+
+    int stratx,starty;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            if(grid[i][j]=='S'){
+                stratx = i;
+                starty = j;
+            }
+        }
     }
-    int result = maximiseWealth(M, initialMoney, N, ventureprofit, venturecost);
-    cout << result << endl;
+    
+    dp.resize(n+5, vector<int>(m+5,-1));
+
+    int ans = f(stratx, starty, grid, n, m);
+    cout<<ans<<endl;
+
 }
 /* logic ends */
 

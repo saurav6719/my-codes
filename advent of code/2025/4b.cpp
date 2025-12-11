@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.12.11 18:50:46
+ *    created: 2025.12.05 18:52:48
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,53 +70,77 @@
 using namespace std;
 
 /* write core logic here */
-int maximiseWealth(int M, int initialMoney, int N, vector<int> ventureprofit, vector<int> venturecost){
-    multiset<pair<int,int> > venturereturn;
-    for(int i =0 ; i<N; i++){
-        
-        venturereturn.insert({venturecost[i], ventureprofit[i]});
-        
-    }
-    int curr = 0;
-    int ans = 0;
-    int currmoney = initialMoney;
-    multiset<int> maxreturns;
-    while(curr < M){
-        for(auto it = venturereturn.begin(); it != venturereturn.end(); ){
-            if(it->first <= currmoney){
-                maxreturns.insert(it->second);
-                it = venturereturn.erase(it);
-            }
-            else{
-                break;
-            }
-        }
-        if(maxreturns.empty()){
-            break;
-        }
-        auto it = maxreturns.end();
-        it--;
-        currmoney += *it;
-        maxreturns.erase(it);
-        curr++;
-    }
-    return currmoney;
-}
 void solve(){
-    int M;
-    int initialMoney;
-    int N;
-    cin >> M >> initialMoney >> N;
-    vector<int> ventureprofit(N);
-    vector<int> venturecost(N);
-    for(int i = 0; i < N; i++){
-        cin >> ventureprofit[i];
+    vector<string> input;
+    string s;
+    while(cin>>s){
+        input.push_back(s);
     }
-    for(int i = 0; i < N; i++){
-        cin >> venturecost[i];
+    int ans = 0;
+    int n = input.size();
+    int m = input[0].size();
+    map<pp,int> mp;
+    queue<pp> q;
+    set<pp> visited;
+
+
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            if(input[i][j] != '@') continue;
+            int cnt = 0;
+            if(i-1 >= 0){
+                // up row 
+                if(input[i-1][j-1] == '@') cnt++;
+                if(input[i-1][j] == '@') cnt++;
+                if(input[i-1][j+1] == '@') cnt++;
+            }
+            // same row
+            if(input[i][j-1] == '@') cnt++;
+            if(input[i][j+1] == '@') cnt++;
+            if(i+1 < n){
+                // down row
+                if(input[i+1][j-1] == '@') cnt++;
+                if(input[i+1][j] == '@') cnt++; 
+                if(input[i+1][j+1] == '@') cnt++;
+            }
+
+            mp[{i,j}] = cnt;
+
+            if(cnt < 4) {
+                q.push({i,j});
+                visited.insert({i,j});
+            }
+        }
     }
-    int result = maximiseWealth(M, initialMoney, N, ventureprofit, venturecost);
-    cout << result << endl;
+    
+
+    while(!q.empty()){
+        auto top = q.front();
+        q.pop();
+        ans++;
+        int x = top.first;
+        int y = top.second;
+
+        vector<pp> directions = {
+            {-1,-1}, {-1,0}, {-1,1},
+            {0,-1},          {0,1},
+            {1,-1},  {1,0},  {1,1}
+        };
+        for(auto ele : directions){
+            int nextx = x + ele.first;
+            int nexty = y + ele.second;
+            if(nextx < 0 || nextx >= n || nexty < 0 || nexty >= m) continue;
+            if(input[nextx][nexty] != '@') continue;
+            if(visited.find({nextx,nexty}) != visited.end()) continue;
+            mp[{nextx,nexty}]--;
+            if(mp[{nextx,nexty}] < 4){
+                q.push({nextx,nexty});
+                visited.insert({nextx,nexty});
+            }
+        }
+    }
+
+    cout<<ans<<endl;
 }
 /* logic ends */
 
