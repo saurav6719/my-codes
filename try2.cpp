@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2025.12.11 18:50:46
+ *    created: 2026.01.11 16:57:08
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,53 +70,66 @@
 using namespace std;
 
 /* write core logic here */
-int maximiseWealth(int M, int initialMoney, int N, vector<int> ventureprofit, vector<int> venturecost){
-    multiset<pair<int,int> > venturereturn;
-    for(int i =0 ; i<N; i++){
-        
-        venturereturn.insert({venturecost[i], ventureprofit[i]});
-        
-    }
-    int curr = 0;
-    int ans = 0;
-    int currmoney = initialMoney;
-    multiset<int> maxreturns;
-    while(curr < M){
-        for(auto it = venturereturn.begin(); it != venturereturn.end(); ){
-            if(it->first <= currmoney){
-                maxreturns.insert(it->second);
-                it = venturereturn.erase(it);
-            }
-            else{
-                break;
+int maximalRectangle(vector<vector<char>>& arr) {
+    
+        int ans = 0;
+        int n = arr.size();
+        int m = arr[0].size();
+
+        vector<vector<int> > matrix(n, vector<int> (m));
+        for(int i = 0; i<n; i++){
+            for(int j = 0; j<m; j++){
+                matrix[i][j] = arr[i][j] - '0';
             }
         }
-        if(maxreturns.empty()){
-            break;
+
+        vector<vector<int> > dp(n, vector<int> (m));
+        for(int j = 0; j<m; j++){
+            if(matrix[n-1][j] == 0){
+                debug(j);
+                dp[n-1][j] = n-1;
+            }
+            else dp[n-1][j] = n;
         }
-        auto it = maxreturns.end();
-        it--;
-        currmoney += *it;
-        maxreturns.erase(it);
-        curr++;
+
+        for(int i = n-2; i>=0; i--){
+            for(int j = 0; j<m; j++){
+                if(matrix[i][j] == 0){
+                    dp[i][j] = i;
+                }
+                else{
+                    dp[i][j] = dp[i+1][j];
+                }
+            }
+        }
+
+
+        for(int i = 0; i<n; i++){
+            for(int j = 0; j<m; j++){
+                if(matrix[i][j] == 0) continue;
+                int best = 500;
+                for(int l = j; l<m; l++){
+                    // j se l tak all one
+                    if(matrix[i][l] == 0) break;
+                    best = min(best, dp[i][l]);
+                    ans = max(ans, (l - j +1) * (best - i));
+                }
+            }
+        }
+        return ans;
     }
-    return currmoney;
-}
 void solve(){
-    int M;
-    int initialMoney;
-    int N;
-    cin >> M >> initialMoney >> N;
-    vector<int> ventureprofit(N);
-    vector<int> venturecost(N);
-    for(int i = 0; i < N; i++){
-        cin >> ventureprofit[i];
+    int n,m;
+    cin>>n>>m;
+    vector<vector<char> > matrix(n, vector<char> (m));
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            cin>>matrix[i][j];
+        }
     }
-    for(int i = 0; i < N; i++){
-        cin >> venturecost[i];
-    }
-    int result = maximiseWealth(M, initialMoney, N, ventureprofit, venturecost);
-    cout << result << endl;
+    print2d(matrix);
+    int res = maximalRectangle(matrix);
+    cout<<res<<endl;
 }
 /* logic ends */
 
