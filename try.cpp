@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2026.01.11 08:51:09
+ *    created: 2026.01.17 21:29:58
  *    We stop at Candidate Master in 2025
  **/
 
@@ -70,20 +70,8 @@
 using namespace std;
 
 /* write core logic here */
-int f(int x, int bit){
-    int a = (1ll << bit);
-    int res = 0;
-    for(int i = 31; i>bit; i--){
-        if(x & (1ll << i)){
-            res += (1ll << i);
-        }
-    }
-    res += a;
-    return res;
-}
-
 void solve(){
-    debug(f(9,4));
+    
 }
 /* logic ends */
 
