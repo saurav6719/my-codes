@@ -1,6 +1,6 @@
 /**
  *    author: Saurav
- *    created: 2026.01.17 21:29:58
+ *    created: 2026.02.07 22:52:15
  *    We stop at Candidate Master in 2025
  **/
 
@@ -55,8 +55,8 @@
 #define print(v)
 #define print2d(v)
 #define printmap(m)
-#define printpp(v)
 #define printset(s)
+#define printpp(v)
 #endif
 #define endl "\n"
 #define MOD 1000000007
@@ -71,7 +71,36 @@ using namespace std;
 
 /* write core logic here */
 void solve(){
-    
+    int n;
+    cin>>n;
+    vector<int> arr(n);
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+
+    vector<int> dp(n, 0); // i se neg sum 
+    if(arr[n-1] < 0){
+        dp[n-1] = abs(arr[n-1]);
+    }
+
+    for(int i = n-2; i>=0; i--){
+        dp[i] = dp[i+1];
+        if(arr[i] < 0){
+            dp[i] += abs(arr[i]);
+        }
+    }
+
+    int ans = 0;
+    int currpos = 0;
+
+    for(int i =0 ; i<n; i++){
+        if(arr[i] > 0){
+            currpos += arr[i];
+        }
+        ans = max(ans, currpos + dp[i]);
+    }
+    cout<<ans<<endl;
+
 }
 /* logic ends */
 
@@ -82,8 +111,8 @@ signed main(){
         freopen("Error.txt" , "w" , stderr);
     #endif
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
